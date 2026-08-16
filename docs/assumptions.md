@@ -49,6 +49,21 @@ reading the brief, before any code existed.
   in its message, and `build/install/lead-validation/bin/lead-validation` and the
   Docker image return it directly. `[02]`
 
+## The simulated adapters
+
+- **A missing fixture row means the system has nothing on that person**, not that
+  it failed: registry `NotFound`, judicial and bureau `Clear`, score up with no
+  latency. A missing file is a different thing and is that step's
+  `Unavailable`. `[03]`
+- **The registry adapter supplies a record and the comparison is a pure domain
+  function.** The rule is the interesting part of the step, so it is testable
+  without touching a file. `[03]`
+- **The score value is never fixtured.** `score.csv` carries only latency and
+  status; the number comes from the randomness port on every call. `[03]`
+- **The fixture directory is `./fixtures` in the working directory, not
+  `src/main/resources`.** Resources live inside the jar, where nothing can point
+  a test or the demo at a different directory. `[03]`
+
 ## Bootstrap session
 
 - **`validate-lead` takes the national ID and nothing else.** The lead already

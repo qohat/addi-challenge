@@ -1,53 +1,59 @@
 package com.addi.lead;
 
+import static com.addi.lead.FixtureDir.ID;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import com.addi.lead.app.Config;
 import com.addi.lead.domain.Checkpoint;
 import com.addi.lead.domain.Decision;
-import com.addi.lead.domain.Email;
-import com.addi.lead.domain.Lead;
-import com.addi.lead.domain.NationalId;
 import com.addi.lead.domain.Prospect;
 import com.addi.lead.domain.RejectionCause;
 import com.addi.lead.domain.Step;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
-import java.time.LocalDate;
+import java.nio.file.Path;
+import java.time.Duration;
+import java.util.OptionalLong;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
 /** The wired application, run in process against captured streams. No JVM is spawned. */
 class MainTest {
 
-    private static final Lead LEAD = new Lead(
-            new NationalId("1020304050"),
-            "Ana",
-            "Restrepo",
-            LocalDate.of(1990, 3, 14),
-            new Email("ana.restrepo@example.com"));
+    @TempDir
+    Path dir;
 
     private record Result(int code, String out, String err) {}
 
-    private static Result run(String... args) {
+    private Result run(String... args) {
+        return run(new Config(Duration.ofSeconds(2), dir, OptionalLong.of(7)), args);
+    }
+
+    private static Result run(Config config, String... args) {
         var out = new ByteArrayOutputStream();
         var err = new ByteArrayOutputStream();
-        var code = Main.run(args, new PrintStream(out, true, UTF_8), new PrintStream(err, true, UTF_8));
+        var code = Main.run(args, config, new PrintStream(out, true, UTF_8), new PrintStream(err, true, UTF_8));
         return new Result(code, out.toString(UTF_8), err.toString(UTF_8));
     }
 
     @Test
-    void aSeededLeadConvertsAndExitsZero() {
-        var result = run("validate-lead", "--id", "1020304050");
+    void aCleanLeadConvertsAndExitsZero() {
+        FixtureDir.clean(dir);
 
-        assertEquals(0, result.code());
-        assertEquals("Lead 1020304050 converted to prospect. Score 75." + System.lineSeparator(), result.out());
+        var result = run("validate-lead", "--id", ID);
+
+        assertEquals(0, result.code(), result.err());
+        assertTrue(result.out().startsWith("Lead " + ID + " converted to prospect. Score "), result.out());
         assertTrue(result.err().isEmpty(), result.err());
     }
 
     @Test
     void anUnseededLeadIsRejectedAndExitsOne() {
+        FixtureDir.clean(dir);
+
         var result = run("validate-lead", "--id", "9999999999");
 
         assertEquals(1, result.code());
@@ -55,14 +61,90 @@ class MainTest {
     }
 
     @Test
+    void anIdWithNoRegistryRowExitsOne() {
+        FixtureDir.clean(dir);
+        FixtureDir.write(dir, "registry.csv");
+
+        var result = run("validate-lead", "--id", ID);
+
+        assertEquals(1, result.code());
+        assertTrue(result.out().contains("not found in the national registry"), result.out());
+    }
+
+    @Test
+    void aJudicialRecordExitsOne() {
+        FixtureDir.clean(dir);
+        FixtureDir.write(dir, "judicial.csv", ID + ",1,0,UP");
+
+        var result = run("validate-lead", "--id", ID);
+
+        assertEquals(1, result.code());
+        assertTrue(result.out().contains("1 judicial records found"), result.out());
+    }
+
+    @Test
+    void aSanctionsHitExitsOne() {
+        FixtureDir.clean(dir);
+        FixtureDir.write(dir, "bureau.csv", ID + ",OFAC,0,UP");
+
+        var result = run("validate-lead", "--id", ID);
+
+        assertEquals(1, result.code());
+        assertTrue(result.out().contains("sanctioned on the OFAC list"), result.out());
+    }
+
+    @Test
+    void aDownBureauIsPendingAtTheBureauAndExitsTwo() {
+        FixtureDir.clean(dir);
+        FixtureDir.write(dir, "bureau.csv", ID + ",,0,DOWN");
+
+        var result = run("validate-lead", "--id", ID);
+
+        assertEquals(2, result.code());
+        assertTrue(result.out().contains("pending manual review at step BUREAU"), result.out());
+    }
+
+    @Test
+    void aDownScoreIsPendingAtTheScoreAndExitsTwo() {
+        FixtureDir.clean(dir);
+        FixtureDir.write(dir, "score.csv", ID + ",0,DOWN");
+
+        var result = run("validate-lead", "--id", ID);
+
+        assertEquals(2, result.code());
+        assertTrue(result.out().contains("pending manual review at step SCORE"), result.out());
+    }
+
+    @Test
+    void aRegistrySlowerThanTheTimeoutExitsTwo() {
+        FixtureDir.clean(dir);
+        FixtureDir.write(dir, "registry.csv", ID + ",Ana,Restrepo,1990-03-14,10000,UP");
+
+        var result = run(new Config(Duration.ofMillis(100), dir, OptionalLong.of(7)), "validate-lead", "--id", ID);
+
+        assertEquals(2, result.code());
+        assertTrue(result.out().contains("pending manual review at step REGISTRY"), result.out());
+    }
+
+    @Test
+    void theFixturesTheProjectShipsConvertEndToEnd() {
+        var result = run(Config.defaults(), "validate-lead", "--id", "1020304050");
+
+        assertEquals(0, result.code(), result.err());
+        assertTrue(result.out().contains("converted to prospect. Score "), result.out());
+    }
+
+    @Test
     void pendingManualReviewExitsTwo() {
         assertEquals(
-                2, Main.exitCode(new Decision.PendingManualReview(new Checkpoint(LEAD, Step.BUREAU, "unavailable"))));
+                2,
+                Main.exitCode(new Decision.PendingManualReview(
+                        new Checkpoint(FixtureDir.LEAD, Step.BUREAU, "unavailable"))));
     }
 
     @Test
     void theOtherTwoDecisionsExitZeroAndOne() {
-        assertEquals(0, Main.exitCode(new Decision.Converted(new Prospect(LEAD, 75))));
+        assertEquals(0, Main.exitCode(new Decision.Converted(new Prospect(FixtureDir.LEAD, 75))));
         assertEquals(1, Main.exitCode(new Decision.Rejected(new RejectionCause.RegistryNotFound())));
     }
 
@@ -88,7 +170,7 @@ class MainTest {
 
     @Test
     void anUnknownCommandExitsThreeWithUsageOnStderr() {
-        var result = run("qualify-lead", "--id", "1020304050");
+        var result = run("qualify-lead", "--id", ID);
 
         assertEquals(3, result.code());
         assertTrue(result.out().isEmpty(), result.out());

@@ -1,10 +1,13 @@
 package com.addi.lead;
 
+import com.addi.lead.adapter.FixtureComplianceBureau;
+import com.addi.lead.adapter.FixtureJudicialRecords;
+import com.addi.lead.adapter.FixtureNationalRegistry;
+import com.addi.lead.adapter.FixtureQualificationScore;
 import com.addi.lead.adapter.InMemoryLeadRepository;
-import com.addi.lead.adapter.StubComplianceBureau;
-import com.addi.lead.adapter.StubJudicialRecords;
-import com.addi.lead.adapter.StubNationalRegistry;
-import com.addi.lead.adapter.StubQualificationScore;
+import com.addi.lead.adapter.RandomNumbers;
+import com.addi.lead.adapter.SleepingLatency;
+import com.addi.lead.app.Config;
 import com.addi.lead.app.Pipeline;
 import com.addi.lead.cli.Cli;
 import com.addi.lead.domain.Decision;
@@ -18,11 +21,11 @@ import java.io.PrintStream;
 public final class Main {
 
     public static void main(String[] args) {
-        System.exit(run(args, System.out, System.err));
+        System.exit(run(args, Config.defaults(), System.out, System.err));
     }
 
-    /** Streams are arguments so the wired application can be run in process against captured ones. */
-    static int run(String[] args, PrintStream out, PrintStream err) {
+    /** Config and streams are arguments so the wired application runs in process against fixtures a test wrote. */
+    static int run(String[] args, Config config, PrintStream out, PrintStream err) {
         return switch (Cli.parse(args)) {
             case Cli.Invocation.InputError(var message) -> {
                 err.println(message);
@@ -30,21 +33,24 @@ public final class Main {
                 yield 3;
             }
             case Cli.Invocation.ValidateLead(var id) -> {
-                var decision = pipeline().validate(id);
+                var decision = pipeline(config).validate(id);
                 out.println(Cli.render(id, decision));
                 yield exitCode(decision);
             }
         };
     }
 
-    /** The whole object graph, in one method, top to bottom (ADR 0001). The stubs go in spec 03. */
-    private static Pipeline pipeline() {
-        var leads = InMemoryLeadRepository.seeded();
-        var registry = new StubNationalRegistry();
-        var judicial = new StubJudicialRecords();
-        var bureau = new StubComplianceBureau();
-        var score = new StubQualificationScore();
-        return new Pipeline(leads, registry, judicial, bureau, score);
+    /** The whole object graph, in one method, top to bottom (ADR 0001). */
+    private static Pipeline pipeline(Config config) {
+        var fixtures = config.fixtures();
+        var latency = new SleepingLatency();
+        var randomness = RandomNumbers.from(config.seed());
+        var leads = InMemoryLeadRepository.fromFixtures(fixtures);
+        var registry = new FixtureNationalRegistry(fixtures, latency);
+        var judicial = new FixtureJudicialRecords(fixtures, latency);
+        var bureau = new FixtureComplianceBureau(fixtures, latency);
+        var score = new FixtureQualificationScore(fixtures, latency, randomness);
+        return new Pipeline(config, leads, registry, judicial, bureau, score);
     }
 
     static int exitCode(Decision decision) {

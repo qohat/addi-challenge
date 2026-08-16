@@ -13,5 +13,7 @@ RUN ./gradlew --no-daemon installDist
 FROM eclipse-temurin:25-jdk
 WORKDIR /app
 COPY --from=build /app/build/install/lead-validation ./
+# The simulated external systems read these from the working directory, which is /app.
+COPY fixtures fixtures
 # The start script carries --enable-preview from applicationDefaultJvmArgs.
 ENTRYPOINT ["./bin/lead-validation"]
