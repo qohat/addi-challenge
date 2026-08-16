@@ -1,0 +1,92 @@
+# Spec queue
+
+One spec per session, one session per spec. A spec is a version of the code that
+could be deployed the day it merges — not a milestone, not a checkpoint,
+something that runs.
+
+Status is the source of truth for where the project is. A new session reads this
+file, then its assigned spec, then `git log --oneline -15`.
+
+| # | Title | Depends on | Effort | Status |
+|---|---|---|---|---|
+| 00 | Build, checks and CI | — | medium | not started |
+| 01 | Domain types, pipeline, four stubbed ports | 00 | high | not started |
+| 02 | CLI `validate-lead` and composition root | 01 | medium | not started |
+| 03 | Simulated adapters and structured concurrency | 02 | high | not started |
+| 04 | Bureau cache | 03 | medium | not started |
+| 05 | Qualification score and conversion | 04 | low | not started |
+| 06 | Manual review: checkpoint, queue, resume | 05 | high | not started |
+| 07 | Demo command and fixtures | 06 | medium | not started |
+| 08 | Final documentation | 07 | medium | not started |
+
+## Why this order
+
+The queue is ordered by what a reviewer can see working, not by architectural
+layer. Ordering by layer once produced six merged specs and thousands of lines
+with the headline mechanism still missing.
+
+**00** exists because nothing runs without it. Gradle, the Java 25 toolchain
+with `--enable-preview`, formatting, the aggregate `check` task, CI and the
+Dockerfile. Small infrastructure belongs inside the setup spec rather than
+getting its own session, worktree, PR and cost entry.
+
+**01** fixes every shape the rest of the project sits on: the lead and prospect
+types, the per-step outcome hierarchies, the rejection cause type, the four
+ports, and the pipeline that sequences them. All four ports are stubbed. A
+pipeline returning a fixed outcome through the real types is a real increment,
+and it pins the interfaces down before four adapters depend on them.
+
+**02** puts a runnable command on top of those stubs. Dummy outcomes travel
+through the real types and out through the real exit codes, so from here on
+every spec deepens something a reviewer can already run.
+
+**03** is what the brief is actually about: registry and judicial forked in
+parallel under a `StructuredTaskScope`, a scope-level timeout, and simulated
+adapters driven by fixtures that carry per-row latency — which is how a demo
+lead can be slow enough to fire the real timeout rather than a shrunk one.
+
+**04 to 06** are the resilience story, in dependency order rather than the order
+the brief lists them. The score rule comes before manual review because
+approving a pending score step re-runs the score port, so the rule has to exist
+before resume can be specified. At the end of 05 the whole pipeline is real; 06
+adds the checkpoint, the queue and `review resolve`.
+
+**07 and 08** are the submission: one command showing every outcome path, then
+the README the brief asks for, covering the process, what worked and what did
+not with AI, and the pending improvements.
+
+Two types gain a case late and break every exhaustive match over them: the
+rejection cause when 05 lands and again when 06 lands. That is the design
+working. Each site gets fixed deliberately.
+
+## Provisional past 03
+
+Only 00 to 03 are planned with any confidence. Everything below is a title and a
+guess at effort, written before the code exists, and it will move. The last
+project put thirteen specs in this table up front and ended up with a sixty-line
+section explaining why four of them ran out of numeric order — which was the
+evidence the plan had not survived contact.
+
+Specs are written one at a time, at the end of the session that implemented the
+previous one, when the shape of the code is known. Only the queue is written up
+front.
+
+## Effort
+
+Assigned by one question: does the spec leave any shape undecided — a type, an
+interface, a data format, a control flow?
+
+- **high** — yes. Whoever executes it is designing, and later specs sit on
+  whatever they pick.
+- **medium** — every shape is fixed, but the work needs judgement.
+- **low** — executing it is typing.
+
+The field also decides which model runs the session. If most specs come out
+high, they are underspecified, and the fix is the spec rather than the label.
+
+## After the last spec
+
+Not a spec: re-run one already-merged spec on a cheaper model from a clean
+session. If the spec was good the result should be equivalent. That measures the
+specification rather than the model, and it is the sharpest available evidence
+that the context engineering is real.

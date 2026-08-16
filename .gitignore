@@ -7,6 +7,9 @@ out/
 # Worktrees — one per spec
 .trees/
 
+# Runtime state — bureau cache and review queue
+data/
+
 # IDE
 .idea/
 *.iml

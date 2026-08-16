@@ -1,0 +1,61 @@
+# Assumptions
+
+One-line calls made where the brief or the requirements were silent. A decision
+that needed reasoning is an ADR instead; if an entry here starts wanting a
+paragraph, it belongs in `docs/adr/`.
+
+Format, one line each:
+
+    - **Statement of the call.** Why, in one clause. `[tag]`
+
+The tag is the spec that hit the ambiguity, or `[brief]` for calls made while
+reading the brief, before any code existed.
+
+## Reading the brief
+
+- **Four validations, not three.** The brief says "three distinct validations"
+  and then lists four. `[brief]`
+- **Email is not part of the registry match.** A civil registry does not hold
+  email addresses; it is format-validated at seed time and carried onto the
+  prospect. `[brief]`
+- **A national ID absent from the local database is a business rejection, not an
+  input error.** The CLI syntax was valid; the business precondition was not.
+  `[brief]`
+- **Judicial rejects on any count of one or more.** The brief says "no records"
+  with no severity dimension, so none is invented. `[brief]`
+- **"Greater than 60" is read literally.** 60 rejects, 61 converts. `[brief]`
+- **A bureau sanctions hit is a terminal rejection**, not a review trigger. The
+  brief requires a clean bureau result before the score runs. `[brief]`
+- **Nothing is idempotent across invocations.** Running the same lead twice runs
+  the pipeline twice; only the bureau cache short-circuits work. `[brief]`
+- **Converted prospects are not persisted.** The local database is in-memory and
+  the process is single-shot, so conversion is observable through stdout and the
+  exit code. `[brief]`
+
+## Bootstrap session
+
+- **`validate-lead` takes the national ID and nothing else.** The lead already
+  exists in the CRM, which is the local database, so the ID selects the record
+  and every other field is read from it rather than re-supplied. `[bootstrap]`
+- **Manual review exposes one command, `review resolve <case>
+  --approve|--reject`.** No `list` or `show`; the queue directory is browsable
+  with `ls` and `cat` and the brief asks for a simple CLI. `[bootstrap]`
+- **Fixtures carry per-row latency alongside their outcome.** Otherwise no demo
+  lead can be slow enough to fire the real scope timeout. `[bootstrap]`
+- **The bureau cache is read at the bureau step, not as a pipeline-level
+  short-circuit.** The brief fixes the dependency order. `[bootstrap]`
+- **Exit codes: 0 converted, 1 rejected, 2 pending manual review, 3 input
+  error.** So a script can branch on the decision without parsing text.
+  `[bootstrap]`
+- **A case ID is `<nationalId>-<timestamp>` and is also its filename.** A person
+  can have more than one case, so the national ID alone will not do.
+  `[bootstrap]`
+- **Runtime state lives in a configurable directory, `./data` by default.**
+  Gitignored; tests point it at a temp directory. `[bootstrap]`
+- **No mocking framework.** Ports make a fake a five-line record, and a new
+  dependency is an architecture decision. `[bootstrap]`
+- **Registry "not found" and "data mismatch" are distinct outcome cases.** They
+  are different business facts and a reviewer should see which one fired.
+  `[bootstrap]`
+- **stdout is human-readable prose; the exit code is the machine contract.** The
+  brief asks for a simple CLI, not a JSON API. `[bootstrap]`
