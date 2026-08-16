@@ -1,0 +1,6 @@
+Now write specs 00 through 03 with the create-spec skill. Only those four — 04 onward get written just-in-time, at the end of the session that implements the previous one.
+
+Each one under 150 lines, tests stated before implementation, and an explicit documentation decision. Spec 00 has to create settings.gradle.kts before running gradle wrapper —
+Gradle 9 refuses to generate a wrapper in an empty directory.
+
+When they're done, run the budget script and show me the output.

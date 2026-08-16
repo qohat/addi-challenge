@@ -9,10 +9,10 @@ file, then its assigned spec, then `git log --oneline -15`.
 
 | # | Title | Depends on | Effort | Status |
 |---|---|---|---|---|
-| 00 | Build, checks and CI | — | medium | not started |
-| 01 | Domain types, pipeline, four stubbed ports | 00 | high | not started |
-| 02 | CLI `validate-lead` and composition root | 01 | medium | not started |
-| 03 | Simulated adapters and structured concurrency | 02 | high | not started |
+| 00 | Build, checks and CI | — | medium | specced |
+| 01 | Domain types, pipeline, four stubbed ports | 00 | medium | specced |
+| 02 | CLI `validate-lead` and composition root | 01 | medium | specced |
+| 03 | Simulated adapters and structured concurrency | 02 | high | specced |
 | 04 | Bureau cache | 03 | medium | not started |
 | 05 | Qualification score and conversion | 04 | low | not started |
 | 06 | Manual review: checkpoint, queue, resume | 05 | high | not started |
@@ -30,11 +30,13 @@ with `--enable-preview`, formatting, the aggregate `check` task, CI and the
 Dockerfile. Small infrastructure belongs inside the setup spec rather than
 getting its own session, worktree, PR and cost entry.
 
-**01** fixes every shape the rest of the project sits on: the lead and prospect
-types, the per-step outcome hierarchies, the rejection cause type, the four
-ports, and the pipeline that sequences them. All four ports are stubbed. A
-pipeline returning a fixed outcome through the real types is a real increment,
-and it pins the interfaces down before four adapters depend on them.
+**01** writes down every shape the rest of the project sits on: the lead and
+prospect types, the per-step outcome hierarchies, the rejection cause type, the
+four ports, the checkpoint, and the pipeline that sequences them. All four ports
+are stubbed. A pipeline returning a fixed outcome through the real types is a
+real increment, and it pins the interfaces down before four adapters depend on
+them. The shapes themselves are decided in ADR 0008, which is why this is medium
+and not high — executing it is transcription plus the pipeline.
 
 **02** puts a runnable command on top of those stubs. Dummy outcomes travel
 through the real types and out through the real exit codes, so from here on
