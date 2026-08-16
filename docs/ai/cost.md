@@ -37,15 +37,31 @@ real, so it is priced by the same script and counted in the project total.
 
 | Spec | Session | Model | Requests | Tokens | Cost |
 |---|---|---|---:|---:|---:|
-| | | | | | |
-| **Subtotal** | | | **0** | **0** | **$0.00** |
+| 00 | `d617a871` | claude-opus-5 | 59 | 4,088,542 | $3.41 |
+| **Subtotal** | | | **59** | **4,088,542** | **$3.41** |
 
-**Project total: $9.93** — $9.93 planning plus $0.00 specs. Both tables, or the
+**Project total: $13.34** — $9.93 planning plus $3.41 specs. Both tables, or the
 number understates the project by everything spent before the first line of Java.
 
 ## Breakdown
 
 One section per spec, holding the table `scripts/cost.py --session <id>` prints.
+
+### 00. Build, checks and CI
+
+claude-opus-5 — 59 requests
+
+| | Tokens | Cost |
+|---|---:|---:|
+| input | 118 | $0.00 |
+| output | 28,913 | $0.72 |
+| cache read | 3,990,566 | $2.00 |
+| cache write 1h | 68,945 | $0.69 |
+| **Subtotal** | **4,088,542** | **$3.41** |
+
+No domain code merged, so this is the price of the gate: the toolchain, the
+three places preview has to be enabled, CI and the Dockerfile. Output is 0.7% of
+tokens — the session was mostly reading its own build failures.
 
 ## What the number includes
 

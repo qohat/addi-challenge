@@ -9,7 +9,7 @@ file, then its assigned spec, then `git log --oneline -15`.
 
 | # | Title | Depends on | Effort | Status |
 |---|---|---|---|---|
-| 00 | Build, checks and CI | — | medium | specced |
+| 00 | Build, checks and CI | — | medium | merged |
 | 01 | Domain types, pipeline, four stubbed ports | 00 | medium | specced |
 | 02 | CLI `validate-lead` and composition root | 01 | medium | specced |
 | 03 | Simulated adapters and structured concurrency | 02 | high | specced |
