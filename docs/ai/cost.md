@@ -38,9 +38,10 @@ real, so it is priced by the same script and counted in the project total.
 | Spec | Session | Model | Requests | Tokens | Cost |
 |---|---|---|---:|---:|---:|
 | 00 | `d617a871` | claude-opus-5 | 59 | 4,088,542 | $3.41 |
-| **Subtotal** | | | **59** | **4,088,542** | **$3.41** |
+| 01 | `e76bafcf` | claude-opus-5 | 35 | 2,470,033 | $2.56 |
+| **Subtotal** | | | **94** | **6,558,575** | **$5.97** |
 
-**Project total: $13.34** — $9.93 planning plus $3.41 specs. Both tables, or the
+**Project total: $15.90** — $9.93 planning plus $5.97 specs. Both tables, or the
 number understates the project by everything spent before the first line of Java.
 
 ## Breakdown
@@ -62,6 +63,23 @@ claude-opus-5 — 59 requests
 No domain code merged, so this is the price of the gate: the toolchain, the
 three places preview has to be enabled, CI and the Dockerfile. Output is 0.7% of
 tokens — the session was mostly reading its own build failures.
+
+### 01. Domain types, pipeline and four stubbed ports
+
+claude-opus-5 — 35 requests
+
+| | Tokens | Cost |
+|---|---:|---:|
+| input | 70 | $0.00 |
+| output | 27,875 | $0.70 |
+| cache read | 2,374,611 | $1.19 |
+| cache write 1h | 67,477 | $0.67 |
+| **Subtotal** | **2,470,033** | **$2.56** |
+
+Cheaper than the gate that produced no domain code, on 40% fewer requests, and
+this one merged every type the project sits on. ADR 0008 had already fixed the
+shapes, so the session spent its tokens transcribing rather than deciding — which
+is the argument for writing the shapes down before the session that needs them.
 
 ## What the number includes
 
