@@ -1051,7 +1051,7 @@
   .claude/skills/ isn't in the budget script. A SKILL.md loads into context when
   invoked, so it's a layer-1 file with no limit watching it — worth two entries
   in BUDGETS if you agree.
-✻ Churned for 14m 24s
+✻ Cooked for 14m 24s
 
 ❯ One — fix the config dir now, not in spec 00. The first closeout runs at the  
   start of session 01, so the script has to work before spec 00 exists.         
@@ -1385,17 +1385,35 @@
   clean, docs/ai/cost.md should probably carry it as a seed row rather than
   silently omitting it.
 
-✻ Sautéed for 2m 24s
+✻ Cooked for 2m 24s
 
 ! python3 scripts/context-budget.py                                             
   ⎿    ok    56/120  .claude/skills/create-spec/SKILL.md
        ok    76/120  .claude/skills/run-spec/SKILL.md
        ok   105/120  AGENTS.md
-       ok    37/40   CLAUDE.md
-       ok   111/120  CONTRIBUTING.md
-       ok   117/120  docs/PROJECT_CONTEXT.md
+     … +3 lines (ctrl+o to expand)
 
 ⏺ Matches. Holding — nothing staged, waiting on your read of CLAUDE.md and
   docs/PROJECT_CONTEXT.md before the commit.
 
-✻ Cooked for 7s
+✻ Baked for 7s
+
+❯ /export docs/ai/sessions/00-bootstrap.txt                                     
+  ⎿  Conversation exported to: /Users/qohat/Projects/work/addi/addi-challenge/do
+     cs/ai/sessions/00-bootstrap.txt
+
+! git add -A                                                                      ⎿  (Bash completed with no output)
+
+  Ran 1 shell command (ctrl+o to expand)
+
+⏺ Staged: the two script fixes, the cost.md reasoning rewrite, the run-spec cost
+  step, the AGENTS.md skill section, and the 1400-line export.
+
+  Still holding for your read before I commit.
+
+  One note on the export — it captures the session up to the moment you ran it,
+  so this commit won't appear in it. If you want the transcript to include the
+  commit itself, re-run /export after committing and amend; otherwise it's
+  accurate as a record of the work rather than the wrap-up.
+
+✻ Brewed for 19s
