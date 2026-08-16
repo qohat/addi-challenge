@@ -19,11 +19,15 @@ import com.addi.lead.port.JudicialRecords;
 import com.addi.lead.port.LeadRepository;
 import com.addi.lead.port.NationalRegistry;
 import com.addi.lead.port.QualificationScore;
+import java.nio.file.Path;
+import java.time.Duration;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.OptionalLong;
+import java.util.Set;
+import java.util.concurrent.CopyOnWriteArrayList;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -39,7 +43,8 @@ class PipelineTest {
             LocalDate.of(1990, 3, 14),
             new Email("ana.restrepo@example.com"));
 
-    private final List<Step> calls = new ArrayList<>();
+    /** Registry and judicial record from two threads, so the list has to tolerate that. */
+    private final List<Step> calls = new CopyOnWriteArrayList<>();
 
     private record FakeRepository(Map<NationalId, Lead> leads) implements LeadRepository {
         @Override
@@ -83,6 +88,7 @@ class PipelineTest {
     private Pipeline pipeline(
             RegistryOutcome registry, JudicialOutcome judicial, BureauOutcome bureau, ScoreOutcome score) {
         return new Pipeline(
+                new Config(Duration.ofSeconds(30), Path.of("unused"), OptionalLong.of(7)),
                 new FakeRepository(Map.of(LEAD.id(), LEAD)),
                 new FakeRegistry(calls, registry),
                 new FakeJudicial(calls, judicial),
@@ -108,7 +114,7 @@ class PipelineTest {
     }
 
     @Test
-    void theRunStopsAtTheFirstNonCleanOutcome() {
+    void aRegistryRejectionStopsBeforeTheBureauButJudicialStillRan() {
         var decision = pipeline(
                         new RegistryOutcome.Mismatch(List.of("birthDate")),
                         new JudicialOutcome.Clear(),
@@ -117,7 +123,19 @@ class PipelineTest {
                 .validate(LEAD.id());
 
         assertEquals(new Decision.Rejected(new RejectionCause.RegistryMismatch(List.of("birthDate"))), decision);
-        assertEquals(List.of(Step.REGISTRY), calls);
+        assertEquals(Set.of(Step.REGISTRY, Step.JUDICIAL), Set.copyOf(calls));
+    }
+
+    @Test
+    void judicialLosesToRegistryBecauseTheOutcomesAreReadInCanonicalOrder() {
+        var decision = pipeline(
+                        new RegistryOutcome.NotFound(),
+                        new JudicialOutcome.RecordsFound(2),
+                        new BureauOutcome.Clear(),
+                        new ScoreOutcome.Scored(75))
+                .validate(LEAD.id());
+
+        assertEquals(new Decision.Rejected(new RejectionCause.RegistryNotFound()), decision);
     }
 
     @Test
@@ -125,7 +143,8 @@ class PipelineTest {
         var decision = cleanPipeline().validate(LEAD.id());
 
         assertEquals(new Decision.Converted(new Prospect(LEAD, 75)), decision);
-        assertEquals(List.of(Step.REGISTRY, Step.JUDICIAL, Step.BUREAU, Step.SCORE), calls);
+        assertEquals(Set.of(Step.REGISTRY, Step.JUDICIAL), Set.copyOf(calls.subList(0, 2)));
+        assertEquals(List.of(Step.BUREAU, Step.SCORE), calls.subList(2, 4));
     }
 
     @Test
