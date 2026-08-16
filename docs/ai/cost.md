@@ -39,9 +39,10 @@ real, so it is priced by the same script and counted in the project total.
 |---|---|---|---:|---:|---:|
 | 00 | `d617a871` | claude-opus-5 | 59 | 4,088,542 | $3.41 |
 | 01 | `e76bafcf` | claude-opus-5 | 35 | 2,470,033 | $2.56 |
-| **Subtotal** | | | **94** | **6,558,575** | **$5.97** |
+| 02 | `9f3baa51` | claude-opus-5 | 33 | 2,160,355 | $2.20 |
+| **Subtotal** | | | **127** | **8,718,930** | **$8.17** |
 
-**Project total: $15.90** — $9.93 planning plus $5.97 specs. Both tables, or the
+**Project total: $18.10** — $9.93 planning plus $8.17 specs. Both tables, or the
 number understates the project by everything spent before the first line of Java.
 
 ## Breakdown
@@ -80,6 +81,24 @@ Cheaper than the gate that produced no domain code, on 40% fewer requests, and
 this one merged every type the project sits on. ADR 0008 had already fixed the
 shapes, so the session spent its tokens transcribing rather than deciding — which
 is the argument for writing the shapes down before the session that needs them.
+
+### 02. CLI `validate-lead` and composition root
+
+claude-opus-5 — 33 requests
+
+| | Tokens | Cost |
+|---|---:|---:|
+| input | 66 | $0.00 |
+| output | 21,778 | $0.54 |
+| cache read | 2,077,012 | $1.04 |
+| cache write 1h | 61,499 | $0.61 |
+| **Subtotal** | **2,160,355** | **$2.20** |
+
+The cheapest spec so far and the first one a reviewer can run. Three commits, a
+parser, a renderer and twenty lines of wiring: the spec had already fixed the
+`Invocation` shape, the exit code map and the four prose lines, so there was
+nothing left to decide. The trend across 00, 01 and 02 is the specification
+getting more precise, not the work getting smaller.
 
 ## What the number includes
 
