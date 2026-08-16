@@ -21,11 +21,27 @@ cache read and cache write, and the note on what each number actually includes.
 That is what a reviewer wants to see and none of it fits in a column.
 `specs/README.md` keeps status and dependencies, which is the operational half.
 
+## Planning sessions
+
+Two sessions produced no code and so no spec row will ever carry them:
+`/run-spec` fills a row when it closes a spec, and these closed none. The cost is
+real, so it is priced by the same script and counted in the project total.
+
+| Session | Produced | Model | Requests | Tokens | Cost |
+|---|---|---|---:|---:|---:|
+| `9c968601` | Session 00, the bootstrap | claude-opus-5 | 70 | 7,731,852 | $6.81 |
+| `3ed3e39a` | Session 01, ADR 0008 and specs 00 to 03 | claude-opus-5 | 23 | 1,969,675 | $3.12 |
+| **Subtotal** | | | **93** | **9,701,527** | **$9.93** |
+
 ## Summary
 
 | Spec | Session | Model | Requests | Tokens | Cost |
 |---|---|---|---:|---:|---:|
 | | | | | | |
+| **Subtotal** | | | **0** | **0** | **$0.00** |
+
+**Project total: $9.93** — $9.93 planning plus $0.00 specs. Both tables, or the
+number understates the project by everything spent before the first line of Java.
 
 ## Breakdown
 
