@@ -39,6 +39,16 @@ reading the brief, before any code existed.
   25 at any version — its last release, 2.68.0, predates the release by three
   months and it dies with `NoSuchMethodError` on a javac internal. `[00]`
 
+## The CLI
+
+- **A national ID is any non-blank token without whitespace.** Everything
+  stricter is a business rejection rather than an input error, so the syntactic
+  rule only has to catch empty input. `[02]`
+- **The exit code contract holds for the built distribution, not for `./gradlew
+  run`.** Gradle reports any non-zero exit as build failure 1; the real code is
+  in its message, and `build/install/lead-validation/bin/lead-validation` and the
+  Docker image return it directly. `[02]`
+
 ## Bootstrap session
 
 - **`validate-lead` takes the national ID and nothing else.** The lead already
