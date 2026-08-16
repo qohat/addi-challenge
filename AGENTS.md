@@ -43,7 +43,7 @@ per-model, and switching at turn 30 throws the entire prefix away.
 
 ## Commands
 
-    ./gradlew check                      the gate: format, build, tests, budgets
+    ./gradlew check                      the gate: build, tests, budgets
     ./gradlew test --tests '*NameTest'   one test class
     ./gradlew run --args='...'           the CLI, natively
     python3 scripts/context-budget.py    line budgets, exit 1 on breach

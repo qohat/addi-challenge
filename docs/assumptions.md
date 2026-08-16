@@ -32,6 +32,13 @@ reading the brief, before any code existed.
   the process is single-shot, so conversion is observable through stdout and the
   exit code. `[brief]`
 
+## Build and checks
+
+- **No formatter in the gate.** Spotless with palantir-java-format was the call,
+  and the spec's stated fallback fired: palantir-java-format cannot run on JDK
+  25 at any version — its last release, 2.68.0, predates the release by three
+  months and it dies with `NoSuchMethodError` on a javac internal. `[00]`
+
 ## Bootstrap session
 
 - **`validate-lead` takes the national ID and nothing else.** The lead already
