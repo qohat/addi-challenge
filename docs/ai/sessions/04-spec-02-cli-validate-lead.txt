@@ -1,0 +1,320 @@
+ ▐▛███▜▌   Claude Code v2.1.233
+▝▜█████▛▘  Opus 5 · Claude Team
+  ▘▘ ▝▝    ~/Projects/work/addi/addi-challenge/.trees/02-cli-validate-lead
+
+
+❯ Merged @specs/01-domain-types-and-pipeline.md lets go with                    
+  @specs/02-cli-validate-lead.md                                                
+  ⎿  Read specs/01-domain-types-and-pipeline.md (97 lines)
+  ⎿  Read specs/02-cli-validate-lead.md (106 lines)
+
+⏺ Skill(run-spec)
+  ⎿  Successfully loaded skill
+
+⏺ I'll start with the closeout of spec 01.
+
+  Read 1 file, listed 2 directories, ran 4 shell commands (ctrl+o to expand)
+
+⏺ Update(~/Projects/work/addi/addi-challenge/docs/ai/cost.md)
+  ⎿  Added 3 lines, removed 2 lines
+      38  | Spec | Session | Model | Requests | Tokens | Cost |
+      39  |---|---|---|---:|---:|---:|
+      40  | 00 | `d617a871` | claude-opus-5 | 59 | 4,088,542 | $3.41 |
+      41 -| **Subtotal** | | | **59** | **4,088,542** | **$3.41** |      
+      41 +| 01 | `e76bafcf` | claude-opus-5 | 35 | 2,470,033 | $2.56 |   
+      42 +| **Subtotal** | | | **94** | **6,558,575** | **$5.97** |      
+      43  
+      43 -**Project total: $13.34** — $9.93 planning plus $3.41 specs. Bo
+         -th tables, or the                                              
+      44 +**Project total: $15.90** — $9.93 planning plus $5.97 specs. Bo
+         +th tables, or the                                              
+      45  number understates the project by everything spent before the f
+          irst line of Java.
+      46  
+      47  ## Breakdown
+
+⏺ Update(~/Projects/work/addi/addi-challenge/docs/ai/cost.md)
+  ⎿  Added 17 lines
+      64  three places preview has to be enabled, CI and the Dockerfile. 
+          Output is 0.7% of
+      65  tokens — the session was mostly reading its own build failures.
+      66  
+      67 +### 01. Domain types, pipeline and four stubbed ports          
+      68 +                                                               
+      69 +claude-opus-5 — 35 requests                                    
+      70 +                                                               
+      71 +| | Tokens | Cost |                                            
+      72 +|---|---:|---:|                                                
+      73 +| input | 70 | $0.00 |                                         
+      74 +| output | 27,875 | $0.70 |                                    
+      75 +| cache read | 2,374,611 | $1.19 |                             
+      76 +| cache write 1h | 67,477 | $0.67 |                            
+      77 +| **Subtotal** | **2,470,033** | **$2.56** |                   
+      78 +                                                               
+      79 +Cheaper than the gate that produced no domain code, on 40% fewe
+         +r requests, and                                                
+      80 +this one merged every type the project sits on. ADR 0008 had al
+         +ready fixed the                                                
+      81 +shapes, so the session spent its tokens transcribing rather tha
+         +n deciding — which                                             
+      82 +is the argument for writing the shapes down before the session 
+         +that needs them.                                               
+      83 +                                                               
+      84  ## What the number includes
+      85  
+      86  With one session per spec, each figure measures session overhea
+          d — orientation,
+
+⏺ Update(~/Projects/work/addi/addi-challenge/specs/README.md)
+  ⎿  Added 1 line, removed 1 line
+      10  | # | Title | Depends on | Effort | Status |
+      11  |---|---|---|---|---|
+      12  | 00 | Build, checks and CI | — | medium | merged |
+      13 -| 01 | Domain types, pipeline, four stubbed ports | 00 | medium
+         - | specced |                                                   
+      13 +| 01 | Domain types, pipeline, four stubbed ports | 00 | medium
+         + | merged |                                                    
+      14  | 02 | CLI `validate-lead` and composition root | 01 | medium |
+           specced |
+      15  | 03 | Simulated adapters and structured concurrency | 02 | hig
+          h | specced |
+      16  | 04 | Bureau cache | 03 | medium | not started |
+
+  Ran 2 shell commands (ctrl+o to expand)
+
+⏺ Closeout done. Now setting up: reading CONTRIBUTING.md and the existing code.
+
+  Read 2 files, ran 4 shell commands (ctrl+o to expand)
+  ⎿  Loaded CLAUDE.md
+
+⏺ Tests first, from the acceptance criteria.
+
+⏺ Write(src/test/java/com/addi/lead/cli/CliTest.java)
+  ⎿  Wrote 107 lines to src/test/java/com/addi/lead/cli/CliTest.java
+       1 package com.addi.lead.cli;
+       2 
+       3 import static org.junit.jupiter.api.Assertions.assertEquals;
+       4 import static org.junit.jupiter.api.Assertions.assertFalse;
+       5 import static org.junit.jupiter.api.Assertions.assertInstanceOf;
+       6 
+       7 import com.addi.lead.domain.Checkpoint;
+       8 import com.addi.lead.domain.Decision;
+       9 import com.addi.lead.domain.Email;
+      10 import com.addi.lead.domain.Lead;
+     … +120 lines (ctrl+o to expand)
+
+⏺ Write(src/test/java/com/addi/lead/MainTest.java)
+  ⎿  Wrote 106 lines to src/test/java/com/addi/lead/MainTest.java
+       1 package com.addi.lead;
+       2 
+       3 import static java.nio.charset.StandardCharsets.UTF_8;
+       4 import static org.junit.jupiter.api.Assertions.assertEquals;
+       5 import static org.junit.jupiter.api.Assertions.assertFalse;
+       6 import static org.junit.jupiter.api.Assertions.assertTrue;
+       7 
+       8 import com.addi.lead.domain.Checkpoint;
+       9 import com.addi.lead.domain.Decision;
+      10 import com.addi.lead.domain.Email;
+     … +107 lines (ctrl+o to expand)
+
+  Ran 1 shell command (ctrl+o to expand)
+
+⏺ Red. Now the code.
+
+⏺ Write(src/main/java/com/addi/lead/cli/Cli.java)
+  ⎿  Wrote 79 lines to src/main/java/com/addi/lead/cli/Cli.java
+       1 package com.addi.lead.cli;
+       2 
+       3 import com.addi.lead.domain.Decision;
+       5 import com.addi.lead.domain.RejectionCause;
+       6 import java.util.Optional;
+       7 
+       8 /**
+         oth are pure functions, so the CLI is
+      10  * tested without spawning a JVM and {@link com.addi.lead.Main} 
+         keeps nothing but the wiring and the
+     … +91 lines (ctrl+o to expand)
+
+⏺ Update(src/main/java/com/addi/lead/cli/Cli.java)  ⎿  Removed 3 lines
+      73      }
+      74  
+      75      private Cli() {}
+      76 -                                                               
+      77 -    /** Only ever the empty string wrapped by {@link Optional},
+         - kept out of the signature above. */                           
+      78 -    private static final Optional<String> UNUSED = Optional.emp
+         -ty();                                                          
+      76  }
+
+⏺ Update(src/main/java/com/addi/lead/cli/Cli.java)
+  ⎿  Removed 1 line
+      3  import com.addi.lead.domain.Decision;
+      4  import com.addi.lead.domain.NationalId;
+      5  import com.addi.lead.domain.RejectionCause;
+      6 -import java.util.Optional;                                      
+      6  
+      7  /**
+      8   * The whole boundary: a command line in, a line of prose out. B
+         oth are pure functions, so the CLI is
+
+⏺ Write(src/main/java/com/addi/lead/domain/NationalId.java)
+  ⎿  Added 14 lines, removed 1 line
+       1  package com.addi.lead.domain;
+       2  
+       3 +import java.util.Optional;                                     
+       4 +                                                               
+       5  /** Key of the local database, the fixtures, the bureau cache a
+          nd the case id. Never a bare String. */
+       4 -public record NationalId(String value) {}                      
+       6 +public record NationalId(String value) {                       
+       7 +                                                               
+       8 +    /**                                                        
+       9 +     * The syntactic rule only has to catch empty input: a well
+         + formed id absent from the database is                         
+      10 +     * a business rejection, not an input error (`docs/assumpti
+         +ons.md`).                                                      
+      11 +     */                                                        
+      12 +    public static Optional<NationalId> parse(String token) {   
+      13 +        return token.isEmpty() || token.chars().anyMatch(Charac
+         +ter::isWhitespace)                                             
+      14 +                ? Optional.empty()                             
+      15 +                : Optional.of(new NationalId(token));          
+      16 +    }                                                          
+      17 +}                                                              
+
+⏺ Write(src/main/java/com/addi/lead/Main.java)
+  ⎿  Added 50 lines, removed 2 lines
+       1  package com.addi.lead;
+       2  
+       3 -/** Placeholder entry point. The command and its exit codes arr
+         -ive in spec 02. */                                             
+       3 +import com.addi.lead.adapter.InMemoryLeadRepository;           
+       4 +import com.addi.lead.adapter.StubComplianceBureau;             
+       5 +import com.addi.lead.adapter.StubJudicialRecords;              
+       6 +import com.addi.lead.adapter.StubNationalRegistry;             
+       7 +import com.addi.lead.adapter.StubQualificationScore;           
+       8 +import com.addi.lead.app.Pipeline;                             
+       9 +import com.addi.lead.cli.Cli;                                  
+      10 +import com.addi.lead.domain.Decision;                          
+      11 +import java.io.PrintStream;                                    
+      12 +                                                               
+      13 +/**                                                            
+      14 + * The composition root and the exit codes, and nothing else. s
+         +tdout carries the decision line and                            
+      15 + * stderr carries usage and input errors, so a script can read 
+         +stdout exactly when the exit code says                         
+      16 + * there is something to read.                                 
+      17 + */                                                            
+      18  public final class Main {
+      19  
+      20      public static void main(String[] args) {
+       7 -        System.out.println("lead-validation");                 
+      21 +        System.exit(run(args, System.out, System.err));        
+      22      }
+      23  
+      24 +    /** Streams are arguments so the wired application can be r
+         +un in process against captured ones. */                        
+      25 +    static int run(String[] args, PrintStream out, PrintStream 
+         +err) {                                                         
+      26 +        return switch (Cli.parse(args)) {                      
+      27 +            case Cli.Invocation.InputError(var message) -> {   
+      28 +                err.println(message);                          
+      29 +                err.println(Cli.USAGE);                        
+      30 +                yield 3;                                       
+      31 +            }                                                  
+      32 +            case Cli.Invocation.ValidateLead(var id) -> {      
+      33 +                var decision = pipeline().validate(id);        
+      34 +                out.println(Cli.render(id, decision));         
+      35 +                yield exitCode(decision);                      
+      36 +            }                                                  
+      37 +        };                                                     
+      38 +    }                                                          
+      39 +                                                               
+      40 +    /** The whole object graph, in one method, top to bottom (A
+         +DR 0001). The stubs go in spec 03. */                          
+      41 +    private static Pipeline pipeline() {                       
+      42 +        var leads = InMemoryLeadRepository.seeded();           
+      43 +        var registry = new StubNationalRegistry();             
+      44 +        var judicial = new StubJudicialRecords();              
+      45 +        var bureau = new StubComplianceBureau();               
+      46 +        var score = new StubQualificationScore();              
+      47 +        return new Pipeline(leads, registry, judicial, bureau, 
+         +score);                                                        
+      48 +    }                                                          
+      49 +                                                               
+      50 +    static int exitCode(Decision decision) {                   
+      51 +        return switch (decision) {                             
+      52 +            case Decision.Converted ignored -> 0;              
+      53 +            case Decision.Rejected ignored -> 1;               
+      54 +            case Decision.PendingManualReview ignored -> 2;    
+      55 +        };                                                     
+      56 +    }                                                          
+      57 +                                                               
+      58      private Main() {}
+      59  }
+
+  Read 1 file, ran 5 shell commands (ctrl+o to expand)
+
+⏺ Update(docs/assumptions.md)
+  ⎿  Added 10 lines
+      39    25 at any version — its last release, 2.68.0, predates the re
+          lease by three
+      40    months and it dies with `NoSuchMethodError` on a javac intern
+          al. `[00]`
+      41  
+      42 +## The CLI                                                     
+      43 +                                                               
+      44 +- **A national ID is any non-blank token without whitespace.** 
+         +Everything                                                     
+      45 +  stricter is a business rejection rather than an input error, 
+         +so the syntactic                                               
+      46 +  rule only has to catch empty input. `[02]`                   
+      47 +- **The exit code contract holds for the built distribution, no
+         +t for `./gradlew                                               
+      48 +  run`.** Gradle reports any non-zero exit as build failure 1; 
+         +the real code is                                               
+      49 +  in its message, and `build/install/lead-validation/bin/lead-v
+         +alidation` and the                                             
+      50 +  Docker image return it directly. `[02]`                      
+      51 +                                                               
+      52  ## Bootstrap session
+      53  
+      54  - **`validate-lead` takes the national ID and nothing else.** T
+          he lead already
+
+  Ran 1 shell command (ctrl+o to expand)
+
+⏺ Gate passes. Splitting into reviewable commits.
+
+  Pushed to 02-cli-validate-lead, created PR #3, ran 1 shell command (ctrl+o to expand)
+
+⏺ PR open: https://github.com/qohat/addi-challenge/pull/3
+
+  Closeout of spec 01 — e76bafcf, $2.56 / 35 requests, added to docs/ai/cost.md
+  with its breakdown; spec 01 is merged in specs/README.md; export was present.
+  Committed to main as 430544f.
+
+  Spec 02 — worktree .trees/02-cli-validate-lead, three commits, ./gradlew check
+  green. Tests were written first and watched to fail (20 compile errors)
+  before any code existed. Two files of production code: cli/Cli (parse, render,
+  usage) and Main (graph, exit codes), plus NationalId.parse.
+
+  Two calls you should confirm:
+
+  - render takes the requested NationalId as well as the Decision. The spec
+  asked for Decision -> String, but only LeadNotInDatabase carries an id — the
+  other four rejection causes carry no lead, so a Rejected cannot name the lead
+  it rejected. The caller knows the id it was asked about, so it passes it in.
+  The alternative is putting the lead on Rejected, which is a domain change the
+  spec did not authorise.
+  - ./gradlew run cannot honour the exit code contract the spec's goal line
+  states. Gradle reports any non-zero exit as build failure 1 and prints the
+  real code in its message. build/install/lead-validation/bin/lead-validation
+  and the Docker image return 0/1/3 directly — verified. Recorded as a [02] line
+  in docs/assumptions.md alongside the national ID rule.
+
+  Before this session closes, it still needs its export: /export 
+  docs/ai/sessions/04-spec-02-cli-validate-lead.txt. That is the one deliverable
+  I cannot produce myself.
+
+✻ Churned for 4m 52s
