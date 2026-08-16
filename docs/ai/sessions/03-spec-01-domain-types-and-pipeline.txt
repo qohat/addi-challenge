@@ -1,0 +1,563 @@
+ ▐▛███▜▌   Claude Code v2.1.233
+▝▜█████▛▘  Opus 5 · Claude Team
+  ▘▘ ▝▝    ~/…/work/addi/addi-challenge/.trees/01-domain-types-and-pipeline
+
+
+❯ /model                                                                        
+  ⎿  Set model to Opus 5 (1M context) and saved as your default for new sessions
+
+❯ I merged spec @specs/00-build-checks-and-ci.md to main, so lets start         
+  @specs/01-domain-types-and-pipeline.md                                        
+  ⎿  Read specs/00-build-checks-and-ci.md (92 lines)
+  ⎿  Read specs/01-domain-types-and-pipeline.md (97 lines)
+
+⏺ Skill(run-spec)
+  ⎿  Successfully loaded skill
+
+⏺ I'll start with the closeout of spec 00.
+
+  Read 1 file, listed 1 directory, ran 2 shell commands (ctrl+o to expand)
+
+⏺ Spec 00's session is d617a871, export present. Updating the cost tables.
+
+⏺ Update(~/Projects/work/addi/addi-challenge/docs/ai/cost.md)
+  ⎿  Added 19 lines, removed 3 lines
+      37  
+      38  | Spec | Session | Model | Requests | Tokens | Cost |
+      39  |---|---|---|---:|---:|---:|
+      40 -| | | | | | |                                                  
+      41 -| **Subtotal** | | | **0** | **0** | **$0.00** |               
+      40 +| 00 | `d617a871` | claude-opus-5 | 59 | 4,088,542 | $3.41 |   
+      41 +| **Subtotal** | | | **59** | **4,088,542** | **$3.41** |      
+      42  
+      43 -**Project total: $9.93** — $9.93 planning plus $0.00 specs. Bot
+         -h tables, or the                                               
+      43 +**Project total: $13.34** — $9.93 planning plus $3.41 specs. Bo
+         +th tables, or the                                              
+      44  number understates the project by everything spent before the f
+          irst line of Java.
+      45  
+      46  ## Breakdown
+      47  
+      48  One section per spec, holding the table `scripts/cost.py --sess
+          ion <id>` prints.
+      49  
+      50 +### 00. Build, checks and CI                                   
+      51 +                                                               
+      52 +claude-opus-5 — 59 requests                                    
+      53 +                                                               
+      54 +| | Tokens | Cost |                                            
+      55 +|---|---:|---:|                                                
+      56 +| input | 118 | $0.00 |                                        
+      57 +| output | 28,913 | $0.72 |                                    
+      58 +| cache read | 3,990,566 | $2.00 |                             
+      59 +| cache write 1h | 68,945 | $0.69 |                            
+      60 +| **Subtotal** | **4,088,542** | **$3.41** |                   
+      61 +                                                               
+      62 +No domain code merged, so this is the price of the gate: the to
+         +olchain, the                                                   
+      63 +three places preview has to be enabled, CI and the Dockerfile. 
+         +Output is 0.7% of                                              
+      64 +tokens — the session was mostly reading its own build failures.
+      65 +                                                               
+      66  ## What the number includes
+      67  
+      68  With one session per spec, each figure measures session overhea
+          d — orientation,
+
+⏺ Update(~/Projects/work/addi/addi-challenge/specs/README.md)
+  ⎿  Added 1 line, removed 1 line
+       9  
+      10  | # | Title | Depends on | Effort | Status |
+      11  |---|---|---|---|---|
+      12 -| 00 | Build, checks and CI | — | medium | specced |           
+      12 +| 00 | Build, checks and CI | — | medium | merged |            
+      13  | 01 | Domain types, pipeline, four stubbed ports | 00 | medium
+           | specced |
+      14  | 02 | CLI `validate-lead` and composition root | 01 | medium |
+           specced |
+      15  | 03 | Simulated adapters and structured concurrency | 02 | hig
+          h | specced |
+
+  Ran 2 shell commands (ctrl+o to expand)
+
+⏺ Closeout done. Now the worktree and the reading the spec requires.
+
+  Read 3 files, listed 1 directory, ran 2 shell commands (ctrl+o to expand)
+
+⏺ Shapes are fixed by ADR 0008. Tests first.
+
+⏺ Write(src/test/java/com/addi/lead/domain/DecisionsTest.java)
+  ⎿  Wrote 88 lines to
+     src/test/java/com/addi/lead/domain/DecisionsTest.java
+      1 package com.addi.lead.domain;
+      2 
+      3 import static org.junit.jupiter.api.Assertions.assertEquals;
+      4 import static org.junit.jupiter.api.Assertions.assertNotEquals;
+      5 
+      6 import java.time.LocalDate;
+      7 import java.util.List;
+      8 import java.util.Optional;
+      9 import org.junit.jupiter.api.Test;
+     … +96 lines (ctrl+o to expand)
+
+⏺ Write(src/test/java/com/addi/lead/app/PipelineTest.java)
+  ⎿  Wrote 152 lines to src/test/java/com/addi/lead/app/PipelineTest.java
+       1 package com.addi.lead.app;
+       2 
+       3 import static org.junit.jupiter.api.Assertions.assertEquals;
+       4 
+       5 import com.addi.lead.domain.BureauOutcome;
+       6 import com.addi.lead.domain.Checkpoint;
+       7 import com.addi.lead.domain.Decision;
+       8 import com.addi.lead.domain.Email;
+       9 import com.addi.lead.domain.JudicialOutcome;
+      10 import com.addi.lead.domain.Lead;
+     … +158 lines (ctrl+o to expand)
+
+⏺ Write(src/test/java/com/addi/lead/adapter/StubWiringTest.java)
+  ⎿  Wrote 34 lines to
+     src/test/java/com/addi/lead/adapter/StubWiringTest.java
+      1 package com.addi.lead.adapter;
+      2 
+      3 import static org.junit.jupiter.api.Assertions.assertEquals;
+      4 import static org.junit.jupiter.api.Assertions.assertInstanceOf;
+      5 
+      6 import com.addi.lead.app.Pipeline;
+      7 import com.addi.lead.domain.Decision;
+      8 import com.addi.lead.domain.NationalId;
+      9 import org.junit.jupiter.api.Test;
+     … +29 lines (ctrl+o to expand)
+
+  Ran 1 shell command (ctrl+o to expand)
+
+⏺ Red for the right reason. Now the domain types.
+
+  Ran 2 shell commands (ctrl+o to expand)
+
+⏺ Write(src/main/java/com/addi/lead/domain/NationalId.java)
+  ⎿  Wrote 4 lines to src/main/java/com/addi/lead/domain/NationalId.java
+      1 package com.addi.lead.domain;
+      2 
+      3 /** Key of the local database, the fixtures, the bureau cache and
+         the case id. Never a bare String. */
+      4 public record NationalId(String value) {}
+⏺ Write(src/main/java/com/addi/lead/domain/Email.java)
+  ⎿  Wrote 4 lines to src/main/java/com/addi/lead/domain/Email.java
+      1 package com.addi.lead.domain;
+      2 
+      3 /** Format-validated when the local database is seeded, and carri
+        ed onto the prospect. */
+      4 public record Email(String value) {}
+
+⏺ Write(src/main/java/com/addi/lead/domain/Lead.java)
+  ⎿  Wrote 6 lines to src/main/java/com/addi/lead/domain/Lead.java
+      1 package com.addi.lead.domain;
+      2 
+      3 import java.time.LocalDate;
+      4 
+      5 /** A CRM record: it exists locally and its fields are well forme
+        d. Nothing has been checked yet. */
+      6 public record Lead(NationalId id, String firstName, String lastNa
+        me, LocalDate birthDate, Email email) {}
+
+⏺ Write(src/main/java/com/addi/lead/domain/Prospect.java)
+  ⎿  Wrote 7 lines to src/main/java/com/addi/lead/domain/Prospect.java
+      1 package com.addi.lead.domain;
+      2 
+      3 /**
+      4  * A lead plus the score that converted it. The difference is evi
+        dence, not a status field, and it is
+      5  * constructed at exactly one site: the conversion arm of {@link 
+        Decisions#terminal}.
+      6  */
+      7 public record Prospect(Lead lead, int score) {}
+
+⏺ Write(src/main/java/com/addi/lead/domain/Step.java)
+  ⎿  Wrote 13 lines to src/main/java/com/addi/lead/domain/Step.java
+       1 package com.addi.lead.domain;
+       2 
+       3 /**
+         al execute in parallel from spec 03,
+       5  * but their outcomes are consumed in this order, which is what 
+         makes "the first unresolved step"
+       6  * well defined for a checkpoint.
+       8 public enum Step {
+       9     REGISTRY,
+      10     JUDICIAL,
+     … +5 lines (ctrl+o to expand)
+
+⏺ Write(src/main/java/com/addi/lead/domain/StepOutcome.java)
+  ⎿  Wrote 8 lines to src/main/java/com/addi/lead/domain/StepOutcome.java
+      1 package com.addi.lead.domain;
+      2 
+      3 /**
+      4  * A marker with no cases of its own, so the collapse in {@link D
+        ecisions#terminal} is one switch
+        that function, and it should never
+      6  * gain a method.
+      7  */
+      8 public sealed interface StepOutcome permits RegistryOutcome, Judi
+        cialOutcome, BureauOutcome, ScoreOutcome {}
+     … +1 line (ctrl+o to expand)
+
+⏺ Write(src/main/java/com/addi/lead/domain/RegistryOutcome.java)
+  ⎿  Wrote 19 lines to
+     src/main/java/com/addi/lead/domain/RegistryOutcome.java
+       1 package com.addi.lead.domain;
+       2 
+       3 import java.util.List;
+       4 
+       5 /** What the external national registry said about a lead. */
+       6 public sealed interface RegistryOutcome extends StepOutcome {
+       7 
+       8     record Matched() implements RegistryOutcome {}
+       9 
+      10     record NotFound() implements RegistryOutcome {}
+     … +10 lines (ctrl+o to expand)
+
+⏺ Write(src/main/java/com/addi/lead/domain/JudicialOutcome.java)
+  ⎿  Wrote 11 lines to
+     src/main/java/com/addi/lead/domain/JudicialOutcome.java
+       1 package com.addi.lead.domain;
+       2 
+       3 /** What the national judicial archives said about a lead. Any c
+       4 public sealed interface JudicialOutcome extends StepOutcome {
+       5 
+       6     record Clear() implements JudicialOutcome {}
+       7 
+       9 
+      10     record Unavailable(String reason) implements JudicialOutcome
+          {}
+     … +2 lines (ctrl+o to expand)
+
+⏺ Write(src/main/java/com/addi/lead/domain/BureauOutcome.java)
+  ⎿  Wrote 14 lines to
+     src/main/java/com/addi/lead/domain/BureauOutcome.java
+      1 package com.addi.lead.domain;
+      2 
+      3 /**
+      4  * What the compliance bureau said about a lead. Whether the answ
+        er came from the cache is
+      5  * deliberately not a case here: it is not a different decision.
+      6  */
+      7 public sealed interface BureauOutcome extends StepOutcome {
+      8 
+      9     record Clear() implements BureauOutcome {}
+     … +5 lines (ctrl+o to expand)
+
+⏺ Write(src/main/java/com/addi/lead/domain/ScoreOutcome.java)
+  ⎿  Wrote 12 lines to src/main/java/com/addi/lead/domain/ScoreOutcome.java
+      1 package com.addi.lead.domain;
+      2 
+      3 /**
+      4  * Carries the number, not the verdict. The threshold rule lives 
+        at the single decision site where a
+        dice.
+      6  */
+      7 public sealed interface ScoreOutcome extends StepOutcome {
+      8 
+      9     record Scored(int value) implements ScoreOutcome {}
+     … +4 lines (ctrl+o to expand)
+
+⏺ Write(src/main/java/com/addi/lead/domain/RejectionCause.java)
+  ⎿  Wrote 26 lines to
+     src/main/java/com/addi/lead/domain/RejectionCause.java
+       1 package com.addi.lead.domain;
+       2 
+       3 import java.util.List;
+       5 /**
+       6  * Why a lead did not become a prospect. Spec 05 adds the score 
+         threshold and spec 06 adds a
+       7  * reviewer rejection; each addition breaks every exhaustive mat
+       8  * point of it.
+       9  */
+      10 public sealed interface RejectionCause {
+     … +21 lines (ctrl+o to expand)
+
+⏺ Write(src/main/java/com/addi/lead/domain/Decision.java)
+  ⎿  Wrote 14 lines to src/main/java/com/addi/lead/domain/Decision.java
+      1 package com.addi.lead.domain;
+      2 
+      3 /**
+      4  * Three cases, three exit codes: 0, 1, 2. Exit code 3 is absent 
+        on purpose — an unparseable command
+        sion about a lead.
+      6  */
+      7 public sealed interface Decision {
+      8 
+      9     record Converted(Prospect prospect) implements Decision {}
+     … +7 lines (ctrl+o to expand)
+
+⏺ Write(src/main/java/com/addi/lead/domain/CaseId.java)
+  ⎿  Wrote 4 lines to src/main/java/com/addi/lead/domain/CaseId.java
+      1 package com.addi.lead.domain;
+      2 
+      3 /** A case is {@code <nationalId>-<timestamp>} and is also its fi
+        lename. Spec 06 mints them. */
+      4 public record CaseId(String value) {}
+
+⏺ Write(src/main/java/com/addi/lead/domain/Checkpoint.java)
+  ⎿  Wrote 7 lines to src/main/java/com/addi/lead/domain/Checkpoint.java
+      1 package com.addi.lead.domain;
+      2 
+      3 /**
+      4  * Where a run stopped and why. The steps before {@code pending} 
+        resolved cleanly or the run would
+      5  * have ended there, so storing them again would be a second copy
+         free to disagree with this one.
+      6  */
+      7 public record Checkpoint(Lead lead, Step pending, String reason) 
+        {}
+
+⏺ Write(src/main/java/com/addi/lead/domain/ReviewCase.java)
+  ⎿  Wrote 6 lines to src/main/java/com/addi/lead/domain/ReviewCase.java
+      1 package com.addi.lead.domain;
+      2 
+      3 import java.time.Instant;
+      4 
+      5 /** A checkpoint on disk, awaiting an analyst. The queue and the 
+        resume are spec 06. */
+      6 public record ReviewCase(CaseId id, Instant openedAt, Checkpoint 
+        checkpoint, CaseStatus status) {}
+
+⏺ Write(src/main/java/com/addi/lead/domain/CaseStatus.java)
+  ⎿  Wrote 8 lines to src/main/java/com/addi/lead/domain/CaseStatus.java
+      1 package com.addi.lead.domain;
+      2 
+      3 /** A resolved case is terminal, and that has to be enforceable o
+        n a file still on disk. */
+      4 public enum CaseStatus {
+      5     OPEN,
+      6     APPROVED,
+      7     REJECTED
+      8 }
+
+⏺ Now the collapse point and the ports.
+
+⏺ Write(src/main/java/com/addi/lead/domain/Decisions.java)
+  ⎿  Wrote 48 lines to src/main/java/com/addi/lead/domain/Decisions.java
+       1 package com.addi.lead.domain;
+       3 import java.util.Optional;
+       4 
+       5 /**
+         {@code default}: a new failure mode
+       7  * breaks this switch and nothing else, and the build stays red 
+       8  *
+       9  * <p>An empty result means the step was clean and the pipeline 
+         runs the next one. That emptiness is
+         pollutes {@link Decision}.
+     … +59 lines (ctrl+o to expand)
+
+⏺ Write(src/main/java/com/addi/lead/port/NationalRegistry.java)
+  ⎿  Wrote 9 lines to
+     src/main/java/com/addi/lead/port/NationalRegistry.java
+      1 package com.addi.lead.port;
+      2 
+      3 import com.addi.lead.domain.Lead;
+      4 import com.addi.lead.domain.RegistryOutcome;
+      5 
+      6 /** Synchronous and blocking. The fan-out belongs to the orchestr
+        ator, never to a port. */
+      7 public interface NationalRegistry {
+      8     RegistryOutcome check(Lead lead);
+      9 }
+
+⏺ Write(src/main/java/com/addi/lead/port/JudicialRecords.java)
+  ⎿  Wrote 9 lines to src/main/java/com/addi/lead/port/JudicialRecords.java
+      1 package com.addi.lead.port;
+      2 
+      3 import com.addi.lead.domain.JudicialOutcome;
+      4 import com.addi.lead.domain.Lead;
+      5 
+      6 /** Handed the whole lead although it only needs the id, so all f
+        our ports have one signature. */
+      7 public interface JudicialRecords {
+      8     JudicialOutcome check(Lead lead);
+      9 }
+
+⏺ Write(src/main/java/com/addi/lead/port/ComplianceBureau.java)
+  ⎿  Wrote 9 lines to
+     src/main/java/com/addi/lead/port/ComplianceBureau.java
+      1 package com.addi.lead.port;
+      2 
+      3 import com.addi.lead.domain.BureauOutcome;
+      4 import com.addi.lead.domain.Lead;
+      5 
+      6 /** The cache in front of it is spec 04, and it lives behind this
+         same port. */
+      7 public interface ComplianceBureau {
+      8     BureauOutcome screen(Lead lead);
+      9 }
+⏺ Write(src/main/java/com/addi/lead/port/QualificationScore.java)
+  ⎿  Wrote 9 lines to
+     src/main/java/com/addi/lead/port/QualificationScore.java
+      1 package com.addi.lead.port;
+      2 
+      3 import com.addi.lead.domain.Lead;
+      4 import com.addi.lead.domain.ScoreOutcome;
+      5 
+      6 /** Randomness is an effect, so it enters here and takes a fixed 
+        value in tests. */
+      7 public interface QualificationScore {
+      8     ScoreOutcome score(Lead lead);
+      9 }
+
+⏺ Write(src/main/java/com/addi/lead/port/LeadRepository.java)
+  ⎿  Wrote 10 lines to src/main/java/com/addi/lead/port/LeadRepository.java
+       1 package com.addi.lead.port;
+       2 
+       3 import com.addi.lead.domain.Lead;
+       4 import com.addi.lead.domain.NationalId;
+       5 import java.util.Optional;
+       7 /** The local CRM database. Not one of the four validations, whi
+         ch is why a miss is not a step. */
+       8 public interface LeadRepository {
+       9     Optional<Lead> findById(NationalId id);
+      10 }
+     … +1 line (ctrl+o to expand)
+
+⏺ Now the pipeline and the stubs.
+
+⏺ Write(src/main/java/com/addi/lead/app/Pipeline.java)
+  ⎿  Wrote 72 lines to src/main/java/com/addi/lead/app/Pipeline.java
+       1 package com.addi.lead.app;
+       2 
+       3 import com.addi.lead.domain.Decision;
+       4 import com.addi.lead.domain.Decisions;
+       5 import com.addi.lead.domain.Lead;
+       6 import com.addi.lead.domain.NationalId;
+       7 import com.addi.lead.domain.RejectionCause;
+       8 import com.addi.lead.domain.Step;
+       9 import com.addi.lead.domain.StepOutcome;
+      10 import com.addi.lead.port.ComplianceBureau;
+     … +70 lines (ctrl+o to expand)
+
+⏺ Write(src/main/java/com/addi/lead/adapter/StubNationalRegistry.java)
+  ⎿  Wrote 14 lines to
+     src/main/java/com/addi/lead/adapter/StubNationalRegistry.java
+       1 package com.addi.lead.adapter;
+       2 
+       3 import com.addi.lead.domain.Lead;
+       5 import com.addi.lead.port.NationalRegistry;
+       6 
+       7 /** Fixed clean outcome, so spec 02 has something to wire. Delet
+         ed in spec 03. */
+          {
+       9 
+      10     @Override
+     … +5 lines (ctrl+o to expand)
+
+⏺ Write(src/main/java/com/addi/lead/adapter/StubJudicialRecords.java)
+  ⎿  Wrote 14 lines to
+     src/main/java/com/addi/lead/adapter/StubJudicialRecords.java
+       1 package com.addi.lead.adapter;
+       2 
+       3 import com.addi.lead.domain.JudicialOutcome;
+       4 import com.addi.lead.domain.Lead;
+       5 import com.addi.lead.port.JudicialRecords;
+       7 /** Fixed clean outcome, so spec 02 has something to wire. Delet
+         ed in spec 03. */
+       8 public record StubJudicialRecords() implements JudicialRecords {
+       9 
+      10     @Override
+     … +5 lines (ctrl+o to expand)
+
+⏺ Write(src/main/java/com/addi/lead/adapter/StubComplianceBureau.java)
+  ⎿  Wrote 14 lines to
+     src/main/java/com/addi/lead/adapter/StubComplianceBureau.java
+       1 package com.addi.lead.adapter;
+       2 
+       3 import com.addi.lead.domain.BureauOutcome;
+       5 import com.addi.lead.port.ComplianceBureau;
+       6 
+       7 /** Fixed clean outcome, so spec 02 has something to wire. Delet
+         ed in spec 03. */
+          {
+       9 
+      10     @Override
+     … +5 lines (ctrl+o to expand)
+
+⏺ Write(src/main/java/com/addi/lead/adapter/StubQualificationScore.java)
+  ⎿  Wrote 14 lines to
+     src/main/java/com/addi/lead/adapter/StubQualificationScore.java
+       1 package com.addi.lead.adapter;
+       2 
+       3 import com.addi.lead.domain.Lead;
+       5 import com.addi.lead.port.QualificationScore;
+       6 
+       7 /** Fixed score, so spec 02 has something to wire. Randomness an
+         d the threshold come later. */
+         core {
+       9 
+      10     @Override
+     … +6 lines (ctrl+o to expand)
+
+⏺ Write(src/main/java/com/addi/lead/adapter/InMemoryLeadRepository.java)
+  ⎿  Wrote 49 lines to
+     src/main/java/com/addi/lead/adapter/InMemoryLeadRepository.java
+       1 package com.addi.lead.adapter;
+       2 
+       3 import com.addi.lead.domain.Email;
+       4 import com.addi.lead.domain.Lead;
+       5 import com.addi.lead.domain.NationalId;
+       6 import com.addi.lead.port.LeadRepository;
+       7 import java.time.LocalDate;
+       8 import java.util.Map;
+       9 import java.util.Optional;
+      10 import java.util.Optional;
+     … +45 lines (ctrl+o to expand)
+
+⏺ Update(src/main/java/com/addi/lead/adapter/InMemoryLeadRepository.java)
+  ⎿  Removed 1 line
+       7  import java.time.LocalDate;
+       8  import java.util.Map;
+       9  import java.util.Optional;
+      10 -import java.util.Optional;                                     
+      10  
+      11  /** The local CRM database. No external database, so the map is
+           the database. */
+      12  public record InMemoryLeadRepository(Map<NationalId, Lead> lead
+          s) implements LeadRepository {
+
+  Ran 2 shell commands (ctrl+o to expand)
+
+⏺ Compile failure only proved the types were absent. Mutating two arms to check
+  the assertions actually bite:
+
+  Ran 2 shell commands (ctrl+o to expand)
+  ⎿  Loaded CLAUDE.md
+
+⏺ Gate is green: 17 tests, budgets, build. Committing in reviewable pieces.
+
+  Pushed to 01-domain-types-and-pipeline, main, created PR #2, ran 4 shell commands (ctrl+o to expand)
+
+⏺ Spec 01 is in review: https://github.com/qohat/addi-challenge/pull/2, CI
+  green.
+
+  Closeout of spec 00 (on main, pushed): cost row $3.41 / 4,088,542 tokens plus
+  its breakdown section in docs/ai/cost.md, status merged in specs/README.md,
+  export docs/ai/sessions/02-spec-00-build-checks-ci.txt confirmed present.
+
+  Spec 01, four commits: domain types + Decisions.terminal, ports, pipeline,
+  stub adapters. 17 tests, ./gradlew check green. Every acceptance criterion has
+  a named test — the mapping is in the PR body.
+
+  Three things worth your attention:
+
+  - Tests were watched fail twice. The first was only the missing types (a Java
+  compile error), which proves nothing about the assertions, so I also mutated
+  the registry review arm to name JUDICIAL and disabled the resume skip in run —
+  three tests went red, then reverted.
+  - CaseId, ReviewCase and CaseStatus are declared and unused until spec 06. The
+  spec's Scope names them, so they are in, but they carry no test.
+  - Session 0dd4af1c ($1.02, 7 requests, 19:34) is in the logs and appears in
+  neither cost table. If it belongs to the project, the planning subtotal and
+  the project total are both light by that amount. Your call — I did not touch
+  it.
+
+  Session export is still outstanding: run /export to
+  docs/ai/sessions/03-spec-01-domain-types-and-pipeline.txt before closing this
+  one.
+
+✻ Worked for 6m 16s
