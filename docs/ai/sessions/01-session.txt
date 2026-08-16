@@ -1,0 +1,307 @@
+ ▐▛███▜▌   Claude Code v2.1.233
+▝▜█████▛▘  Opus 5 · Claude Team
+  ▘▘ ▝▝    ~/Projects/work/addi/addi-challenge
+
+
+❯ @prompts/session-1-check.txt Do it                                            
+  ⎿  Read prompts/session-1-check.txt (15 lines)
+
+⏺ I'll orient first per CLAUDE.md, then read the ADR template and existing
+  decisions.
+
+  Read 13 files, ran 1 shell command (ctrl+o to expand)
+
+⏺ Everything I need is on disk. Writing the ADR.
+
+⏺ Write(docs/adr/0008-domain-shapes-and-the-single-collapse-point.md)
+  ⎿  Wrote 276 lines to
+     docs/adr/0008-domain-shapes-and-the-single-collapse-point.md
+       1 # 0008. Domain shapes and the single collapse point
+       2 
+       3 Status: accepted
+       5 Spec: 01
+       6 
+       7 ## Context
+       8 
+         ome type per
+      10 step, rejection and unavailability on different branches, and on
+         e exhaustive
+     … +379 lines (ctrl+o to expand)
+
+⏺ Now the queue.
+
+⏺ Update(specs/README.md)
+  ⎿  Added 1 line, removed 1 line
+      10  | # | Title | Depends on | Effort | Status |
+      11  |---|---|---|---|---|
+      12  | 00 | Build, checks and CI | — | medium | not started |
+      13 -| 01 | Domain types, pipeline, four stubbed ports | 00 | high |
+         - not started |                                                 
+      13 +| 01 | Domain types, pipeline, four stubbed ports | 00 | medium
+         + | not started |                                               
+      14  | 02 | CLI `validate-lead` and composition root | 01 | medium |
+           not started |
+      15  | 03 | Simulated adapters and structured concurrency | 02 | hig
+          h | not started |
+      16  | 04 | Bureau cache | 03 | medium | not started |
+
+⏺ Update(specs/README.md)
+  ⎿  Added 7 lines, removed 5 lines
+      30  Dockerfile. Small infrastructure belongs inside the setup spec 
+          rather than
+      31  getting its own session, worktree, PR and cost entry.
+      32  
+      33 -**01** fixes every shape the rest of the project sits on: the l
+         -ead and prospect                                               
+      34 -types, the per-step outcome hierarchies, the rejection cause ty
+         -pe, the four                                                   
+      35 -ports, and the pipeline that sequences them. All four ports are
+         - stubbed. A                                                    
+      36 -pipeline returning a fixed outcome through the real types is a 
+         -real increment,                                                
+      37 -and it pins the interfaces down before four adapters depend on 
+         -them.                                                          
+      33 +**01** writes down every shape the rest of the project sits on:
+         + the lead and                                                  
+      34 +prospect types, the per-step outcome hierarchies, the rejection
+         + cause type, the                                               
+      35 +four ports, the checkpoint, and the pipeline that sequences the
+         +m. All four ports                                              
+      36 +are stubbed. A pipeline returning a fixed outcome through the r
+         +eal types is a                                                 
+      37 +real increment, and it pins the interfaces down before four ada
+         +pters depend on                                                
+      38 +them. The shapes themselves are decided in ADR 0008, which is w
+         +hy this is medium                                              
+      39 +and not high — executing it is transcription plus the pipeline.
+      40  
+      41  **02** puts a runnable command on top of those stubs. Dummy out
+          comes travel
+      42  through the real types and out through the real exit codes, so 
+          from here on
+
+  Ran 1 shell command (ctrl+o to expand)
+
+⏺ Update(docs/adr/0008-domain-shapes-and-the-single-collapse-point.md)
+  ⎿  Added 12 lines
+      181  interface LeadRepository { Optional<Lead> findById(NationalId 
+           id); }
+      182  ```
+      183  
+      184 +### The pipeline entry                                        
+      185 +                                                              
+      186 +```java                                                       
+      187 +Decision run(Lead lead, Step from);                           
+      188 +```                                                           
+      189 +                                                              
+      190 +A fresh run passes `Step.REGISTRY`. A resume passes the checkp
+          +oint's `pending`,                                             
+      191 +and because the resolved prefix is implied by that step there 
+          +is nothing to                                                 
+      192 +inject and no second orchestrator (ADR 0004). Spec 03 forks re
+          +gistry and                                                    
+      193 +judicial inside this call; spec 06 is the only caller that eve
+          +r passes anything                                             
+      194 +but `REGISTRY`.                                               
+      195 +                                                              
+      196  ### The collapse
+      197  
+      198  One function. No `default`. Every case of every step outcome, 
+           in one place.
+
+⏺ docs/adr/0008-domain-shapes-and-the-single-collapse-point.md — types and cases
+  only, no bodies.
+
+  What it fixes:
+
+  - Lead vs prospect — Prospect(Lead, int score) differs by evidence, not a
+  status field, and is constructed at one site only.
+  - Four outcome hierarchies under a marker StepOutcome (no type parameter, no
+  shared success/failure vocabulary — not the Result ADR 0005 rejects). The
+  marker exists for one reason: it makes the collapse a single switch instead of
+  four.
+  - RejectionCause — five cases now, with 05's ScoreBelowThreshold and 06's
+  ReviewRejected marked in place.
+  - Decision — three cases, three exit codes; exit 3 is deliberately not one of
+  them.
+  - Checkpoint — Checkpoint(Lead, Step pending, String reason). This is the one
+  place I went past transcription: ADR 0004 says the case persists the outcomes
+  already resolved, and those are determined by pending (a step that resolved
+  before the checkpoint resolved cleanly, or the run ended there). Storing them
+  too is a second copy free to disagree with pending. So the file stores the
+  step, and resume becomes run(lead, from) with no prefix to inject.
+  - Four ports, uniform Lead in / own outcome out, synchronous — plus
+  LeadRepository, which spec 01 also needs and nothing had decided.
+  - The collapse — Optional<Decision> terminal(Lead, StepOutcome), thirteen
+  arms, no default. Four arms are Unavailable, one per step, each naming its own
+  step as a literal because the matched case already says where it came from —
+  that is how the checkpoint gets pending without a caller passing one. Nothing
+  else in the system constructs PendingManualReview.
+
+  Queue: 01 high → medium, with the reason in the "why this order" paragraph. I
+  lowered it honestly — after the ADR, what's left to 01 is package layout,
+  where terminal lives, and what the stubs return, none of which later specs sit
+  on. The one thing that would have kept it high was the pipeline entry
+  signature (06 sits on it), so I decided that too rather than lower the label
+  over it.
+
+  Not committed — say the word and it goes on main as one docs commit.
+
+✻ Worked for 4m 55s
+
+❯ Ok so now run @prompts/session1.txt                                           
+  ⎿  Read prompts/session1.txt (6 lines)
+
+⏺ Skill(create-spec)
+  ⎿  Successfully loaded skill
+
+⏺ Everything for spec-writing is already in context from the earlier
+  orientation. One API fact to verify before I pin it in spec 03.
+
+  Ran 3 shell commands (ctrl+o to expand)
+
+⏺ API confirmed. Writing the four specs.
+
+⏺ Write(specs/00-build-checks-and-ci.md)
+  ⎿  Wrote 91 lines to specs/00-build-checks-and-ci.md
+      1 # 00. Build, checks and CI
+      2 
+      4 
+      5 A clean clone runs `./gradlew check` and it passes: Java 25 with 
+        preview
+        CI runs that
+      7 same task and nothing else. A reviewer without JDK 25 runs the ap
+        plication from
+        te that
+      9 everything after it has to pass.
+     … +110 lines (ctrl+o to expand)
+
+⏺ Write(specs/01-domain-types-and-pipeline.md)
+  ⎿  Wrote 96 lines to specs/01-domain-types-and-pipeline.md
+      1 # 01. Domain types, the pipeline and four stubbed ports
+      2 
+      4 
+      5 Every type in ADR 0008 exists, the four ports are interfaces with
+         stub
+         A lead goes in
+      7 and a terminal decision comes out through the real types, includi
+        ng the
+        e increment is
+      9 observable through tests.
+     … +128 lines (ctrl+o to expand)
+⏺ Write(specs/02-cli-validate-lead.md)
+  ⎿  Wrote 105 lines to specs/02-cli-validate-lead.md
+      1 # 02. The `validate-lead` command and the composition root
+      2 
+      4 
+      5 `./gradlew run --args='validate-lead --id 1001'` prints one line 
+        of prose and
+        pply the
+      7 outcomes, so every run converts, but the path from a command line
+         to an exit
+        something a
+      9 reviewer can already run.
+     … +130 lines (ctrl+o to expand)
+
+⏺ Write(specs/03-simulated-adapters-and-concurrency.md)
+  ⎿  Wrote 138 lines to specs/03-simulated-adapters-and-concurrency.md
+       1 # 03. Simulated adapters and structured concurrency
+       3 ## Goal
+       4 
+         nder
+       6 `StructuredTaskScope.open()` with a scope-level timeout, all fou
+       7 from fixtures that carry their own latency, and the registry com
+         parison is real.
+          steps, or come
+       9 back pending because something was down or too slow. This is the
+      10 is actually about.
+     … +184 lines (ctrl+o to expand)
+
+⏺ Now the queue rows and the budget check.
+
+⏺ Update(specs/README.md)
+  ⎿  Added 4 lines, removed 4 lines
+       9  
+      10  | # | Title | Depends on | Effort | Status |
+      11  |---|---|---|---|---|
+      12 -| 00 | Build, checks and CI | — | medium | not started |       
+      13 -| 01 | Domain types, pipeline, four stubbed ports | 00 | medium
+         - | not started |                                               
+      14 -| 02 | CLI `validate-lead` and composition root | 01 | medium |
+         - not started |                                                 
+      15 -| 03 | Simulated adapters and structured concurrency | 02 | hig
+         -h | not started |                                              
+      12 +| 00 | Build, checks and CI | — | medium | specced |           
+      13 +| 01 | Domain types, pipeline, four stubbed ports | 00 | medium
+         + | specced |                                                   
+      14 +| 02 | CLI `validate-lead` and composition root | 01 | medium |
+         + specced |                                                     
+      15 +| 03 | Simulated adapters and structured concurrency | 02 | hig
+         +h | specced |                                                  
+      16  | 04 | Bureau cache | 03 | medium | not started |
+      17  | 05 | Qualification score and conversion | 04 | low | not star
+          ted |
+      18  | 06 | Manual review: checkpoint, queue, resume | 05 | high | n
+          ot started |
+
+  Ran 1 shell command (ctrl+o to expand)
+
+⏺ Budgets pass, every spec under 150. Committing.
+
+  Ran 2 shell commands (ctrl+o to expand)
+
+⏺ Four specs written, queue updated, both commits on main. Budget output:
+
+    ok    56/120  .claude/skills/create-spec/SKILL.md
+    ok    76/120  .claude/skills/run-spec/SKILL.md
+    ok   105/120  AGENTS.md
+    ok    37/40   CLAUDE.md
+    ok   111/120  CONTRIBUTING.md
+    ok   117/120  docs/PROJECT_CONTEXT.md
+  exit=0
+
+  Specs print only when over 150, so silence there is the pass. Actual counts:
+  00 → 91, 01 → 96, 02 → 105, 03 → 138.
+
+  What each fixes:
+
+  - 00 — settings.gradle.kts before gradle wrapper, as you said. Preview in
+  three places (compile, test, run) because missing one fails at a different
+  phase. Budget script wired into check, so a breach goes red in CI.
+  - 01 — transcription of ADR 0008 plus the sequencing loop. Pipeline gets two
+  entry points rather than two classes: validate(NationalId) owns the
+  LeadNotInDatabase branch, run(Lead, Step) is the resume entry 06 reuses.
+  - 02 — parser returns a sealed Invocation; exit map is one exhaustive switch;
+  stdout empty on exit 3 so scripts can trust it. No
+  --data-dir/--timeout/--fixtures — each arrives with its behaviour.
+  - 03 — five fixture CSVs, the registry comparison pulled out as a pure domain
+  function so mismatch fields come from the comparison instead of being typed by
+  hand, and the scope timeout. I verified the Java 25 API with javap before
+  pinning it: open(Joiner.awaitAll(), cf -> cf.withTimeout(...)), join() throws
+  StructuredTaskScope.TimeoutException, and a subtask whose state() is not
+  SUCCESS reads as Unavailable — that one branch covers cancellation.
+
+  The parallelism criterion is a CountDownLatch(2) in the fake latency port
+  rather than a stopwatch: sequential execution can't pass it, and it keeps
+  CONTRIBUTING's no-timing-tolerance rule intact.
+
+  One thing to veto if you disagree: spec 00 specifies Spotless with 
+  palantir-java-format, which is a new build plugin and therefore brushes the
+  "no new dependency without asking" constraint. I picked it because AGENTS.md
+  already promises "format" in the gate, and wrote an explicit fallback into the
+  spec — if it can't parse Java 25 sources, delete the plugin and the word
+  "format" rather than lose a session to it. Say so and I'll cut it now instead.
+
+✻ Churned for 6m 46s
+
+❯ Keep Spotless, that's fine                                                    
+
+⏺ Confirmed — spec 00 stands as written. The fallback line stays in it as a
+  bounded escape hatch, not a plan.
+
+  Next session runs /run-spec for 00.
+
+✻ Worked for 6s
+
+❯ /export /docs/ai/sessions/01-session.txt                                      
+  ⎿  Failed to export conversation: EROFS: read-only file system, mkdir '/docs'
