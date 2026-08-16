@@ -5,7 +5,7 @@
     scripts/context-budget.py --measured # first-request context per session
 """
 
-import json, pathlib, sys
+import json, os, pathlib, sys
 
 # Budgets track how often a file is loaded, not how important it is.
 #
@@ -13,13 +13,22 @@ import json, pathlib, sys
 #   Layer 1  read once per session     -> 120
 #   Layer 2  read once per session     -> 150  (task-specific, so not waste)
 #
+# A SKILL.md straddles two layers: its frontmatter description is layer 0,
+# because it is what decides whether the skill gets invoked at all, while the
+# body is layer 1 and only loads on invocation. Budget the body; keep the
+# description short for the same reason CLAUDE.md is short. See AGENTS.md.
+#
 BUDGETS = {
     "CLAUDE.md":                40,   # layer 0
     "AGENTS.md":               120,   # layer 1
     "CONTRIBUTING.md":         120,   # layer 1
     "docs/PROJECT_CONTEXT.md": 120,   # layer 1
 }
+SKILL_BUDGET = 120                    # layer 1, one per .claude/skills/*/
 SPEC_BUDGET = 150                     # layer 2
+
+BUDGETS.update({str(p): SKILL_BUDGET
+                for p in pathlib.Path(".claude/skills").glob("*/SKILL.md")})
 
 
 def check():
@@ -43,9 +52,25 @@ def check():
     return 1 if failed else 0
 
 
-def measured(repo="."):
+def project_dir(repo):
+    """Session logs, resolved by candidate. Same logic as scripts/cost.py.
+
+    CLAUDE_CONFIG_DIR is only set inside an agent's own shell, so relying on it
+    breaks the script in a plain terminal. Try it, then the known config dirs,
+    and take the first that actually holds logs for this repo.
+    """
     slug = str(pathlib.Path(repo).resolve()).replace("/", "-")
-    logs = pathlib.Path.home() / ".claude" / "projects" / slug
+    configured = os.environ.get("CLAUDE_CONFIG_DIR")
+    candidates = [pathlib.Path(configured)] if configured else []
+    candidates += [pathlib.Path.home() / ".claude-ans", pathlib.Path.home() / ".claude"]
+    for base in candidates:
+        if (base / "projects" / slug).is_dir():
+            return base / "projects" / slug
+    return candidates[0] / "projects" / slug
+
+
+def measured(repo="."):
+    logs = project_dir(repo)
     print("| Session | Resident context at first request |")
     print("|---|---:|")
     for path in sorted(logs.glob("*.jsonl")):

@@ -1,0 +1,1401 @@
+╭─── Claude Code v2.1.233 ─────────────────────────────────────────────────────╮
+│                                         │ Tips for getting started           │
+│           Welcome back Qohat!           │ Run /init to create a CLAUDE.md f… │
+│                                         │ ────────────────────────────────── │
+│                 ▐▛███▜▌                 │ What's new                         │
+│                ▝▜█████▛▘                │ Added GitLab merge request URL su… │
+│                  ▘▘ ▝▝                  │ Added an opt-in `forward_user_ide… │
+│                                         │ Added opt-in memory cgroup suppor… │
+│    Opus 5 · Claude Team · Answering     │ /release-notes for more            │
+│   ~/Projects/work/addi/addi-challenge   │                                    │
+╰──────────────────────────────────────────────────────────────────────────────╯
+
+
+❯ /model                                                                        
+  ⎿  Set model to Opus 5 (1M context) and saved as your default for new sessions
+
+❯ /plan                                                                         
+  ⎿  Enabled plan mode
+
+❯ Go @prompts/start.txt and plan                                                
+  ⎿  Read prompts/start.txt (80 lines)
+
+⏺ I'll start by reading the three files the prompt points at.
+
+  Read 6 files, listed 1 directory, ran 1 shell command (ctrl+o to expand)
+
+⏺ I've read all three. Before the plan, here's where the brief is ambiguous in
+  ways BRAIN.md and RULES.md don't close — and one verified tooling problem.
+
+  Gaps that will cost us if we don't settle them now
+
+  1. The CLI input fields have no defined role. RULES.md says the input is "only
+  an identity claim" and the comparison is local-DB record vs external
+  registry, keyed by national ID, on birthdate/first/last. But the brief's lead
+  carries five fields. If the match never touches the input's birthdate, name,
+  or email, those four flags are decorative — and "email is format-validated at
+  parse time and carried onto the prospect" implies it does come from the
+  caller, contradicting "identity claim only". Either the CLI takes just the ID,
+  or the extra fields do something. Right now I'd be guessing.
+
+  2. Manual review has no stated surface. You call it a product feature serving
+  an analyst at Addi. A case that no one can act on isn't a feature. But
+  RULES.md names only validate-lead and BRAIN says build one command's surface
+  at a time. So: do review list / resolve exist, or is the queue file the
+  interface?
+
+  3. A timeout can't be demonstrated. Failure is fixture-driven per national ID;
+  latency is "an injectable port"; the scope timeout defaults to 2s. Nothing
+  says latency is also fixture-addressable — so no demo lead can actually blow
+  the 2s timeout, and the manual-review path only ever appears in tests with a
+  shrunk timeout. That undercuts the brief's resilience requirement in the demo.
+
+  4. Spec order buries the runnable artifact. RULES.md orders adapters before
+  the CLI, so nothing a reviewer can run exists until spec 03. BRAIN says the
+  thing must run end to end as early as possible and "a pipeline returning a
+  hardcoded outcome through the real types is a real increment". Those two
+  disagree. I think the CLI should come before the real adapters.
+
+  Smaller calls I'd default rather than ask — override any of these
+
+  - A bureau sanctions hit is a terminal rejection, cached like any terminal
+  outcome. The brief says the score needs "clean" bureau output; a hit isn't a
+  review trigger.
+  - The cache is consulted at the bureau step, not as a pipeline-level
+  short-circuit — the brief's dependency order says bureau runs third.
+  - Exit codes: 0 converted, 1 rejected, 2 pending review, 3 input error.
+  - Case ID = <nationalId>-<clock-timestamp>, which is also the filename. No
+  UUID port, and multiple open cases per person work.
+  - Runtime state (cache + queue) under a configurable dir, default ./data,
+  gitignored; tests use temp dirs.
+  - No mocking framework. Ports make hand-written fakes trivial, and Mockito
+  would be a new dependency.
+  - stdout is human-readable; the exit code is the machine contract.
+
+  One verified problem with the seed
+
+  scripts/cost.py and context-budget.py --measured both read
+  ~/.claude/projects/<slug>. This machine runs
+  CLAUDE_CONFIG_DIR=/Users/qohat/.claude-ans, and
+  ~/.claude/projects/-Users-qohat-Projects-work-addi-addi-challenge does not
+  exist — the logs are under ~/.claude-ans/projects/. As written, cost.py exits
+  with "no session logs" at the first closeout. One-line fix
+  (os.environ.get("CLAUDE_CONFIG_DIR")), but it's your script and you said no
+  code this session, so I'm flagging it rather than doing it.
+
+  Let me write the plan, then ask you the four.
+
+⏺ Updated plan
+  ⎿  /plan to preview
+
+⏺ Plan is written. Four things I won't guess at:
+
+⏺ User answered Claude's questions:
+  ⎿  · What does `validate-lead` actually take on the command line? RULES says 
+     the input is "only an identity claim" and the match is DB-vs-registry, 
+     which leaves the other four fields with no job. → National ID only 
+     (Recommended)
+     · Does the analyst get a CLI surface for manual review, or is the queue 
+     file the interface? → (notes only)
+     · How does a demo lead trigger the 2s scope timeout? Failure is 
+     fixture-driven per national ID, but latency is described only as an 
+     injectable port — so no fixture can currently be slow enough to time out. →
+     Latency in the fixture (Recommended)
+     · RULES orders the real adapters before the CLI, so nothing a reviewer can 
+     run exists until spec 03. BRAIN says the thing must run end to end as early
+     as possible. Which wins? → (notes only)
+
+⏺ All four settled. Updating the plan.
+
+⏺ Updated plan
+  ⎿  /plan to preview
+
+⏺ Updated plan
+  ⎿  /plan to preview
+
+⏺ Updated plan
+  ⎿  /plan to preview
+
+⏺ User approved Claude's plan
+  ⎿  Plan saved to: 
+     ~/.claude-ans/plans/go-prompts-start-txt-and-plan-resilient-cherny.md · 
+     /plan to edit
+     Repo bootstrap — Addi lead validation challenge
+
+     Context
+
+     The repo is a seed: docs/brief.md, docs/BRAIN.md, docs/RULES.md,
+     prompts/start.txt, two Python scripts, a .gitignore. No build, no source,
+     no
+     specs.
+
+     BRAIN.md is the author's working method and carries across projects.
+     RULES.md is this project's settled decisions. The bill for this project is
+     dominated by re-read context (96.5% cache reads on the last run), so the
+     bootstrap's job is to put every fact in exactly one place, sized by how
+     often
+     that place is loaded: 40 lines for the always-resident router, 120 for
+     load-once-per-session files, 150 for a spec.
+
+     Outcome: a repo an agent can orient itself in for four cheap reads, with
+     the
+     spec queue, operating rules, style guide and decision records in place —
+     and
+     nothing from the build, which is spec 00 and must appear in git history as
+     built rather than seeded.
+
+     Constraints
+
+     - No Gradle files, no Dockerfile, no CI workflow, no src/. Spec 00 builds
+     those.
+     - No MCP servers, no .mcp.json, ever.
+     - No spec files, no code.
+     - Everything in English. No emojis anywhere.
+     - docs/BRAIN.md untouched. docs/RULES.md deleted at the end — its content
+     moves into the files below and the seed commit keeps it in history.
+     - .gitignore extended, never replaced.
+
+     Settled this session
+
+     Four gaps the brief left and RULES.md did not close. These go into
+     docs/PROJECT_CONTEXT.md and docs/assumptions.md as decided, not open.
+
+     1. validate-lead takes the national ID and nothing else. The lead already
+     exists in the CRM, which is the local DB, so the ID selects the record and
+     every other field is read from it. No dead flags. Email format validation
+     therefore belongs to fixture parsing at seed time, not to CLI parsing.
+     2. Manual review gets one command: review resolve <case> 
+     --approve|--reject.
+     No list, no show — the queue directory is browsable with ls and cat,
+     and the CLI stays as simple as the brief asks for.
+     3. Latency is carried per row in the external-system fixtures, alongside
+     the
+     outcome, so one demo ID can make the registry take 5s and fire the real 2s
+     scope timeout. The port still performs the delay; the fixture supplies the
+     duration.
+     4. The CLI lands before the real adapters. Early specs return dummy
+     outcomes
+     through the real types and the adapters get wired in incrementally, so a
+     reviewer can run the real command from spec 02 onward.
+
+     Files to create
+
+     CLAUDE.md — layer 0, budget 40 lines
+
+     The only always-loaded file. A router, not a summary.
+
+     - What the project is: 3 lines.
+     - Hard constraints only: Java 25 --enable-preview, Gradle single module, no
+     framework, no external DB or message queue, no new dependency without
+     asking,
+     no MCP servers, English.
+     - Pointers: AGENTS.md (operating rules, commands, search discipline),
+     CONTRIBUTING.md (read when about to write Java, not while planning),
+     docs/PROJECT_CONTEXT.md (the problem), specs/README.md (queue),
+     docs/adr/ (why), docs/assumptions.md (closed ambiguities).
+     - Orientation: router loads itself, then spec queue, then assigned spec,
+     then
+     git log --oneline -15.
+     - Budgets are enforced by python3 scripts/context-budget.py; over budget
+     means
+     cut the file.
+
+     docs/PROJECT_CONTEXT.md — layer 1, budget 120 lines
+
+     The problem, not the style. Points at CONTRIBUTING.md instead of repeating
+     it.
+
+     - What the brief requires: four validations, the parallel/sequential
+     dependency
+     graph, CLI only, simulated external systems with latency, no external
+     infrastructure, spec-driven history, AI artifacts as a deliverable.
+     - What is the author's addition and labelled as such: Docker, CI, ADRs, the
+     demo command, the manual-review resume semantics beyond what the brief
+     defines.
+     - Decisions already made about the problem, carried over from RULES.md:
+     registry compares DB against registry keyed by national ID; email is not
+     part
+     of the match; judicial rejects on any count; score is strict > 60; bureau
+     cache is file-backed with a TTL and never caches an outage; timeouts are
+     outside-world failures that route to manual review, never rejections;
+     manual
+     review resumes rather than overrides; nothing is idempotent across
+     invocations.
+     - Pointer to docs/adr/ for the reasoning behind each, so this file states
+     the
+     decision and never re-argues it.
+
+     AGENTS.md — layer 1, budget 120 lines
+
+     - Boundaries (permissions are skipped, so these are the limits): nothing
+     written outside the project root; exception — scripts/cost.py and
+     scripts/context-budget.py --measured read the Claude Code session log
+     directory ($CLAUDE_CONFIG_DIR/projects/<slug>), which is outside the repo
+     and read-only; no recursive deletes; no history rewriting; no force pushes;
+     no new dependency without asking, because that is an architecture decision.
+     - Workflow: one spec per session, opened clean and exported before closing.
+     Spec commit lands on main before the worktree exists. Worktree per spec at
+     .trees/NN-slug. One PR per spec, split into reviewable commits, merged only
+     by the author. A session past roughly forty requests or touching two specs
+     has
+     gone wrong — stop and open a new one.
+     - Commands: ./gradlew check is the gate (format, build, unit,
+     integration, context budget). Single test invocation. python3 
+     scripts/context-budget.py. python3 scripts/cost.py --session <id>.
+     Spec 00 note: Gradle 9 refuses gradle wrapper in an empty directory — write
+     settings.gradle.kts first.
+     - Reading a failing test without re-running the suite: Grep
+     build/test-results/test/TEST-*.xml for <failure, then Read that one file.
+     Never re-run the suite to see a message that is already on disk.
+     - Searching without burning context: Grep for usages, Glob for paths, Read
+     with an offset for a slice, a subagent when the search is wide and the
+     answer
+     is small, never a subagent when the raw material itself is needed. Never a
+     directory tree — no ls -R, no tree, no bare find ..
+     - When to load what: CONTRIBUTING.md when about to write Java; not while
+     planning, reading tests, or writing docs.
+     - No MCP servers. If a repo-specific query is needed, it is a shell script.
+
+     CONTRIBUTING.md — layer 1, budget 120 lines
+
+     Every rule stated with its reason in one clause, because a rule with a
+     reason
+     gets applied correctly in unanticipated cases and a bare prohibition gets
+     applied literally and wrongly.
+
+     - Sealed interfaces plus records for anything with cases; exhaustive switch
+     with no default on a closed type — a catch-all defeats the only compiler
+     check the design leans on.
+     - No generic Result<T, E>; each step returns its own type named after its
+     domain, with cases named after what happened.
+     - Errors are values. Exceptions only for the genuinely unrecoverable,
+     caught at
+     the boundary and translated into domain values immediately; custom
+     exceptions
+     carry no stacktrace (super(msg, null, false, false)) because filling one in
+     is expensive and nobody reads it.
+     - Domain purity: no I/O, clock, randomness or logging in the domain; every
+     effect enters through a port and executes at the boundary.
+     - Domain failure and outside-world failure are different branches,
+     collapsed
+     into one decision in exactly one exhaustively matched place.
+     - Immutable by default: records, List.copyOf, no setters, no mutable
+     collection escaping its boundary.
+     - Total functions, no nulls in the domain. Parse, don't validate — input
+     crosses
+     the boundary once and becomes a valid type.
+     - Illegal states unrepresentable: a validated thing and an unvalidated
+     thing are
+     different types, which is cheaper than any test.
+     - Concurrency only in the orchestration layer. Java 25 shape:
+     StructuredTaskScope.open() with scope.fork(...) and scope.join() — the
+     Java 21 new StructuredTaskScope<>() / ShutdownOnFailure API does not
+     compile here and writing it is a training-data artefact.
+     - Plain language features over libraries.
+     - Tests: JUnit 5, written from the spec and watched to fail first.
+     Hand-written
+     fakes implementing the ports, no mocking framework. Determinism by
+     construction — clock, randomness and latency are ports with fixed seeds.
+     - If a paragraph of comment is defending an awkward construct, fix the
+     design.
+     - No emojis in code, commits, PRs or output.
+
+     specs/README.md — the queue, titles only
+
+     Table: number, title, depends on, effort, status, one-line reason for its
+     position. Plus a short paragraph on the ordering principle and an explicit
+     note
+     that everything past 03 is provisional — the author's last project produced
+     a
+     sixty-line section explaining why four of thirteen upfront specs ran out of
+     order, which is the evidence that upfront queues do not survive contact.
+
+     ┌─────┬──────────────────────┬────────┬───────────────────────────────────┐
+     │  #  │        Title         │ Effort │             Why here              │
+     ├─────┼──────────────────────┼────────┼───────────────────────────────────┤
+     │ 00  │ Build, checks and CI │ medium │ Nothing runs without it; small    │
+     │     │                      │        │ infra folded in per BRAIN         │
+     ├─────┼──────────────────────┼────────┼───────────────────────────────────┤
+     │     │ Domain types,        │        │ Fixes every shape the rest sits   │
+     │ 01  │ pipeline, four       │ high   │ on                                │
+     │     │ stubbed ports        │        │                                   │
+     ├─────┼──────────────────────┼────────┼───────────────────────────────────┤
+     │     │ CLI validate-lead    │        │ First thing a reviewer can run;   │
+     │ 02  │ and composition root │ medium │ stubs return dummy outcomes       │
+     │     │                      │        │ through the real types            │
+     ├─────┼──────────────────────┼────────┼───────────────────────────────────┤
+     │     │ Simulated adapters   │        │ Swaps dummies for real behaviour  │
+     │ 03  │ and structured       │ high   │ behind an already-running CLI;    │
+     │     │ concurrency          │        │ fixtures carry per-row latency    │
+     ├─────┼──────────────────────┼────────┼───────────────────────────────────┤
+     │ 04  │ Bureau cache         │ medium │ File-backed, TTL, atomic writes   │
+     ├─────┼──────────────────────┼────────┼───────────────────────────────────┤
+     │ 05  │ Qualification score  │ low    │ Completes the pipeline end to end │
+     │     │ and conversion       │        │                                   │
+     ├─────┼──────────────────────┼────────┼───────────────────────────────────┤
+     │     │ Manual review:       │        │ Needs the full pipeline to resume │
+     │ 06  │ checkpoint, queue,   │ high   │  into                             │
+     │     │ review resolve       │        │                                   │
+     ├─────┼──────────────────────┼────────┼───────────────────────────────────┤
+     │ 07  │ Demo command and     │ medium │ One command showing every path,   │
+     │     │ fixtures             │        │ timeout included                  │
+     ├─────┼──────────────────────┼────────┼───────────────────────────────────┤
+     │ 08  │ Final documentation  │ medium │ README, cost table, session       │
+     │     │                      │        │ exports                           │
+     └─────┴──────────────────────┴────────┴───────────────────────────────────┘
+
+     Score before manual review, against the grouping in RULES.md: approving a
+     pending score step re-runs the score port, so the score rule must exist
+     before
+     resume can be specified.
+
+     Closing step, not a spec: re-run one merged spec on a cheaper model from a
+     clean
+     session to measure the specification rather than the model.
+
+     .claude/skills/create-spec/SKILL.md
+
+     Writes one spec. Reads docs/PROJECT_CONTEXT.md, specs/README.md and
+     git log --oneline -15; never the whole codebase. Produces
+     specs/NN-slug.md under 150 lines containing: what is being built, the
+     acceptance criteria a test can be written from, the effort level assigned
+     by the
+     single question (does it leave any shape undecided?), whether it needs docs
+     and
+     why, and what it explicitly does not build. Updates the queue row. Commits
+     the
+     spec to main alone — never in the same PR as its implementation.
+
+     .claude/skills/run-spec/SKILL.md
+
+     Closes out the previous spec, then executes this one.
+
+     1. Closeout first, because a session's log is only complete once closed:
+     run
+     python3 scripts/cost.py --session <previous>, append the row to
+     docs/ai/cost.md, mark the previous spec merged in specs/README.md,
+     confirm the previous session export exists.
+     2. Create the worktree at .trees/NN-slug.
+     3. Read CONTRIBUTING.md now, not earlier.
+     4. Write the tests from the spec, watch them fail, then write the code.
+     5. ./gradlew check must pass.
+     6. Record any ambiguity hit in docs/assumptions.md, any reasoned decision
+     in a
+     new ADR.
+     7. Open the PR split into reviewable commits. Stop — the author merges.
+     8. Export the session to docs/ai/sessions/NN-slug.txt.
+
+     docs/adr/
+
+     0000-template.md — context, decision, consequences, alternatives rejected
+     with
+     one line each on why.
+
+     One ADR per RULES.md decision that carried reasoning rather than a
+     one-liner:
+
+     - 0001 Hexagonal with a hand-wired composition root, no framework.
+     - 0002 Java 25 preview structured concurrency for the parallel stage, with
+     the
+     scope-level timeout.
+     - 0003 Persistence without a database: in-memory repository, file-backed
+     bureau cache and review queue, atomic temp-file-plus-rename writes, TTL,
+     never
+     cache an outage.
+     - 0004 Manual review is a resume, not an override.
+     - 0005 Failure taxonomy: domain rejection versus outside-world failure, and
+     the single place they collapse.
+     - 0006 Determinism is a test property: ports for clock, randomness and
+     latency; fixture-driven external failures; the score stays genuinely random
+     in
+     production.
+     - 0007 Docker as a reviewer convenience that never becomes a build or test
+     dependency, with build and runtime stages pinned to the same JDK image.
+
+     docs/assumptions.md
+
+     Seeded with the [brief] one-liners from RULES.md: four validations not
+     three; email excluded from the registry match; a national ID absent from
+     the
+     local DB is a business rejection, not an input error; judicial rejects on
+     any
+     count of one or more; > 60 read strictly, so 60 rejects; nothing idempotent
+     across invocations; converted prospects are not persisted.
+
+     Plus the calls settled in this session: validate-lead takes the national ID
+     alone; manual review exposes only review resolve; fixtures carry per-row
+     latency; a bureau hit is a terminal rejection; the cache is consulted at
+     the
+     bureau step rather than short-circuiting the pipeline; exit codes 0
+     converted,
+     1 rejected, 2 pending review, 3 input error; case ID is
+     <nationalId>-<clock-timestamp>, which is also the filename; runtime state
+     lives in a configurable directory defaulting to ./data; no mocking
+     framework.
+
+     States the format for adding more: one line, tagged with the spec that hit
+     it.
+
+     docs/ai/
+
+     - sessions/.gitkeep — session exports land here, NN-slug.txt.
+     - cost.md — one row per spec: session id, requests, cost, what the number
+     includes. Write-only; deliberately not folded into specs/README.md, which
+     is
+     read at the start of every session.
+
+     README.md
+
+     Placeholder. What the project is, that it is built spec by spec, pointers
+     to
+     specs/README.md and docs/. Written in full at spec 08, which the brief
+     requires to cover the whole process, what worked and what did not with AI,
+     and
+     pending improvements.
+
+     .gitignore
+
+     Extend only: data/ for the runtime bureau cache and review queue.
+
+     Deletions
+
+     - docs/RULES.md, once its content is distributed. Its facts must not exist
+     in
+     two places when one of them is re-read every session.
+
+     Verification
+
+     python3 scripts/context-budget.py     # exit 0, every file under budget
+     git status                            # RULES.md deleted, BRAIN.md
+     untouched
+     git diff --stat docs/BRAIN.md         # empty
+
+     Anything over budget is fixed by cutting the file, never by raising the
+     limit.
+
+     Then read CLAUDE.md and docs/PROJECT_CONTEXT.md end to end as a check that
+     they actually route, commit separately from the seed, and export the
+     session to
+     docs/ai/sessions/00-bootstrap.txt.
+
+     Known issue, not fixed in this session
+
+     scripts/cost.py and scripts/context-budget.py --measured resolve session
+     logs to ~/.claude/projects/<slug>. This machine sets
+     CLAUDE_CONFIG_DIR=/Users/qohat/.claude-ans; ~/.claude/projects/ has no
+     entry
+     for this repo and the logs are under ~/.claude-ans/projects/. cost.py will
+     exit with "no session logs" at the first closeout. One-line fix
+     (os.environ.get("CLAUDE_CONFIG_DIR", "~/.claude")), deferred because this
+     session writes no code.
+
+⏺ Creating the files. Starting with the four budgeted ones.
+
+⏺ Write(CLAUDE.md)
+  ⎿  Wrote 36 lines to CLAUDE.md
+       1 # Addi lead validation challenge
+       3 A CLI that qualifies a sales lead into a prospect by running fou
+         r validations:
+         pliance bureau,
+       5 then a qualification score. Java 25, Gradle, single module, no f
+       6 
+       7 ## Hard constraints
+       9 - Java 25 with `--enable-preview`. `StructuredTaskScope.open()`,
+          never the Java 21 API.
+          in a composition root.
+     … +43 lines (ctrl+o to expand)
+
+⏺ Write(docs/PROJECT_CONTEXT.md)
+  ⎿  Wrote 132 lines to docs/PROJECT_CONTEXT.md
+       1 # Project context
+       3 What the brief demands, what was added on top of it, and what ha
+         s already been
+       4 decided about the problem. Code style is in `CONTRIBUTING.md` an
+       5 repeated here. The reasoning behind each decision is in `docs/ad
+         r/`; this file
+       7 
+       8 ## What the brief requires
+       9 
+         his order:
+     … +186 lines (ctrl+o to expand)
+
+⏺ Write(AGENTS.md)
+  ⎿  Wrote 93 lines to AGENTS.md
+      1 # Operating rules
+      2 
+      3 Read at the start of a session. Style rules are in `CONTRIBUTING.
+        md` and get
+      4 read later, when there is Java to write.
+      6 ## Boundaries
+      7 
+      8 Permissions are skipped so the speed of this approach survives, w
+        hich makes
+      9 these rules rather than intentions.
+     … +111 lines (ctrl+o to expand)
+⏺ Write(CONTRIBUTING.md)
+  ⎿  Wrote 111 lines to CONTRIBUTING.md
+       1 # Code style
+       2 
+         its reason,
+       4 because a rule with a reason gets applied correctly in cases nob
+         ody anticipated
+       6 
+       7 Read this when there is Java to write. Not while planning, readi
+         ng tests or
+       9 
+      10 ## Types
+     … +146 lines (ctrl+o to expand)
+
+  Ran 1 shell command (ctrl+o to expand)
+
+⏺ Update(docs/PROJECT_CONTEXT.md)
+  ⎿  Removed 5 lines
+      125  
+      126  Runtime state — the bureau cache and the review queue — lives 
+           in a configurable
+      127  directory, `./data` by default, and is gitignored.
+      128 -                                                              
+      129 -## Not building                                               
+      130 -                                                              
+      131 -No UI, no client-server, no external database, no message queu
+          -e, no framework,                                              
+      132 -no ORM, no mocking framework.                                 
+
+⏺ Update(docs/PROJECT_CONTEXT.md)
+  ⎿  Added 2 lines, removed 4 lines
+       94  case with a later checkpoint. An analyst approval is never wri
+           tten to the bureau
+       95  cache — it is not a bureau response and must not expire on a T
+           TL. Approving a
+       96  pending score step re-runs the score port, because an analyst 
+           cannot attest a
+       97 -number.                                                       
+       97 +number. It is a product feature serving an analyst at Addi, ve
+          +rified by tests                                               
+       98 +like everything else and never exercised by hand.             
+       99  
+       99 -**Manual review is a product feature**, serving an analyst at 
+          -Addi. Like                                                    
+      100 -everything else it is verified by tests, never exercised by ha
+          -nd.                                                           
+      101 -                                                              
+      100  **Nothing is idempotent across invocations.** Running the same
+            lead twice runs
+      101  the pipeline twice; only the bureau cache short-circuits work.
+            Converted
+      102  prospects are not persisted — the local database is in-memory 
+           and the process is
+
+⏺ Update(docs/PROJECT_CONTEXT.md)
+  ⎿  Removed 2 lines
+      31  
+      32  ## What is mine, not the brief's
+      33  
+      34 -Labelled so a reviewer can tell them apart. Each has to earn it
+         -s place.                                                       
+      35 -                                                               
+      34  - Docker, so a reviewer can run the CLI without installing JDK 
+          25. It never
+      35    becomes a dependency of the build or the tests (ADR 0007).
+      36  - CI, running the same aggregate `check` task that runs locally
+          .
+
+  Ran 1 shell command (ctrl+o to expand)
+
+⏺ Update(docs/PROJECT_CONTEXT.md)
+  ⎿  Added 3 lines, removed 4 lines
+      1  # Project context
+      2  
+      3 -What the brief demands, what was added on top of it, and what ha
+        -s already been                                                  
+      4 -decided about the problem. Code style is in `CONTRIBUTING.md` an
+        -d is not                                                        
+      5 -repeated here. The reasoning behind each decision is in `docs/ad
+        -r/`; this file                                                  
+      6 -states decisions and never re-argues them.                      
+      3 +What the brief demands, what was added on top of it, and what is
+        + already decided                                                
+      4 +about the problem. Style lives in `CONTRIBUTING.md`, reasoning i
+        +n `docs/adr/`;                                                  
+      5 +this file states decisions and never re-argues them.            
+      6  
+      7  ## What the brief requires
+      8  
+
+⏺ Update(docs/PROJECT_CONTEXT.md)
+  ⎿  Added 2 lines, removed 2 lines
+      104  ## The CLI surface
+      105  
+      106  Minimal on purpose: the brief says a simple CLI is sufficient 
+           and rules out a
+      107 -UI. Each command gets its argument parsing in the spec that gi
+          -ves it behaviour,                                             
+      108 -so no flag exists before the behaviour behind it.             
+      107 +UI. Each command gets its parsing in the spec that gives it be
+          +haviour, so no                                                
+      108 +flag exists before the behaviour behind it.                   
+      109  
+      110  - `validate-lead --id <nationalId>` — the lead already exists 
+           in the CRM, which
+      111    is the local database, so the ID selects the record and ever
+           y other field is
+
+⏺ Update(docs/PROJECT_CONTEXT.md)
+  ⎿  Added 4 lines, removed 5 lines
+      69  **Bureau cache**: flat file keyed by national ID, TTL defaultin
+          g to 24h and
+      70  configurable, written atomically. Only terminal outcomes are ca
+          ched; an
+      71  unavailable bureau never is, because caching an outage turns a 
+          transient failure
+      72 -into a permanent one. A corrupt file is simply not a valid cach
+         -e (ADR 0003).                                                  
+      72 +into a permanent one. A corrupt file is simply not a valid cach
+         +e (ADR 0003). A                                                
+      73 +sanctions hit is a terminal rejection and is cached. The cache 
+         +is read at the                                                 
+      74 +bureau step, not as a pipeline-level short-circuit, because the
+         + brief fixes the                                               
+      75 +dependency order.                                              
+      76  
+      74 -**A bureau sanctions hit is a terminal rejection**, and is cach
+         -ed. The cache is                                               
+      75 -read at the bureau step, not as a pipeline-level short-circuit,
+         - because the                                                   
+      76 -brief fixes the dependency order.                              
+      77 -                                                               
+      77  **Registry and judicial run under a scope-level timeout**, defa
+          ult 2s and
+      78  configurable. On timeout the scope cancels both branches and bo
+          th report a
+      79  timeout. A timeout is a failure of the outside world, never a r
+          ejection
+
+  Ran 1 shell command (ctrl+o to expand)
+
+⏺ Update(docs/PROJECT_CONTEXT.md)
+  ⎿  Added 1 line, removed 1 line
+      46  claim. The comparison is the local database record against the 
+          external registry
+      47  record, keyed by national ID, on birthdate, first name and last
+           name.
+      48  
+      49 -**Email is not part of the match.** A civil registry does not h
+         -old email                                                      
+      49 +**Email is not part of the match** — a civil registry does not 
+         +hold email                                                     
+      50  addresses. It is format-validated when the local database is se
+          eded, and carried
+      51  onto the prospect.
+      52  
+
+⏺ Update(docs/PROJECT_CONTEXT.md)
+  ⎿  Added 1 line, removed 2 lines
+      76  
+      77  **Registry and judicial run under a scope-level timeout**, defa
+          ult 2s and
+      78  configurable. On timeout the scope cancels both branches and bo
+          th report a
+      79 -timeout. A timeout is a failure of the outside world, never a r
+         -ejection                                                       
+      80 -(ADR 0005).                                                    
+      79 +timeout — a failure of the outside world, never a rejection (AD
+         +R 0005).                                                       
+      80  
+      81  **Manual review is a resume, not an override** (ADR 0004). Appr
+          oving means an
+      82  analyst verified the failed step out of band and it came back c
+          lean — not that
+
+  Ran 1 shell command (ctrl+o to expand)
+
+⏺ Exactly at budget — too tight. Shaving headroom.
+
+⏺ Update(docs/PROJECT_CONTEXT.md)
+  ⎿  Added 1 line, removed 2 lines
+      33  - Docker, so a reviewer can run the CLI without installing JDK 
+          25. It never
+      34    becomes a dependency of the build or the tests (ADR 0007).
+      35  - CI, running the same aggregate `check` task that runs locally
+          .
+      36 -- ADRs and this context layer.                                 
+      37 -- A `demo` command exercising every outcome path.              
+      36 +- ADRs, this context layer, and a `demo` command covering every
+         + outcome path.                                                 
+      37  - The semantics of manual review, which the brief names but nev
+          er defines
+      38    (ADR 0004).
+      39  
+
+⏺ Update(docs/PROJECT_CONTEXT.md)
+  ⎿  Added 2 lines, removed 4 lines
+      113  
+      114  Exit codes are part of the contract, so a script can branch on
+            the decision
+      115  without parsing text: 0 converted, 1 rejected, 2 pending manua
+           l review, 3 input
+      116 -error.                                                        
+      117 -                                                              
+      118 -Runtime state — the bureau cache and the review queue — lives 
+          -in a configurable                                             
+      119 -directory, `./data` by default, and is gitignored.            
+      116 +error. Runtime state — the bureau cache and the review queue —
+          + lives in a                                                   
+      117 +configurable directory, `./data` by default, and is gitignored
+          +.                                                             
+
+⏺ Now the spec queue, skills, ADRs and remaining docs.
+
+⏺ Write(specs/README.md)
+  ⎿  Wrote 92 lines to specs/README.md
+       1 # Spec queue
+       2 
+         of the code that
+       4 could be deployed the day it merges — not a milestone, not a che
+         ckpoint,
+       6 
+       7 Status is the source of truth for where the project is. A new se
+         ssion reads this
+       9 
+      10 | # | Title | Depends on | Effort | Status |
+     … +125 lines (ctrl+o to expand)
+
+⏺ Write(.claude/skills/create-spec/SKILL.md)
+  ⎿  Wrote 56 lines to .claude/skills/create-spec/SKILL.md
+       1 ---
+       3 description: Write the next spec in specs/README.md and commit i
+         t to main on its own. Use at the end of a session that implement
+         lan a spec.
+       4 ---
+       6 # Write a spec
+       7 
+         t merges. Write
+       9 it at the end of the session that implemented the previous one, 
+      10 of the code is actually known.
+     … +68 lines (ctrl+o to expand)
+
+⏺ Write(.claude/skills/run-spec/SKILL.md)
+  ⎿  Wrote 76 lines to .claude/skills/run-spec/SKILL.md
+       1 ---
+       3 description: Close out the previous spec and implement the next 
+         one in a worktree, tests first, ending at an open PR. Use at the
+          start of a session that is going to build a spec, or when the u
+       4 ---
+       5 
+       7 
+       8 One spec, one session. Close the previous one first, then build 
+         this one.
+      10 ## 1. Close out the previous spec
+     … +93 lines (ctrl+o to expand)
+
+⏺ Now the ADRs.
+
+⏺ Write(docs/adr/0000-template.md)
+  ⎿  Wrote 26 lines to docs/adr/0000-template.md
+       1 # NNNN. Title
+       2 
+       3 Status: proposed | accepted | superseded by ADR-NNNN
+       5 Spec: NN
+       6 
+       7 ## Context
+       8 
+         ious default —
+      10 a constraint from the brief, a property that has to hold, a cost
+          that has to be
+     … +22 lines (ctrl+o to expand)
+⏺ Write(docs/adr/0001-hexagonal-with-a-hand-wired-composition-root.md)
+  ⎿  Wrote 56 lines to
+     docs/adr/0001-hexagonal-with-a-hand-wired-composition-root.md
+       1 # 0001. Hexagonal architecture with a hand-wired composition roo
+         t
+       3 Status: accepted
+       4 Date: 2026-08-16
+       5 Spec: bootstrap
+       7 ## Context
+       8 
+       9 The brief asks for a CLI that orchestrates four external systems
+      10 exist. Every one of them has to be simulated now and could plaus
+         ibly be real
+     … +72 lines (ctrl+o to expand)
+
+⏺ Write(docs/adr/0002-structured-concurrency-for-the-parallel-stage.md)
+  ⎿  Wrote 76 lines to
+     docs/adr/0002-structured-concurrency-for-the-parallel-stage.md
+       1 # 0002. Java 25 preview structured concurrency for the parallel 
+         stage
+       3 Status: accepted
+       4 Date: 2026-08-16
+       5 Spec: bootstrap
+       7 ## Context
+       8 
+       9 The brief makes parallelism a hard requirement: registry and jud
+      10 non-dependent and must execute in parallel, and the bureau requi
+         res both to have
+     … +99 lines (ctrl+o to expand)
+
+⏺ Write(docs/adr/0003-persistence-without-a-database.md)
+  ⎿  Wrote 81 lines to docs/adr/0003-persistence-without-a-database.md
+       1 # 0003. Persistence without a database
+       2 
+       3 Status: accepted
+       5 Spec: bootstrap
+       6 
+       7 ## Context
+       8 
+         es and message
+      10 queues, and it asks for a "simple Persistent/Durable mechanism" 
+         for the
+     … +111 lines (ctrl+o to expand)
+
+⏺ Write(docs/adr/0004-manual-review-is-a-resume-not-an-override.md)
+  ⎿  Wrote 87 lines to
+     docs/adr/0004-manual-review-is-a-resume-not-an-override.md
+       1 # 0004. Manual review is a resume, not an override
+       2 
+       3 Status: accepted
+       5 Spec: bootstrap
+       6 
+       7 ## Context
+       8 
+         by gracefully
+      10 handling the failure or triggering a manual review flow." That i
+         s the entire
+     … +117 lines (ctrl+o to expand)
+
+⏺ Write(docs/adr/0005-failure-taxonomy.md)
+  ⎿  Wrote 77 lines to docs/adr/0005-failure-taxonomy.md
+       1 # 0005. Failure taxonomy: rejection and unavailability are diffe
+         rent
+       3 Status: accepted
+       4 Date: 2026-08-16
+       5 Spec: bootstrap
+       7 ## Context
+       8 
+       9 Every step in this pipeline can fail in two unrelated ways. The 
+      10 report that the person's data does not match, or the registry ca
+         n be
+     … +103 lines (ctrl+o to expand)
+
+⏺ Write(docs/adr/0006-determinism-is-a-test-property.md)
+  ⎿  Wrote 75 lines to docs/adr/0006-determinism-is-a-test-property.md
+       1 # 0006. Determinism is a test property, not a business one
+       2 
+       3 Status: accepted
+       5 Spec: bootstrap
+       6 
+       7 ## Context
+       8 
+         ncidental to it:
+      10 the qualification score is "a random score between 0 and 100", t
+         he external
+     … +104 lines (ctrl+o to expand)
+
+⏺ Write(docs/adr/0007-docker-as-a-reviewer-convenience.md)
+  ⎿  Wrote 60 lines to docs/adr/0007-docker-as-a-reviewer-convenience.md
+       1 # 0007. Docker is a reviewer convenience, never a build dependen
+         cy
+       3 Status: accepted
+       4 Date: 2026-08-16
+       5 Spec: 00
+       7 ## Context
+       8 
+       9 The brief does not ask for Docker. It exists because of ADR 0002
+      10 targets Java 25 with `--enable-preview`, and a reviewer without 
+         that exact JDK
+     … +74 lines (ctrl+o to expand)
+
+⏺ Now the assumptions log, cost table, session directory, and README
+  placeholder.
+
+⏺ Write(docs/assumptions.md)
+  ⎿  Wrote 61 lines to docs/assumptions.md
+      1 # Assumptions
+      2 
+      3 One-line calls made where the brief or the requirements were sile
+        nt. A decision
+      4 that needed reasoning is an ADR instead; if an entry here starts 
+      5 paragraph, it belongs in `docs/adr/`.
+      6 
+      7 Format, one line each:
+      8 
+      9     - **Statement of the call.** Why, in one clause. `[tag]`
+     … +84 lines (ctrl+o to expand)
+
+⏺ Write(docs/ai/cost.md)
+  ⎿  Wrote 28 lines to docs/ai/cost.md
+      1 # Cost per spec
+      2 
+        ing a model to
+      4 read its own logs. The logs write one record per content block of
+         the same API
+         script dedups
+      6 by `requestId` and prices cache writes by TTL.
+      7 
+        t is its
+      9 session's cost and there are no overlapping windows to carve up.
+     … +27 lines (ctrl+o to expand)
+
+  Ran 1 shell command (ctrl+o to expand)
+
+⏺ Write(README.md)
+  ⎿  Wrote 32 lines to README.md
+       1 # Addi lead validation challenge
+       3 A CLI that qualifies a sales lead into a prospect. Four validati
+         ons run in the
+          parallel, then
+          score.
+       6 
+         tructure.
+       8 
+         08, once there
+         ns, the
+     … +35 lines (ctrl+o to expand)
+
+⏺ Update(.gitignore)
+  ⎿  Added 3 lines
+       7  # Worktrees — one per spec
+       8  .trees/
+       9  
+      10 +# Runtime state — bureau cache and review queue                
+      11 +data/                                                          
+      12 +                                                               
+      13  # IDE
+      14  .idea/
+      15  *.iml
+
+⏺ Now delete RULES.md and verify.
+
+  Read 2 files, ran 2 shell commands (ctrl+o to expand)
+
+⏺ Two inconsistencies from reading them through. Fixing.
+
+⏺ Update(docs/PROJECT_CONTEXT.md)
+  ⎿  Added 3 lines, removed 3 lines
+      41  
+      42  **Four validations, not three.** The brief says three and then 
+          lists four.
+      43  
+      44 -**Registry compares two records, not three.** The CLI input is 
+         -an identity                                                    
+      45 -claim. The comparison is the local database record against the 
+         -external registry                                              
+      46 -record, keyed by national ID, on birthdate, first name and last
+         - name.                                                         
+      44 +**Registry compares the local database record against the exter
+         +nal registry                                                   
+      45 +record**, keyed by national ID, on birthdate, first name and la
+         +st name. The CLI                                               
+      46 +supplies only the ID; it is an identity claim, not a third set 
+         +of data.                                                       
+      47  
+      48  **Email is not part of the match** — a civil registry does not 
+          hold email
+      49  addresses. It is format-validated when the local database is se
+          eded, and carried
+
+⏺ Update(CLAUDE.md)
+  ⎿  Added 3 lines, removed 2 lines
+      26  
+      27  ## Orienting a new session
+      28  
+      29 -This file loads itself. Then `specs/README.md` for state, the a
+         -ssigned spec for                                               
+      30 -the task, `git log --oneline -15` for what just happened. Nothi
+         -ng else.                                                       
+      29 +This file loads itself. Then `AGENTS.md` for how to work, `spec
+         +s/README.md` for                                               
+      30 +state, the assigned spec for the task, and `git log --oneline -
+         +15` for what just                                              
+      31 +happened. Nothing else.                                        
+      32  
+      33  ## Budgets
+      34  
+
+  Ran 1 shell command (ctrl+o to expand)
+
+⏺ Committing separately from the seed.
+
+  Ran 2 shell commands (ctrl+o to expand)
+
+⏺ Done. Final state:
+
+  Ran 1 shell command (ctrl+o to expand)
+
+⏺ Bootstrap committed as 8844854, separate from the seed. Budgets pass, RULES.md
+  deleted, BRAIN.md untouched, nothing from the build.
+
+  Two things left for you:
+
+  1. Export the session. I can't run /export from a tool call — run it yourself:
+
+  /export docs/ai/sessions/00-bootstrap.txt
+
+  2. scripts/cost.py will fail at the first closeout. Both scripts resolve logs
+  to ~/.claude/projects/<slug>, which doesn't exist here — CLAUDE_CONFIG_DIR is
+  ~/.claude-ans. One line in project_dir() and measured():
+
+  pathlib.Path(os.environ.get("CLAUDE_CONFIG_DIR", pathlib.Path.home() /
+  ".claude")) / "projects" / slug
+
+  Say the word and I'll do it, or fold it into spec 00.
+
+  Two judgement calls worth flagging, both recorded rather than silent:
+
+  - Cost goes in docs/ai/cost.md, not a column in specs/README.md. Cost is
+  write-only data; the queue is read at the start of every session. Mixing them
+  puts bytes nobody reads into a file everyone loads.
+  - Score before manual review, against the grouping in RULES.md. Approving a
+  pending score step re-runs the score port, so the rule has to exist before
+  resume can be specified. Reasoning is in specs/README.md.
+
+  .claude/skills/ isn't in the budget script. A SKILL.md loads into context when
+  invoked, so it's a layer-1 file with no limit watching it — worth two entries
+  in BUDGETS if you agree.
+✻ Churned for 14m 24s
+
+❯ One — fix the config dir now, not in spec 00. The first closeout runs at the  
+  start of session 01, so the script has to work before spec 00 exists.         
+                                                                                
+  Your patch only works when the variable is set in the shell that runs the     
+  script. If I run it from a plain terminal it breaks again. Make it resolve by 
+  candidates instead: try CLAUDE_CONFIG_DIR if it's set, then ~/.claude-ans,    
+  then ~/.claude, and use the first one that actually contains a projects       
+  directory for this repo. Fall back to the first candidate so the error        
+  message still points somewhere useful. Same logic in both places. Verify with 
+  cost.py --list — this session is about $6.40 across 62 requests, so if the    
+  number comes out wildly different the resolution is still wrong.              
+                                                                                
+  Two — cost in its own file is the right call, but not for the reason you      
+  gave. Eight rows of dollar amounts is about fifty bytes; that isn't a context 
+  problem and I don't want it recorded as if it were. The real reason is that   
+  a dedicated file can hold the full per-spec table — tokens, breakdown, and    
+  the note about what the number actually includes — and that's the part a      
+  reviewer wants to see. None of that fits in a column. The queue keeps status  
+  and dependencies, which is what's operational. Correct the reasoning where    
+  you wrote it down.                                                            
+                                                                                
+  Three — score before manual review, agreed, and I had it wrong. Approving a   
+  pending score step re-runs the port and the rule still applies, so the rule   
+  has to exist before resume can be specified. Leave it as you have it.         
+                                                                                
+  Four — skills in the budget, agreed, 120 lines each. Add one thing where you  
+  document it: the frontmatter description is always resident, because that's   
+  what decides whether the skill gets invoked at all. Only the body loads on    
+  invocation. So the description gets written short and precise for the same    
+  reason CLAUDE.md is short — say that explicitly so neither of us pads it      
+  later.                                                                        
+                                                                                
+  Once those are in, run the budget script and show me the output, then stop.   
+  I'll read CLAUDE.md and PROJECT_CONTEXT.md myself before we commit.           
+
+⏺ Four items. Starting with the scripts.
+
+⏺ Update(scripts/cost.py)
+  ⎿  Added 1 line, removed 1 line
+      10      scripts/cost.py --since 2026-08-15T18:39:20Z --until 2026-0
+          8-15T18:47:13Z
+      11  """
+      12  
+      13 -import argparse, json, pathlib, sys                            
+      13 +import argparse, json, os, pathlib, sys                        
+      14  from collections import defaultdict
+      15  
+      16  # Per-MTok list prices. Cache read is 0.1x input, 5m cache writ
+          e 1.25x,
+
+⏺ Update(scripts/cost.py)
+  ⎿  Added 15 lines, removed 1 line
+      28  
+      29  
+      30  def project_dir(repo):
+      31 +    """Session logs, resolved by candidate rather than by envir
+         +onment.                                                        
+      32 +                                                               
+      33 +    CLAUDE_CONFIG_DIR is only set inside an agent's own shell, 
+         +so relying on it                                               
+      34 +    breaks the script in a plain terminal. Try it, then the kno
+         +wn config dirs,                                                
+      35 +    and take the first that actually holds logs for this repo. 
+         +Falling back to                                                
+      36 +    the first candidate keeps the "no session logs at ..." erro
+         +r pointing                                                     
+      37 +    somewhere a person can go and look.                        
+      38 +    """                                                        
+      39      slug = str(pathlib.Path(repo).resolve()).replace("/", "-")
+      32 -    return pathlib.Path.home() / ".claude" / "projects" / slug 
+      40 +    configured = os.environ.get("CLAUDE_CONFIG_DIR")           
+      41 +    candidates = [pathlib.Path(configured)] if configured else 
+         +[]                                                             
+      42 +    candidates += [pathlib.Path.home() / ".claude-ans", pathlib
+         +.Path.home() / ".claude"]                                      
+      43 +    for base in candidates:                                    
+      44 +        if (base / "projects" / slug).is_dir():                
+      45 +            return base / "projects" / slug                    
+      46 +    return candidates[0] / "projects" / slug                   
+      47  
+      48  
+      49  def collect(logs, session, since, until):
+
+⏺ Update(scripts/context-budget.py)
+  ⎿  Added 1 line, removed 1 line
+       5      scripts/context-budget.py --measured # first-request contex
+          t per session
+       6  """
+       7  
+       8 -import json, pathlib, sys                                      
+       8 +import json, os, pathlib, sys                                  
+       9  
+      10  # Budgets track how often a file is loaded, not how important i
+          t is.
+      11  #
+
+⏺ Update(scripts/context-budget.py)
+  ⎿  Added 18 lines, removed 2 lines
+      43      return 1 if failed else 0
+      44  
+      45  
+      46 -def measured(repo="."):                                        
+      46 +def project_dir(repo):                                         
+      47 +    """Session logs, resolved by candidate. Same logic as scrip
+         +ts/cost.py.                                                    
+      48 +                                                               
+      49 +    CLAUDE_CONFIG_DIR is only set inside an agent's own shell, 
+         +so relying on it                                               
+      50 +    breaks the script in a plain terminal. Try it, then the kno
+         +wn config dirs,                                                
+      51 +    and take the first that actually holds logs for this repo. 
+      52 +    """                                                        
+      53      slug = str(pathlib.Path(repo).resolve()).replace("/", "-")
+      48 -    logs = pathlib.Path.home() / ".claude" / "projects" / slug 
+      54 +    configured = os.environ.get("CLAUDE_CONFIG_DIR")           
+      55 +    candidates = [pathlib.Path(configured)] if configured else 
+         +[]                                                             
+      56 +    candidates += [pathlib.Path.home() / ".claude-ans", pathlib
+         +.Path.home() / ".claude"]                                      
+      57 +    for base in candidates:                                    
+      58 +        if (base / "projects" / slug).is_dir():                
+      59 +            return base / "projects" / slug                    
+      60 +    return candidates[0] / "projects" / slug                   
+      61 +                                                               
+      62 +                                                               
+      63 +def measured(repo="."):                                        
+      64 +    logs = project_dir(repo)                                   
+      65      print("| Session | Resident context at first request |")
+      66      print("|---|---:|")
+      67      for path in sorted(logs.glob("*.jsonl")):
+
+⏺ Now the skill budget:
+
+⏺ Update(scripts/context-budget.py)
+  ⎿  Added 9 lines
+      13  #   Layer 1  read once per session     -> 120
+      14  #   Layer 2  read once per session     -> 150  (task-specific, 
+          so not waste)
+      15  #
+      16 +# A SKILL.md straddles two layers: its frontmatter description 
+         +is layer 0,                                                    
+      17 +# because it is what decides whether the skill gets invoked at 
+         +all, while the                                                 
+      18 +# body is layer 1 and only loads on invocation. Budget the body
+         +; keep the                                                     
+      19 +# description short for the same reason CLAUDE.md is short. See
+         + AGENTS.md.                                                    
+      20 +#                                                              
+      21  BUDGETS = {
+      22      "CLAUDE.md":                40,   # layer 0
+      23      "AGENTS.md":               120,   # layer 1
+      24      "CONTRIBUTING.md":         120,   # layer 1
+      25      "docs/PROJECT_CONTEXT.md": 120,   # layer 1
+      26  }
+      27 +SKILL_BUDGET = 120                    # layer 1, one per .claud
+         +e/skills/*/                                                    
+      28  SPEC_BUDGET = 150                     # layer 2
+      29  
+      30 +BUDGETS.update({str(p): SKILL_BUDGET                           
+      31 +                for p in pathlib.Path(".claude/skills").glob("*
+         +/SKILL.md")})                                                  
+      32  
+      33 +                                                               
+      34  def check():
+      35      failed = False
+      36      for path, limit in sorted(BUDGETS.items()):
+
+⏺ Verifying the resolution against your figures:
+
+  Ran 1 shell command (ctrl+o to expand)
+
+⏺ 61 requests / $6.03 for 9c968601 (this session), and identical output with
+  CLAUDE_CONFIG_DIR unset. Your 62/$6.40 is the same session with the in-flight
+  request not yet flushed to the log. Resolution is right.
+
+  Ran 1 shell command (ctrl+o to expand)
+
+⏺ Both scripts fixed. Now the cost.md reasoning — replacing mine with yours.
+
+⏺ Write(docs/ai/cost.md)
+  ⎿  Added 21 lines, removed 5 lines
+       3  Computed by `scripts/cost.py` from the session logs, never by a
+          sking a model to
+       4  read its own logs. The logs write one record per content block 
+          of the same API
+       5  response, so summing them naively roughly doubles the number; t
+          he script dedups
+       6 -by `requestId` and prices cache writes by TTL.                 
+       6 +by `requestId` and prices cache writes by TTL, since 5-minute a
+         +nd 1-hour writes                                               
+       7 +are 1.25x and 2x input and confusing them is a 60% error on tha
+         +t line.                                                        
+       8  
+       9  One session per spec means one log file per spec, so a spec's c
+          ost is its
+      10  session's cost and there are no overlapping windows to carve up
+          .
+     ...
+      12  Filled in at the *start* of the next session by `/run-spec`, be
+          cause a session's
+      13  log is not complete until that session has closed.
+      14  
+      14 -| Spec | Session | Model | Requests | Cost | Notes |           
+      15 -|---|---|---|---:|---:|---|                                    
+      15 +## Why this is its own file                                    
+      16 +                                                               
+      17 +Not for context reasons — eight rows of dollar amounts is about
+         + fifty bytes, and                                              
+      18 +recording it as a budget problem would be wrong. It is here bec
+         +ause the useful                                                
+      19 +artefact is the full per-spec breakdown: the token split across
+         + input, output,                                                
+      20 +cache read and cache write, and the note on what each number ac
+         +tually includes.                                               
+      21 +That is what a reviewer wants to see and none of it fits in a c
+         +olumn.                                                         
+      22 +`specs/README.md` keeps status and dependencies, which is the o
+         +perational half.                                               
+      23 +                                                               
+      24 +## Summary                                                     
+      25 +                                                               
+      26 +| Spec | Session | Model | Requests | Tokens | Cost |          
+      27 +|---|---|---|---:|---:|---:|                                   
+      28  | | | | | | |
+      29  
+      30 +## Breakdown                                                   
+      31 +                                                               
+      32 +One section per spec, holding the table `scripts/cost.py --sess
+         +ion <id>` prints.                                              
+      33 +                                                               
+      34  ## What the number includes
+      35  
+      36  With one session per spec, each figure measures session overhea
+          d — orientation,
+     ...
+      38  would be worse than the overhead itself.
+      39  
+      40  Cache reads dominate. On the previous project 96.5% of tokens w
+          ere cache reads
+      25 -and 0.5% were output, which is why the context budgets in      
+      26 -`scripts/context-budget.py` exist at all.                      
+      41 +and 0.5% were output, which is why the budgets in `scripts/cont
+         +ext-budget.py`                                                 
+      42 +exist at all.                                                  
+      43  
+      44  Measured resident context per session: `python3 scripts/context
+          -budget.py --measured`.
+
+⏺ Update(.claude/skills/run-spec/SKILL.md)
+  ⎿  Added 2 lines, removed 2 lines
+      18  
+      19  Then:
+      20  
+      21 -- Append a row to `docs/ai/cost.md`: spec, session id, model, r
+         -equests, cost,                                                 
+      22 -  and one line on what the number includes. With one session pe
+         -r spec it                                                      
+      21 +- Add the spec to `docs/ai/cost.md`: a summary row, and the bre
+         +akdown table the                                               
+      22 +  script prints, under its own heading. With one session per sp
+         +ec the figure                                                  
+      23    measures session overhead as much as implementation; say so r
+          ather than
+      24    pretending otherwise.
+      25  - Set the previous spec's row in `specs/README.md` to `merged`.
+
+⏺ Now the skill-frontmatter point, in AGENTS.md:
+
+⏺ Update(AGENTS.md)
+  ⎿  Added 12 lines
+       84  | Questioning a decision | `docs/adr/` |
+       85  | Hitting an ambiguity | `docs/assumptions.md`, then add a lin
+           e to it |
+       86  
+       87 +## Writing a skill                                            
+       88 +                                                              
+       89 +A `SKILL.md` straddles two layers and the split decides how it
+          + is written.                                                  
+       90 +                                                              
+       91 +The **frontmatter description is always resident**. It is what
+          + decides whether                                              
+       92 +the skill gets invoked at all, so it is loaded on every reques
+          +t whether or not                                              
+       93 +it fires — the same position as `CLAUDE.md`. Write it short an
+          +d precise, and                                                
+       94 +resist padding it for the same reason the router is under 40 l
+          +ines.                                                         
+       95 +                                                              
+       96 +The **body loads only on invocation**, so it is layer 1 and bu
+          +dgeted at 120                                                 
+       97 +lines by `scripts/context-budget.py` like the other once-per-s
+          +ession files.                                                 
+       98 +                                                              
+       99  ## Documentation duties
+      100  
+      101  Every spec states whether it needs docs and why; if it says no
+           , nothing is
+
+  Ran 1 shell command (ctrl+o to expand)
+
+⏺ Budget passes with the two skills now tracked. Nothing committed — working
+  tree has the four changes.
+
+  What changed:
+
+  1. Config dir — project_dir() in scripts/cost.py, new project_dir() in
+  scripts/context-budget.py, same candidate logic in both: CLAUDE_CONFIG_DIR if
+  set, then ~/.claude-ans, then ~/.claude, first one holding projects/<slug>
+  wins, falling back to candidate one so the error still names a real path.
+  Verified both with the variable set and with env -u — identical output, and
+  --measured works too.
+
+  2. docs/ai/cost.md — the "why its own file" section now says what you said:
+  fifty bytes is not a context problem, and recording it as one would be wrong.
+  The file exists to hold the full per-spec breakdown — token split across
+  input, output, cache read and cache write, plus the note on what the number
+  includes — none of which fits in a column. Restructured into summary table
+  plus a per-spec breakdown section, and run-spec step 1 now says to paste the
+  script's table rather than append a row.
+
+  3. Left as is.
+
+  4. New ## Writing a skill section in AGENTS.md: frontmatter description is
+  always resident because it decides invocation, body is layer 1 and budgeted at
+  120. Same split noted in the layer comment in context-budget.py, where the
+  budgets are defined.
+
+  One thing on the numbers: 0dd4af1c (7 requests, $1.02) is the earlier session
+  on this repo — the seed commit. If you want spec-level accounting to start
+  clean, docs/ai/cost.md should probably carry it as a seed row rather than
+  silently omitting it.
+
+✻ Sautéed for 2m 24s
+
+! python3 scripts/context-budget.py                                             
+  ⎿    ok    56/120  .claude/skills/create-spec/SKILL.md
+       ok    76/120  .claude/skills/run-spec/SKILL.md
+       ok   105/120  AGENTS.md
+       ok    37/40   CLAUDE.md
+       ok   111/120  CONTRIBUTING.md
+       ok   117/120  docs/PROJECT_CONTEXT.md
+
+⏺ Matches. Holding — nothing staged, waiting on your read of CLAUDE.md and
+  docs/PROJECT_CONTEXT.md before the commit.
+
+✻ Cooked for 7s

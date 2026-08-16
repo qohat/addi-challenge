@@ -84,6 +84,18 @@ The codebase is queried, not read.
 | Questioning a decision | `docs/adr/` |
 | Hitting an ambiguity | `docs/assumptions.md`, then add a line to it |
 
+## Writing a skill
+
+A `SKILL.md` straddles two layers and the split decides how it is written.
+
+The **frontmatter description is always resident**. It is what decides whether
+the skill gets invoked at all, so it is loaded on every request whether or not
+it fires — the same position as `CLAUDE.md`. Write it short and precise, and
+resist padding it for the same reason the router is under 40 lines.
+
+The **body loads only on invocation**, so it is layer 1 and budgeted at 120
+lines by `scripts/context-budget.py` like the other once-per-session files.
+
 ## Documentation duties
 
 Every spec states whether it needs docs and why; if it says no, nothing is

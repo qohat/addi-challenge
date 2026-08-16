@@ -10,7 +10,7 @@ Dedup by `requestId` first.
     scripts/cost.py --since 2026-08-15T18:39:20Z --until 2026-08-15T18:47:13Z
 """
 
-import argparse, json, pathlib, sys
+import argparse, json, os, pathlib, sys
 from collections import defaultdict
 
 # Per-MTok list prices. Cache read is 0.1x input, 5m cache write 1.25x,
@@ -28,8 +28,22 @@ FIELDS = ("input", "output", "cache_read", "cache_write_5m", "cache_write_1h")
 
 
 def project_dir(repo):
+    """Session logs, resolved by candidate rather than by environment.
+
+    CLAUDE_CONFIG_DIR is only set inside an agent's own shell, so relying on it
+    breaks the script in a plain terminal. Try it, then the known config dirs,
+    and take the first that actually holds logs for this repo. Falling back to
+    the first candidate keeps the "no session logs at ..." error pointing
+    somewhere a person can go and look.
+    """
     slug = str(pathlib.Path(repo).resolve()).replace("/", "-")
-    return pathlib.Path.home() / ".claude" / "projects" / slug
+    configured = os.environ.get("CLAUDE_CONFIG_DIR")
+    candidates = [pathlib.Path(configured)] if configured else []
+    candidates += [pathlib.Path.home() / ".claude-ans", pathlib.Path.home() / ".claude"]
+    for base in candidates:
+        if (base / "projects" / slug).is_dir():
+            return base / "projects" / slug
+    return candidates[0] / "projects" / slug
 
 
 def collect(logs, session, since, until):

@@ -18,8 +18,8 @@ session that did the work.
 
 Then:
 
-- Append a row to `docs/ai/cost.md`: spec, session id, model, requests, cost,
-  and one line on what the number includes. With one session per spec it
+- Add the spec to `docs/ai/cost.md`: a summary row, and the breakdown table the
+  script prints, under its own heading. With one session per spec the figure
   measures session overhead as much as implementation; say so rather than
   pretending otherwise.
 - Set the previous spec's row in `specs/README.md` to `merged`.
