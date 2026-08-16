@@ -1,0 +1,79 @@
+Session 00 — bootstrap. Opus, plan mode, launched with --strict-mcp-config.
+
+---
+
+Read docs/brief.md, docs/BRAIN.md and docs/RULES.md.
+
+BRAIN.md is how I think and how I work — it carries over between projects.
+RULES.md is what I've decided for this one. Take both as settled unless you
+think something is wrong, in which case argue with me now rather than after we
+start.
+
+Before you propose anything: tell me where the brief is ambiguous in a way those
+two files don't already resolve, and where they leave something you'd otherwise
+have to guess. I'd rather settle it here than find out in spec 04.
+
+Then plan the repo bootstrap. What I want out of it:
+
+- CLAUDE.md — the only always-loaded file. A router: what this project is,
+  pointers to the rest, the hard technical constraints. Under 40 lines, because
+  every line there is re-read on every request.
+- docs/PROJECT_CONTEXT.md — the project itself: what the brief requires, what I
+  chose on top of it and labelled as mine, and the decisions already made about
+  the problem. Under 120 lines. Point at CONTRIBUTING.md for style instead of
+  repeating it.
+- AGENTS.md — operating rules, boundaries, Gradle commands, how to read a
+  failing test without re-running the suite, and how to search without burning
+  context: Grep for usages, Glob for paths, Read with an offset for a slice, a
+  subagent when the search is wide and the answer is small, never a directory
+  tree. Include the boundary exception letting scripts/cost.py read session logs
+  outside the repo root.
+- CONTRIBUTING.md — the code style from BRAIN.md, made concrete for Java 25,
+  each rule stated with its reasoning. A rule with a reason gets applied
+  correctly in cases I didn't anticipate; a bare prohibition gets applied
+  literally and wrongly.
+- specs/README.md — the spec queue: titles, dependencies, priority, status, and
+  the reasoning for the order. Titles only, no spec files yet.
+- .claude/skills/create-spec/SKILL.md and .claude/skills/run-spec/SKILL.md — one
+  writes a spec, the other executes a spec and closes out the previous one,
+  including running scripts/cost.py for the previous session.
+- docs/adr/ — a template, plus an ADR for each decision in RULES.md that needed
+  reasoning rather than a one-liner. Manual-review-as-resume and the bureau
+  cache design are the obvious two.
+- docs/assumptions.md — seeded with the one-line calls from RULES.md tagged
+  [brief], and the format for adding more.
+- docs/ai/sessions/.gitkeep and a placeholder README.md.
+
+Constraints:
+
+- Nothing from the build: no Gradle files, no Dockerfile, no CI workflow, no
+  src/. Those are spec 00 and the git history has to show them being built.
+- No MCP servers, ever, and no .mcp.json.
+- Don't write specs and don't write code.
+- Everything in English.
+- Leave BRAIN.md alone — it's mine and it outlives this repo. Delete RULES.md
+  when you're done: its content will live in the files above, the first commit
+  keeps it in history, and I don't want two copies of the same facts when one of
+  them gets re-read every session.
+- .gitignore already exists — extend it if you need to, don't replace it.
+
+When the plan is approved, create the files and run
+`python3 scripts/context-budget.py`. Anything over budget gets fixed by cutting
+the file, not by raising the limit.
+
+---
+
+Before approving the plan, check two things:
+
+1. Did it tell me where my rules leave gaps, before proposing files? If it went
+   straight to generating, stop it and ask.
+2. Does the plan include anything from the build (build.gradle.kts, Dockerfile,
+   CI)? If so, cut it — that's spec 00.
+
+After it runs:
+
+    python3 scripts/context-budget.py     # exit 0
+    git status                            # RULES.md deleted, BRAIN.md intact
+
+Then read CLAUDE.md and docs/PROJECT_CONTEXT.md properly, commit separately from
+the seed, and export the session to docs/ai/sessions/00-bootstrap.txt.

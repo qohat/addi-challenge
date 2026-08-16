@@ -1,0 +1,23 @@
+# Build
+build/
+.gradle/
+bin/
+out/
+
+# Worktrees — one per spec
+.trees/
+
+# IDE
+.idea/
+*.iml
+.vscode/
+
+# Local agent state
+.claude/settings.local.json
+
+# OS
+.DS_Store
+
+# Python
+__pycache__/
+*.pyc
