@@ -1,0 +1,15 @@
+Before any specs: I want the domain shapes decided here, not left to whoever executes spec 01. They're what everything else sits on, and spec 01 being high means the executor
+would be inventing them.
+Write an ADR for the domain shapes using the template. Types and cases only — no implementation, no method bodies:
+- the lead and prospect types, and what makes them different
+- the per-step outcome hierarchies for registry, judicial, bureau and score
+- the rejection cause type: the cases it has now, and the ones specs 05 and 06 will add
+- the terminal decision type
+- the four port interfaces
+- the checkpoint type manual review needs to persist
+
+Show explicitly where an unavailable result from any step collapses into pending manual review, and make it obvious that it's one exhaustive switch rather than a rule stated in
+prose.
+
+Then update the queue: spec 01 drops from high to medium, since the shapes are now decided. If you think something still leaves a shape open, say so instead of lowering the
+label.
