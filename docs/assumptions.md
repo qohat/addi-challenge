@@ -64,6 +64,15 @@ reading the brief, before any code existed.
   `src/main/resources`.** Resources live inside the jar, where nothing can point
   a test or the demo at a different directory. `[03]`
 
+## The bureau cache
+
+- **The clock is `java.time.Clock`, not a port of our own.** The standard library
+  already provides the injection point; a `port.Clock` with one `Instant now()`
+  would be that class with the name changed. `[04]`
+- **A cache row that does not parse is dropped by the next write rather than
+  repaired.** It already reads as a miss, and the write rewrites the file whole,
+  so keeping it costs a line of code and buys nothing. `[04]`
+
 ## Bootstrap session
 
 - **`validate-lead` takes the national ID and nothing else.** The lead already

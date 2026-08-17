@@ -1,5 +1,6 @@
 package com.addi.lead;
 
+import com.addi.lead.adapter.CachingComplianceBureau;
 import com.addi.lead.adapter.FixtureComplianceBureau;
 import com.addi.lead.adapter.FixtureJudicialRecords;
 import com.addi.lead.adapter.FixtureNationalRegistry;
@@ -12,6 +13,7 @@ import com.addi.lead.app.Pipeline;
 import com.addi.lead.cli.Cli;
 import com.addi.lead.domain.Decision;
 import java.io.PrintStream;
+import java.time.Clock;
 
 /**
  * The composition root and the exit codes, and nothing else. stdout carries the decision line and
@@ -48,7 +50,11 @@ public final class Main {
         var leads = InMemoryLeadRepository.fromFixtures(fixtures);
         var registry = new FixtureNationalRegistry(fixtures, latency);
         var judicial = new FixtureJudicialRecords(fixtures, latency);
-        var bureau = new FixtureComplianceBureau(fixtures, latency);
+        var bureau = new CachingComplianceBureau(
+                new FixtureComplianceBureau(fixtures, latency),
+                config.data().resolve("bureau-cache.csv"),
+                config.bureauCacheTtl(),
+                Clock.systemUTC());
         var score = new FixtureQualificationScore(fixtures, latency, randomness);
         return new Pipeline(config, leads, registry, judicial, bureau, score);
     }
