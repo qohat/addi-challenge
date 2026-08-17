@@ -1,5 +1,7 @@
 package com.addi.lead.cli;
 
+import com.addi.lead.domain.CaseId;
+import com.addi.lead.domain.CaseStatus;
 import com.addi.lead.domain.Decision;
 import com.addi.lead.domain.Decisions;
 import com.addi.lead.domain.NationalId;
@@ -15,14 +17,19 @@ public final class Cli {
     public static final String USAGE =
             """
             Usage:
-              validate-lead --id <nationalId>   Qualify a lead into a prospect.
+              validate-lead --id <nationalId>              Qualify a lead into a prospect.
+              review resolve <case> --approve|--reject     Resolve a case an analyst has reviewed.
 
-            Exit codes: 0 converted, 1 rejected, 2 pending manual review, 3 input error.""";
+            Exit codes: 0 converted, 1 rejected, 2 pending manual review, 3 input error,
+            4 the review case could not be written.""";
 
-    /** A switch over three tokens, not a library. Gains a case per command in specs 06 and 07. */
+    /** A switch over a handful of tokens, not a library. Gains a case per command in spec 07. */
     public sealed interface Invocation {
 
         record ValidateLead(NationalId id) implements Invocation {}
+
+        /** The status the case file gets, which is what a boolean here would not have been. */
+        record ResolveReview(CaseId caseId, CaseStatus resolution) implements Invocation {}
 
         /** Never reaches the decision switch, which is why {@link Decision} has no fourth case. */
         record InputError(String message) implements Invocation {}
@@ -34,7 +41,20 @@ public final class Cli {
         }
         return switch (args[0]) {
             case "validate-lead" -> validateLead(args);
+            case "review" -> review(args);
             default -> new Invocation.InputError("Unknown command: " + args[0]);
+        };
+    }
+
+    /** Four tokens exactly. {@code resolve} is the only subcommand: listing a directory is not one. */
+    private static Invocation review(String[] args) {
+        if (args.length != 4 || !"resolve".equals(args[1])) {
+            return new Invocation.InputError("review takes exactly resolve <case> --approve or --reject.");
+        }
+        return switch (args[3]) {
+            case "--approve" -> new Invocation.ResolveReview(new CaseId(args[2]), CaseStatus.APPROVED);
+            case "--reject" -> new Invocation.ResolveReview(new CaseId(args[2]), CaseStatus.REJECTED);
+            default -> new Invocation.InputError("A case is resolved with --approve or --reject.");
         };
     }
 
@@ -60,6 +80,11 @@ public final class Cli {
         };
     }
 
+    /** A second line, so {@link #render} stays one decision in one line and keeps its signature. */
+    public static String opened(CaseId caseId) {
+        return "Case " + caseId.value() + " opened.";
+    }
+
     /** Gains a case in spec 05 and another in spec 06. No {@code default} to hide either. */
     private static String reason(RejectionCause cause) {
         return switch (cause) {
@@ -71,6 +96,8 @@ public final class Cli {
             case RejectionCause.Sanctioned(var list) -> "sanctioned on the " + list + " list.";
             case RejectionCause.ScoreTooLow(var value) ->
                     "qualification score " + value + " is not above " + Decisions.MINIMUM_SCORE + ".";
+            case RejectionCause.ReviewRejected(var caseId) ->
+                    "manual review case " + caseId.value() + " was rejected by an analyst.";
         };
     }
 

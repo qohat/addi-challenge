@@ -4,6 +4,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 
+import com.addi.lead.domain.CaseId;
+import com.addi.lead.domain.CaseStatus;
 import com.addi.lead.domain.Checkpoint;
 import com.addi.lead.domain.Decision;
 import com.addi.lead.domain.Email;
@@ -40,6 +42,28 @@ class CliTest {
         for (var token : List.of("", "   ", "12 34")) {
             assertInstanceOf(
                     Cli.Invocation.InputError.class, Cli.parse(new String[] {"validate-lead", "--id", token}), token);
+        }
+    }
+
+    @Test
+    void parsesTheTwoResolutionsOfACase() {
+        assertEquals(
+                new Cli.Invocation.ResolveReview(new CaseId("X"), CaseStatus.APPROVED),
+                Cli.parse(new String[] {"review", "resolve", "X", "--approve"}));
+        assertEquals(
+                new Cli.Invocation.ResolveReview(new CaseId("X"), CaseStatus.REJECTED),
+                Cli.parse(new String[] {"review", "resolve", "X", "--reject"}));
+    }
+
+    @Test
+    void rejectsEveryOtherShapeOfReview() {
+        var shapes = List.of(
+                new String[] {"review"},
+                new String[] {"review", "resolve", "X"},
+                new String[] {"review", "resolve", "X", "--maybe"},
+                new String[] {"review", "list"});
+        for (var shape : shapes) {
+            assertInstanceOf(Cli.Invocation.InputError.class, Cli.parse(shape), String.join(" ", shape));
         }
     }
 
@@ -87,6 +111,18 @@ class CliTest {
     }
 
     @Test
+    void namesTheCaseOnTheAnalystRejectionLine() {
+        assertEquals(
+                "Lead 1020304050 rejected: manual review case 1020304050-17553 was rejected by an analyst.",
+                Cli.render(ID, new Decision.Rejected(new RejectionCause.ReviewRejected(new CaseId("1020304050-17553")))));
+    }
+
+    @Test
+    void namesTheCaseOnTheLineThatOpensIt() {
+        assertEquals("Case 1020304050-17553 opened.", Cli.opened(new CaseId("1020304050-17553")));
+    }
+
+    @Test
     void namesTheStepAndTheReasonOnThePendingLine() {
         assertEquals(
                 "Lead 1020304050 pending manual review at step BUREAU: connection refused.",
@@ -104,7 +140,8 @@ class CliTest {
                 new Decision.Rejected(new RejectionCause.RegistryMismatch(List.of("firstName"))),
                 new Decision.Rejected(new RejectionCause.JudicialRecords(2)),
                 new Decision.Rejected(new RejectionCause.Sanctioned("OFAC")),
-                new Decision.Rejected(new RejectionCause.ScoreTooLow(12)));
+                new Decision.Rejected(new RejectionCause.ScoreTooLow(12)),
+                new Decision.Rejected(new RejectionCause.ReviewRejected(new CaseId("1020304050-17553"))));
 
         for (var decision : decisions) {
             var line = Cli.render(ID, decision);
