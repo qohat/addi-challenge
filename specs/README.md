@@ -15,7 +15,7 @@ file, then its assigned spec, then `git log --oneline -15`.
 | 03 | Simulated adapters and structured concurrency | 02 | high | core | merged |
 | 04 | Bureau cache | 03 | medium | core | merged |
 | 05 | Qualification score and conversion | 04 | low | core | merged |
-| 06 | Manual review: checkpoint, queue, resume | 05 | medium | core | specced |
+| 06 | Manual review: checkpoint, queue, resume | 05 | medium | core | merged |
 | 07 | Demo command and fixtures | 06 | medium | nice-to-have | not started |
 | 08 | Final documentation | 07 | medium | core | not started |
 

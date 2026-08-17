@@ -1,0 +1,1033 @@
+ ▐▛███▜▌   Claude Code v2.1.233
+▝▜█████▛▘  Opus 5 · Claude Team
+  ▘▘ ▝▝    ~/Projects/work/addi/addi-challenge
+
+
+❯ /model                                                                        
+  ⎿  Set model to Opus 5 (1M context) and saved as your default for new sessions
+
+❯ Go with @prompts/05-bookkeeping-mistake.txt                                   
+  ⎿  Read prompts/05-bookkeeping-mistake.txt (12 lines)
+
+  Read 4 files, ran 3 shell commands (ctrl+o to expand)
+
+⏺ Bookkeeping first. Spec 06 is already committed (31def95) — that part of the
+  ask is stale. Pricing the two sessions:
+
+⏺ Update(specs/README.md)
+  ⎿  Added 1 line, removed 1 line
+      14  | 02 | CLI `validate-lead` and composition root | 01 | medium |
+           core | merged |
+      15  | 03 | Simulated adapters and structured concurrency | 02 | hig
+          h | core | merged |
+      16  | 04 | Bureau cache | 03 | medium | core | merged |
+      17 -| 05 | Qualification score and conversion | 04 | low | core | s
+         -pecced |                                                       
+      17 +| 05 | Qualification score and conversion | 04 | low | core | m
+         +erged |                                                        
+      18  | 06 | Manual review: checkpoint, queue, resume | 05 | medium |
+           core | specced |
+      19  | 07 | Demo command and fixtures | 06 | medium | nice-to-have |
+           not started |
+      20  | 08 | Final documentation | 07 | medium | core | not started |
+
+⏺ Update(docs/ai/cost.md)
+  ⎿  Added 11 lines, removed 2 lines
+      23  
+      24  ## Planning sessions
+      25  
+      26 -Three sessions produced no code and so no spec row will ever ca
+         -rry them:                                                      
+      26 +Four sessions produced no code and so no spec row will ever car
+         +ry them:                                                       
+      27  `/run-spec` fills a row when it closes a spec, and these closed
+           none. The cost is
+      28  real, so it is priced by the same script and counted in the pro
+          ject total.
+      29  
+     ...
+      32  | `9c968601` | Session 00, the bootstrap | claude-opus-5 | 70 |
+           7,731,852 | $6.81 |
+      33  | `3ed3e39a` | Session 01, ADR 0008 and specs 00 to 03 | claude
+          -opus-5 | 23 | 1,969,675 | $3.12 |
+      34  | `580b4740` | Session 07, closed out spec 04's records and wro
+          te spec 05 | claude-opus-5 | 36 | 2,311,075 | $2.39 |
+      35 -| **Subtotal** | | | **129** | **12,012,602** | **$12.32** |   
+      35 +| `4032a67d` | Session 09, wrote spec 06 | claude-opus-5 | 64 |
+         + 5,951,178 | $5.05 |                                           
+      36 +| **Subtotal** | | | **193** | **17,963,780** | **$17.37** |   
+      37  
+      38 +Session 09 is the most expensive planning session that produced
+         + a single spec,                                                
+      39 +and it cost more than three of the five merged specs. It was th
+         +e session that                                                 
+      40 +turned 06 from a title into fixed shapes — the file format, the
+         + three queue                                                   
+      41 +methods, the resume rule, the exits — which is work that has to
+         + happen either                                                 
+      42 +here or inside the implementing session. Paying it here is the 
+         +cheaper half of                                                
+      43 +the trade only if 06 then comes in near a medium; that is the b
+         +et this row is                                                 
+      44 +recording, and 06's own row is what settles it.                
+      45 +                                                               
+      46  ## Summary
+      47  
+      48  | Spec | Session | Model | Requests | Tokens | Cost |
+
+  Ran 1 shell command (ctrl+o to expand)
+
+⏺ Update(docs/ai/cost.md)
+  ⎿  Added 19 lines, removed 7 lines
+      52  | 02 | `9f3baa51` | claude-opus-5 | 33 | 2,160,355 | $2.20 |
+      53  | 03 | `40bfad38` | claude-opus-5 | 59 | 6,508,949 | $6.22 |
+      54  | 04 | `4ea44317` | claude-opus-5 | 47 | 4,270,261 | $4.28 |
+      55 -| **Subtotal** | | | **233** | **19,498,140** | **$18.67** |   
+      55 +| 05 | `f55a26ac` | claude-sonnet-5 | 60 | 7,211,970 | $3.70 | 
+      56 +| **Subtotal** | | | **293** | **26,710,110** | **$22.37** |   
+      57  
+      57 -**Project total: $30.99** — $12.32 planning plus $18.67 specs. 
+         -Both tables, or the                                            
+      58 +Spec 05 is the only session not run on `claude-opus-5`, and del
+         +iberately so: it                                               
+      59 +was rated low, and a low spec is the one place to test whether 
+         +the specification                                              
+      60 +carries a cheaper model. Its row is not comparable to the four 
+         +above it and is                                                
+      61 +read in the breakdown, not in this column.                     
+      62 +                                                               
+      63 +**Project total: $39.74** — $17.37 planning plus $22.37 specs. 
+         +Both tables, or the                                            
+      64  number understates the project by everything spent before the f
+          irst line of Java.
+      65  
+      66  ## What is left
+      67  
+      62 -Four specs remain. The four merged mediums came in at $2.20, $2
+         -.56, $3.41 and                                                 
+      63 -$4.28 and the one high at $6.22, so 05 (low) sits under a mediu
+         -m, 06 (high) near                                              
+      64 -the high, and 07 and 08 (medium) in the medium band: roughly $1
+         -6 more, and about                                              
+      65 -$42 for the project. A projection, not a budget — nothing is ca
+         -ncelled for                                                    
+      66 -exceeding it, and the point of writing it down is to be wrong i
+         -n public.                                                      
+      68 +Three specs remain, all medium. The four merged mediums came in
+         + at $2.20, $2.56,                                              
+      69 +$3.41 and $4.28, and 06 carries the largest acceptance list of 
+         +any spec so far,                                               
+      70 +so 06 at the top of that band and 07 and 08 inside it is roughl
+         +y $12 more, and                                                
+      71 +about $52 for the project.                                     
+      72  
+      73 +The earlier projection said $16 more and $42 total, with 06 rat
+         +ed high and priced                                             
+      74 +near $6. Two things moved: 06 came down to medium, and the four
+         + sessions since                                                
+      75 +that projection cost $12.45 rather than the $6 the two of them 
+         +it foresaw. The                                                
+      76 +error was not in the per-spec estimates — those held — it was i
+         +n counting only                                                
+      77 +sessions that close a spec. Planning sessions are half the proj
+         +ect's cost and the                                             
+      78 +projection had no line for the next one.                       
+      79 +                                                               
+      80  ## Breakdown
+      81  
+      82  One section per spec, holding the table `scripts/cost.py --sess
+          ion <id>` prints.
+
+⏺ Update(docs/ai/cost.md)
+  ⎿  Added 8 lines, removed 6 lines
+      70  so 06 at the top of that band and 07 and 08 inside it is roughl
+          y $12 more, and
+      71  about $52 for the project.
+      72  
+      73 -The earlier projection said $16 more and $42 total, with 06 rat
+         -ed high and priced                                             
+      74 -near $6. Two things moved: 06 came down to medium, and the four
+         - sessions since                                                
+      75 -that projection cost $12.45 rather than the $6 the two of them 
+         -it foresaw. The                                                
+      76 -error was not in the per-spec estimates — those held — it was i
+         -n counting only                                                
+      77 -sessions that close a spec. Planning sessions are half the proj
+         -ect's cost and the                                             
+      78 -projection had no line for the next one.                       
+      73 +The earlier projection said $16 more and $42 total, with 06 rat
+         +ed high near $6.                                               
+      74 +It has already been overspent without 06 being built: it put 05
+         + and 06 at roughly                                             
+      75 +$8 together, and $8.75 has gone on 05 plus the session that onl
+         +y *specced* 06.                                                
+      76 +The per-spec estimates were not the error — 05 landed where a l
+         +ow should. The                                                 
+      77 +error was counting only sessions that close a spec. Planning is
+         + 44% of this                                                   
+      78 +project and the projection had no line for any of it. This one 
+         +assumes 06, 07 and                                             
+      79 +08 each write the next spec inside their own session, as `AGENT
+         +S.md` requires;                                                
+      80 +another split like 08 and 09 adds a session that is not in the 
+         +$12.                                                           
+      81  
+      82  ## Breakdown
+      83  
+
+⏺ Update(docs/ai/cost.md)
+  ⎿  Added 28 lines
+      171  written, watched to fail, then made to pass. Rated medium beca
+           use no shape was
+      172  left open, which held; the price was breadth, not design.
+      173  
+      174 +### 05. Qualification score and conversion                    
+      175 +                                                              
+      176 +claude-sonnet-5 — 60 requests                                 
+      177 +                                                              
+      178 +| | Tokens | Cost |                                           
+      179 +|---|---:|---:|                                               
+      180 +| input | 120 | $0.00 |                                       
+      181 +| output | 55,674 | $0.84 |                                   
+      182 +| cache read | 7,029,857 | $2.11 |                            
+      183 +| cache write 1h | 126,319 | $0.76 |                          
+      184 +| **Subtotal** | **7,211,970** | **$3.70** |                  
+      185 +                                                              
+      186 +The one session run on a cheaper model, on purpose. A low spec
+          + is where the                                                 
+      187 +`specs/README.md` experiment belongs: if the specification is 
+          +doing the work, the                                           
+      188 +model should be substitutable, and the cheapest spec is the sa
+          +fest place to find                                            
+      189 +out. It merged — four commits, 72 lines across nine files, no 
+          +shape invented and                                            
+      190 +no criterion dropped — so the specification held.             
+      191 +                                                              
+      192 +The price did not. It is the smallest diff in the project and 
+          +the third most                                                
+      193 +expensive spec: 60 requests and 7.0M cache read, more of both 
+          +than any Opus                                                 
+      194 +session except the two rated high. Sonnet's per-token discount
+          + is real and worth                                            
+      195 +about 40%, but this session spent it and more on volume — the 
+          +same tokens on                                                
+      196 +Opus would have been $6.17, while Opus did the comparable medi
+          +ums 02 and 01 for                                             
+      197 +$2.20 and $2.56 on half the requests. The conclusion is about 
+          +tokens, not                                                   
+      198 +quality: the cheaper model reached the same merged result and 
+          +took roughly three                                            
+      199 +times the reading to get there, so on a spec this well specifi
+          +ed there is nothing                                           
+      200 +left for it to save.                                          
+      201 +                                                              
+      202  ## What the number includes
+      203  
+      204  With one session per spec, each figure measures session overhe
+           ad — orientation,
+
+  Searched for 1 pattern, ran 2 shell commands (ctrl+o to expand)
+
+⏺ Bookkeeping done and committed (3911ca5).
+
+  ┌──────────┬──────────────────────────────────┬───────┐
+  │          │                                  │       │
+  ├──────────┼──────────────────────────────────┼───────┤
+  │ f55a26ac │ spec 05, claude-sonnet-5, 60 req │ $3.70 │
+  ├──────────┼──────────────────────────────────┼───────┤
+  │ 4032a67d │ session 09, wrote spec 06 only   │ $5.05 │
+  └──────────┴──────────────────────────────────┴───────┘
+
+  Queue: 05 specced → merged. Spec 06 was already committed in 31def95 — that
+  part of the ask was stale. Project total is now $39.74, and planning is 44% of
+  it.
+
+  The 05 row carries the result you were actually buying: the spec held —
+  merged, four commits, 72 lines, no shape invented — but Sonnet used 60
+  requests and 7.0M cache read to do it, more of both than any Opus session
+  except the two rated high. Same tokens on Opus would have been $6.17; Opus did
+  comparable mediums for $2.20 and $2.56 on half the requests. The discount was
+  real and volume ate it.
+
+  On 06's effort: medium is right, and it wasn't optimism.
+
+  The queue's own test is "does the spec leave any shape undecided". When the
+  row said high, the answer was yes to everything — there was no file format, no
+  queue interface, no resume rule. It was written before spec 01 existed. Spec
+  06 now fixes all of it: three method signatures on FileReviewQueue, the case
+  ID as <nationalId>-<epochMillis>, ten key=value keys in declared order,
+  Checkpoint.resumeFrom() with all four arms enumerated, ReviewRejected(CaseId)
+  built in Main so Decisions doesn't change, the four-token parse, and both new
+  exit paths.
+
+  The check that settles it: CaseId, CaseStatus, ReviewCase and Checkpoint are
+  already on disk from spec 01. The spec invents no type — it fills in columns
+  of types that exist. That is the definition of medium: judgement in the
+  execution, nothing left to design. Eleven acceptance criteria make it a big
+  medium, which is why I put it at the top of the medium band in the projection
+  rather than in the middle.
+
+  Now running it.
+
+⏺ Skill(run-spec)
+  ⎿  Successfully loaded skill
+
+  Searched for 1 pattern, read 18 files, ran 3 shell commands (ctrl+o to expand)
+  ⎿  Loaded CLAUDE.md
+⏺ Now the tests, from the acceptance criteria.
+
+⏺ Write(.trees/06-manual-review/src/test/java/com/addi/lead/adapter/ReviewQueueT
+       est.java)
+  ⎿  Wrote 98 lines to .trees/06-manual-review/src/test/java/com/addi/lead/
+     adapter/ReviewQueueTest.java
+       1 package com.addi.lead.adapter;
+       2 
+       3 import static org.junit.jupiter.api.Assertions.assertEquals;
+       4 import static org.junit.jupiter.api.Assertions.assertNotEquals;
+       5 
+       6 import com.addi.lead.FixtureDir;
+       7 import com.addi.lead.domain.CaseId;
+       8 import com.addi.lead.domain.CaseStatus;
+       9 import com.addi.lead.domain.Checkpoint;
+      10 import com.addi.lead.domain.ReviewCase;
+     … +114 lines (ctrl+o to expand)
+
+⏺ Write(.trees/06-manual-review/src/test/java/com/addi/lead/domain/CheckpointTes
+       t.java)
+  ⎿  Wrote 26 lines to .trees/06-manual-review/src/test/java/com/addi/lead/
+     domain/CheckpointTest.java
+      1 package com.addi.lead.domain;
+      2 
+      3 import static org.junit.jupiter.api.Assertions.assertEquals;
+      4 
+      5 import com.addi.lead.FixtureDir;
+      6 import org.junit.jupiter.api.Test;
+      7 
+      8 /** The resume rule, which is the whole of what approval means. *
+        /
+      9 class CheckpointTest {
+     … +18 lines (ctrl+o to expand)
+
+⏺ Update(.trees/06-manual-review/src/test/java/com/addi/lead/cli/CliTest.java)
+  ⎿  Added 22 lines
+      44      }
+      45  
+      46      @Test
+      47 +    void parsesTheTwoResolutionsOfACase() {                    
+      48 +        assertEquals(                                          
+      49 +                new Cli.Invocation.ResolveReview(new CaseId("X"
+         +), CaseStatus.APPROVED),                                       
+      50 +                Cli.parse(new String[] {"review", "resolve", "X
+         +", "--approve"}));                                             
+      51 +        assertEquals(                                          
+      52 +                new Cli.Invocation.ResolveReview(new CaseId("X"
+         +), CaseStatus.REJECTED),                                       
+      53 +                Cli.parse(new String[] {"review", "resolve", "X
+         +", "--reject"}));                                              
+      54 +    }                                                          
+      55 +                                                               
+      56 +    @Test                                                      
+      57 +    void rejectsEveryOtherShapeOfReview() {                    
+      58 +        var shapes = List.of(                                  
+      59 +                new String[] {"review"},                       
+      60 +                new String[] {"review", "resolve", "X"},       
+      61 +                new String[] {"review", "resolve", "X", "--mayb
+         +e"},                                                           
+      62 +                new String[] {"review", "list"});              
+      63 +        for (var shape : shapes) {                             
+      64 +            assertInstanceOf(Cli.Invocation.InputError.class, C
+         +li.parse(shape), String.join(" ", shape));                     
+      65 +        }                                                      
+      66 +    }                                                          
+      67 +                                                               
+      68 +    @Test                                                      
+      69      void rejectsAnUnknownCommand() {
+      70          assertInstanceOf(Cli.Invocation.InputError.class, Cli.p
+          arse(new String[] {"qualify-lead", "--id", "1"}));
+      71      }
+
+⏺ Update(.trees/06-manual-review/src/test/java/com/addi/lead/cli/CliTest.java)
+  ⎿  Added 12 lines
+      109      }
+      110  
+      111      @Test
+      112 +    void namesTheCaseOnTheAnalystRejectionLine() {            
+      113 +        assertEquals(                                         
+      114 +                "Lead 1020304050 rejected: manual review case 
+          +1020304050-17553 was rejected by an analyst.",                
+      115 +                Cli.render(ID, new Decision.Rejected(new Rejec
+          +tionCause.ReviewRejected(new CaseId("1020304050-17553")))));  
+      116 +    }                                                         
+      117 +                                                              
+      118 +    @Test                                                     
+      119 +    void namesTheCaseOnTheLineThatOpensIt() {                 
+      120 +        assertEquals("Case 1020304050-17553 opened.", Cli.open
+          +ed(new CaseId("1020304050-17553")));                          
+      121 +    }                                                         
+      122 +                                                              
+      123 +    @Test                                                     
+      124      void namesTheStepAndTheReasonOnThePendingLine() {
+      125          assertEquals(
+      126                  "Lead 1020304050 pending manual review at step
+            BUREAU: connection refused.",
+
+⏺ Update(.trees/06-manual-review/src/test/java/com/addi/lead/cli/CliTest.java)
+  ⎿  Added 2 lines, removed 1 line
+      138                  new Decision.Rejected(new RejectionCause.Regis
+           tryMismatch(List.of("firstName"))),
+      139                  new Decision.Rejected(new RejectionCause.Judic
+           ialRecords(2)),
+      140                  new Decision.Rejected(new RejectionCause.Sanct
+           ioned("OFAC")),
+      141 -                new Decision.Rejected(new RejectionCause.Score
+          -TooLow(12)));                                                 
+      141 +                new Decision.Rejected(new RejectionCause.Score
+          +TooLow(12)),                                                  
+      142 +                new Decision.Rejected(new RejectionCause.Revie
+          +wRejected(new CaseId("1020304050-17553"))));                  
+      143  
+      144          for (var decision : decisions) {
+      145              var line = Cli.render(ID, decision);
+
+⏺ Update(.trees/06-manual-review/src/test/java/com/addi/lead/cli/CliTest.java)
+  ⎿  Added 2 lines
+       4  import static org.junit.jupiter.api.Assertions.assertFalse;
+       5  import static org.junit.jupiter.api.Assertions.assertInstanceOf
+          ;
+       6  
+       7 +import com.addi.lead.domain.CaseId;                            
+       8 +import com.addi.lead.domain.CaseStatus;                        
+       9  import com.addi.lead.domain.Checkpoint;
+      10  import com.addi.lead.domain.Decision;
+      11  import com.addi.lead.domain.Email;
+
+⏺ Update(.trees/06-manual-review/src/test/java/com/addi/lead/MainTest.java)
+  ⎿  Added 113 lines
+      134      }
+      135  
+      136      @Test
+      137 +    void aDownBureauOpensACaseAndNamesItBelowTheDecisionLine()
+          + throws IOException {                                         
+      138 +        downBureau();                                         
+      139 +                                                              
+      140 +        var result = run("validate-lead", "--id", ID);        
+      141 +                                                              
+      142 +        var lines = result.out().strip().lines().toList();    
+      143 +        assertEquals(2, result.code());                       
+      144 +        assertEquals(2, lines.size(), result.out());          
+      145 +        assertTrue(lines.getFirst().contains("pending manual r
+          +eview at step BUREAU"), result.out());                        
+      146 +        assertEquals("Case " + onlyCase().getFileName() + " op
+          +ened.", lines.get(1));                                        
+      147 +        assertTrue(Files.readAllLines(onlyCase()).containsAll(
+          +List.of("status=OPEN", "pending=BUREAU")), "the case");       
+      148 +    }                                                         
+      149 +                                                              
+      150 +    @Test                                                     
+      151 +    void approvingResumesPastTheDownBureauAndConverts() throws
+          + IOException {                                                
+      152 +        downBureau();                                         
+      153 +        run("validate-lead", "--id", ID);                     
+      154 +        var caseFile = onlyCase();                            
+      155 +                                                              
+      156 +        var result = run("review", "resolve", caseFile.getFile
+          +Name().toString(), "--approve");                              
+      157 +                                                              
+      158 +        assertEquals(0, result.code(), result.err());         
+      159 +        assertEquals("Lead " + ID + " converted to prospect. S
+          +core 67.", result.out().strip());                             
+      160 +        assertTrue(Files.readAllLines(caseFile).contains("stat
+          +us=APPROVED"), "the case");                                   
+      161 +        assertFalse(Files.exists(dir.resolve("data").resolve("
+          +bureau-cache.csv")), "an approval is not a bureau answer");   
+      162 +    }                                                         
+      163 +                                                              
+      164 +    @Test                                                     
+      165 +    void rejectingClosesTheCaseAndNamesItOnTheDecisionLine() t
+          +hrows IOException {                                           
+      166 +        downBureau();                                         
+      167 +        run("validate-lead", "--id", ID);                     
+      168 +        var caseFile = onlyCase();                            
+      169 +        var name = caseFile.getFileName().toString();         
+      170 +                                                              
+      171 +        var result = run("review", "resolve", name, "--reject"
+          +);                                                            
+      172 +                                                              
+      173 +        assertEquals(1, result.code());                       
+      174 +        assertEquals(                                         
+      175 +                "Lead " + ID + " rejected: manual review case 
+          +" + name + " was rejected by an analyst.",                    
+      176 +                result.out().strip());                        
+      177 +        assertTrue(Files.readAllLines(caseFile).contains("stat
+          +us=REJECTED"), "the case");                                   
+      178 +    }                                                         
+      179 +                                                              
+      180 +    @Test                                                     
+      181 +    void aResolvedCaseAndAnUnknownCaseAreBothInputErrors() thr
+          +ows IOException {                                             
+      182 +        downBureau();                                         
+      183 +        run("validate-lead", "--id", ID);                     
+      184 +        var caseFile = onlyCase();                            
+      185 +        run("review", "resolve", caseFile.getFileName().toStri
+          +ng(), "--reject");                                            
+      186 +        var resolved = Files.readAllBytes(caseFile);          
+      187 +                                                              
+      188 +        var again = run("review", "resolve", caseFile.getFileN
+          +ame().toString(), "--approve");                               
+      189 +        var unknown = run("review", "resolve", "no-such-case",
+          + "--approve");                                                
+      190 +                                                              
+      191 +        assertEquals(3, again.code());                        
+      192 +        assertEquals(3, unknown.code());                      
+      193 +        assertTrue(again.out().isEmpty(), again.out());       
+      194 +        assertArrayEquals(resolved, Files.readAllBytes(caseFil
+          +e), "a resolved case was rewritten");                         
+      195 +        assertFalse(Files.exists(reviewDir().resolve("no-such-
+          +case")), "an unknown case was written");                      
+      196 +    }                                                         
+      197 +                                                              
+      198 +    @Test                                                     
+      199 +    void approvingIntoADownScoreOpensASecondCase() throws IOEx
+          +ception {                                                     
+      200 +        downBureau();                                         
+      201 +        FixtureDir.write(dir, "score.csv", ID + ",0,DOWN");   
+      202 +        run("validate-lead", "--id", ID);                     
+      203 +        var first = onlyCase();                               
+      204 +                                                              
+      205 +        var result = run("review", "resolve", first.getFileNam
+          +e().toString(), "--approve");                                 
+      206 +                                                              
+      207 +        assertEquals(2, result.code());                       
+      208 +        var cases = cases();                                  
+      209 +        assertEquals(2, cases.size(), cases.toString());      
+      210 +        assertTrue(Files.readAllLines(first).contains("status=
+          +APPROVED"), "the first case");                                
+      211 +        var second = cases.stream().filter(file -> !file.equal
+          +s(first)).findFirst().orElseThrow();                          
+      212 +        assertTrue(Files.readAllLines(second).containsAll(List
+          +.of("status=OPEN", "pending=SCORE")), "the second case");     
+      213 +    }                                                         
+      214 +                                                              
+      215 +    @Test                                                     
+      216 +    void aCaseThatCannotBeWrittenExitsFourOnStderr() throws IO
+          +Exception {                                                   
+      217 +        downBureau();                                         
+      218 +        Files.createDirectories(dir.resolve("data"));         
+      219 +        Files.writeString(reviewDir(), "a regular file where t
+          +he queue goes");                                              
+      220 +                                                              
+      221 +        var result = run("validate-lead", "--id", ID);        
+      222 +                                                              
+      223 +        assertEquals(4, result.code());                       
+      224 +        assertFalse(result.err().isBlank());                  
+      225 +        assertTrue(result.out().contains("pending manual revie
+          +w"), result.out());                                           
+      226 +    }                                                         
+      227 +                                                              
+      228 +    private void downBureau() {                               
+      229 +        FixtureDir.clean(dir);                                
+      230 +        FixtureDir.write(dir, "bureau.csv", ID + ",,0,DOWN"); 
+      231 +    }                                                         
+      232 +                                                              
+      233 +    private Path reviewDir() {                                
+      234 +        return dir.resolve("data").resolve("review");         
+      235 +    }                                                         
+      236 +                                                              
+      237 +    private Path onlyCase() throws IOException {              
+      238 +        var cases = cases();                                  
+      239 +        assertEquals(1, cases.size(), cases.toString());      
+      240 +        return cases.getFirst();                              
+      241 +    }                                                         
+      242 +                                                              
+      243 +    private List<Path> cases() throws IOException {           
+      244 +        try (var files = Files.list(reviewDir())) {           
+      245 +            return files.sorted().toList();                   
+      246 +        }                                                     
+      247 +    }                                                         
+      248 +                                                              
+      249 +    @Test                                                     
+      250      void aRegistrySlowerThanTheTimeoutExitsTwo() {
+      251          FixtureDir.clean(dir);
+      252          FixtureDir.write(dir, "registry.csv", ID + ",Ana,Restr
+           epo,1990-03-14,10000,UP");
+
+⏺ Update(.trees/06-manual-review/src/test/java/com/addi/lead/MainTest.java)
+  ⎿  Added 1 line
+      2  
+      3  import static com.addi.lead.FixtureDir.ID;
+      4  import static java.nio.charset.StandardCharsets.UTF_8;
+      5 +import static org.junit.jupiter.api.Assertions.assertArrayEquals
+        +;                                                               
+      6  import static org.junit.jupiter.api.Assertions.assertEquals;
+      7  import static org.junit.jupiter.api.Assertions.assertFalse;
+      8  import static org.junit.jupiter.api.Assertions.assertTrue;
+
+⏺ Update(.trees/06-manual-review/src/test/java/com/addi/lead/MainTest.java)
+  ⎿  Added 1 line
+      19  import java.nio.file.Files;
+      20  import java.nio.file.Path;
+      21  import java.time.Duration;
+      22 +import java.util.List;                                         
+      23  import java.util.OptionalLong;
+      24  import org.junit.jupiter.api.Test;
+      25  import org.junit.jupiter.api.io.TempDir;
+
+  Ran 1 shell command (ctrl+o to expand)
+
+⏺ Red, naming exactly the four things the spec adds. Now the code.
+
+⏺ Update(.trees/06-manual-review/src/main/java/com/addi/lead/domain/Checkpoint.j
+        ava)
+  ⎿  Added 15 lines, removed 1 line
+       4   * Where a run stopped and why. The steps before {@code pending
+          } resolved cleanly or the run would
+       5   * have ended there, so storing them again would be a second co
+          py free to disagree with this one.
+       6   */
+       7 -public record Checkpoint(Lead lead, Step pending, String reason
+         -) {}                                                           
+       7 +public record Checkpoint(Lead lead, Step pending, String reason
+         +) {                                                            
+       8 +                                                               
+       9 +    /**                                                        
+      10 +     * Approving takes the pending step as clean, so the run co
+         +ntinues past it. The score is the                              
+      11 +     * exception: an analyst cannot attest a number, so approvi
+         +ng one re-runs the port (ADR 0004).                            
+      12 +     */                                                        
+      13 +    public Step resumeFrom() {                                 
+      14 +        return switch (pending) {                              
+      15 +            case REGISTRY -> Step.JUDICIAL;                    
+      16 +            case JUDICIAL -> Step.BUREAU;                      
+      17 +            case BUREAU -> Step.SCORE;                         
+      18 +            case SCORE -> Step.SCORE;                          
+      19 +        };                                                     
+      20 +    }                                                          
+      21 +}                                                              
+
+⏺ Update(.trees/06-manual-review/src/main/java/com/addi/lead/domain/RejectionCau
+        se.java)
+  ⎿  Added 3 lines
+      25      record Sanctioned(String list) implements RejectionCause {}
+      26  
+      27      record ScoreTooLow(int value) implements RejectionCause {}
+      28 +                                                               
+      29 +    /** The only cause no step outcome produces: an analyst dec
+         +ided it, so {@link Decisions} never builds it. */              
+      30 +    record ReviewRejected(CaseId caseId) implements RejectionCa
+         +use {}                                                         
+      31  }
+
+⏺ Write(.trees/06-manual-review/src/main/java/com/addi/lead/adapter/Atomic.java)
+  ⎿  Wrote 42 lines to .trees/06-manual-review/src/main/java/com/addi/lead/
+     adapter/Atomic.java
+      1 package com.addi.lead.adapter;
+      2 
+      3 import static java.nio.file.StandardCopyOption.ATOMIC_MOVE;
+      4 import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
+      5 
+      6 import java.io.IOException;
+      7 import java.nio.file.Files;
+      8 import java.nio.file.Path;
+      9 import java.util.List;
+     … +37 lines (ctrl+o to expand)
+
+⏺ Write(.trees/06-manual-review/src/main/java/com/addi/lead/adapter/FileReviewQu
+       eue.java)
+  ⎿  Wrote 104 lines to .trees/06-manual-review/src/main/java/com/addi/lead
+     /adapter/FileReviewQueue.java
+       1 package com.addi.lead.adapter;
+       2 
+       3 import com.addi.lead.domain.CaseId;
+       4 import com.addi.lead.domain.CaseStatus;
+       5 import com.addi.lead.domain.Checkpoint;
+       6 import com.addi.lead.domain.Email;
+       7 import com.addi.lead.domain.Lead;
+       8 import com.addi.lead.domain.NationalId;
+       9 import com.addi.lead.domain.ReviewCase;
+      10 import com.addi.lead.domain.Step;
+     … +113 lines (ctrl+o to expand)
+
+⏺ Now the cache switches to the shared writer, and the CLI gains its command.
+
+⏺ Update(.trees/06-manual-review/src/main/java/com/addi/lead/adapter/CachingComp
+        lianceBureau.java)  ⎿  Added 6 lines, removed 17 lines
+      72      }
+      73  
+      74      /**
+      75 -     * Temp file then rename, so a reader never sees half a cac
+         -he. The rewrite is also the only                               
+      76 -     * pruning there is: rows that no longer parse do not survi
+         -ve it.                                                         
+      75 +     * The whole file every time, which is also the only prunin
+         +g there is: rows that no longer parse do                       
+      76 +     * not survive the rewrite. A failure is dropped here rathe
+         +r than raised, because the screening has                       
+      77 +     * already decided and a lost entry costs one repeat call (
+         +ADR 0003).                                                     
+      78       */
+      79      private void write(Entry entry) {
+      80          var kept = entries().filter(other -> !other.id().equals
+          (entry.id()));
+      80 -        var body = Stream.concat(kept, Stream.of(entry)).map(En
+         -try::line).toList();                                           
+      81 -        var temp = file.resolveSibling(file.getFileName() + ".t
+         -mp");                                                          
+      81 +        var body = Stream.concat(kept, Stream.of(entry)).map(En
+         +try::line);                                                    
+      82          try {
+      83 -            Files.createDirectories(file.getParent());         
+      84 -            Files.write(temp, Stream.concat(Stream.of(HEADER), 
+         -body.stream()).toList());                                      
+      85 -            Files.move(temp, file, ATOMIC_MOVE, REPLACE_EXISTIN
+         -G);                                                            
+      86 -        } catch (Exception e) {                                
+      87 -            deleteQuietly(temp);                               
+      88 -        }                                                      
+      89 -    }                                                          
+      90 -                                                               
+      91 -    /** A half-written temp file is not a cache entry and not s
+         -omething a reviewer should find. */                            
+      92 -    private static void deleteQuietly(Path path) {             
+      93 -        try {                                                  
+      94 -            Files.deleteIfExists(path);                        
+      83 +            Atomic.write(file, Stream.concat(Stream.of(HEADER),
+         + body).toList());                                              
+      84          } catch (IOException e) {
+      96 -            // The write already failed and the screening decid
+         -ed without it. Nothing left to do.                             
+      85 +            // Nothing to do and nobody to tell: the answer is 
+         +returned either way.                                           
+      86          }
+      87      }
+      88  
+
+⏺ Update(.trees/06-manual-review/src/main/java/com/addi/lead/adapter/CachingComp
+        lianceBureau.java)
+  ⎿  Removed 3 lines
+      1  package com.addi.lead.adapter;
+      2  
+      3 -import static java.nio.file.StandardCopyOption.ATOMIC_MOVE;     
+      4 -import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
+      5 -                                                                
+      3  import com.addi.lead.domain.BureauOutcome;
+      4  import com.addi.lead.domain.Lead;
+      5  import com.addi.lead.domain.NationalId;
+
+⏺ Update(.trees/06-manual-review/src/main/java/com/addi/lead/cli/Cli.java)
+  ⎿  Added 21 lines, removed 3 lines
+      15      public static final String USAGE =
+      16              """
+      17              Usage:
+      18 -              validate-lead --id <nationalId>   Qualify a lead 
+         -into a prospect.                                               
+      18 +              validate-lead --id <nationalId>              Qual
+         +ify a lead into a prospect.                                    
+      19 +              review resolve <case> --approve|--reject     Reso
+         +lve a case an analyst has reviewed.                            
+      20  
+      20 -            Exit codes: 0 converted, 1 rejected, 2 pending manu
+         -al review, 3 input error.""";                                  
+      21 +            Exit codes: 0 converted, 1 rejected, 2 pending manu
+         +al review, 3 input error,                                      
+      22 +            4 the review case could not be written.""";        
+      23  
+      22 -    /** A switch over three tokens, not a library. Gains a case
+         - per command in specs 06 and 07. */                            
+      24 +    /** A switch over a handful of tokens, not a library. Gains
+         + a case per command in spec 07. */                             
+      25      public sealed interface Invocation {
+      26  
+      27          record ValidateLead(NationalId id) implements Invocatio
+          n {}
+      28  
+      29 +        /** The status the case file gets, which is what a bool
+         +ean here would not have been. */                               
+      30 +        record ResolveReview(CaseId caseId, CaseStatus resoluti
+         +on) implements Invocation {}                                   
+      31 +                                                               
+      32          /** Never reaches the decision switch, which is why {@l
+          ink Decision} has no fourth case. */
+      33          record InputError(String message) implements Invocation
+           {}
+      34      }
+     ...
+      39          }
+      40          return switch (args[0]) {
+      41              case "validate-lead" -> validateLead(args);
+      42 +            case "review" -> review(args);                     
+      43              default -> new Invocation.InputError("Unknown comma
+          nd: " + args[0]);
+      44          };
+      45      }
+      46  
+      47 +    /** Four tokens exactly. {@code resolve} is the only subcom
+         +mand: listing a directory is not one. */                       
+      48 +    private static Invocation review(String[] args) {          
+      49 +        if (args.length != 4 || !"resolve".equals(args[1])) {  
+      50 +            return new Invocation.InputError("review takes exac
+         +tly resolve <case> --approve or --reject.");                   
+      51 +        }                                                      
+      52 +        return switch (args[3]) {                              
+      53 +            case "--approve" -> new Invocation.ResolveReview(ne
+         +w CaseId(args[2]), CaseStatus.APPROVED);                       
+      54 +            case "--reject" -> new Invocation.ResolveReview(new
+         + CaseId(args[2]), CaseStatus.REJECTED);                        
+      55 +            default -> new Invocation.InputError("A case is res
+         +olved with --approve or --reject.");                           
+      56 +        };                                                     
+      57 +    }                                                          
+      58 +                                                               
+      59      private static Invocation validateLead(String[] args) {
+      60          if (args.length != 3 || !"--id".equals(args[1])) {
+      61              return new Invocation.InputError("validate-lead tak
+          es exactly --id <nationalId>.");
+
+⏺ Update(.trees/06-manual-review/src/main/java/com/addi/lead/cli/Cli.java)
+  ⎿  Added 5 lines
+      78          };
+      79      }
+      80  
+      81 +    /** A second line, so {@link #render} stays one decision in
+         + one line and keeps its signature. */                          
+      82 +    public static String opened(CaseId caseId) {               
+      83 +        return "Case " + caseId.value() + " opened.";          
+      84 +    }                                                          
+      85 +                                                               
+      86      /** Gains a case in spec 05 and another in spec 06. No {@co
+          de default} to hide either. */
+      87      private static String reason(RejectionCause cause) {
+      88          return switch (cause) {
+
+⏺ Update(.trees/06-manual-review/src/main/java/com/addi/lead/cli/Cli.java)
+  ⎿  Added 2 lines
+       94              case RejectionCause.Sanctioned(var list) -> "sanct
+           ioned on the " + list + " list.";
+       95              case RejectionCause.ScoreTooLow(var value) ->
+       96                      "qualification score " + value + " is not 
+           above " + Decisions.MINIMUM_SCORE + ".";
+       97 +            case RejectionCause.ReviewRejected(var caseId) -> 
+       98 +                    "manual review case " + caseId.value() + "
+          + was rejected by an analyst.";                                
+       99          };
+      100      }
+      101  
+
+⏺ Update(.trees/06-manual-review/src/main/java/com/addi/lead/cli/Cli.java)
+  ⎿  Added 2 lines
+      1  package com.addi.lead.cli;
+      2  
+      3 +import com.addi.lead.domain.CaseId;                             
+      4 +import com.addi.lead.domain.CaseStatus;                         
+      5  import com.addi.lead.domain.Decision;
+      6  import com.addi.lead.domain.Decisions;
+      7  import com.addi.lead.domain.NationalId;
+
+⏺ Update(.trees/06-manual-review/src/main/java/com/addi/lead/Main.java)
+  ⎿  Added 58 lines, removed 1 line
+       37              case Cli.Invocation.ValidateLead(var id) -> {
+       38                  var decision = pipeline(config).validate(id);
+       39                  out.println(Cli.render(id, decision));
+       40 -                yield exitCode(decision);                     
+       40 +                yield record(decision, config, out, err);     
+       41              }
+       42 +            case Cli.Invocation.ResolveReview(var caseId, var 
+          +resolution) ->                                                
+       43 +                resolve(caseId, resolution, config, out, err);
+       44          };
+       45      }
+       46  
+       47 +    /**                                                       
+       48 +     * A pending run leaves the analyst a case, on a second li
+          +ne so the decision line stays one line.                       
+       49 +     * Its failure exits 4 rather than 2: exiting 2 would name
+          + a case nobody will find.                                     
+       50 +     */                                                       
+       51 +    private static int record(Decision decision, Config config
+          +, PrintStream out, PrintStream err) {                         
+       52 +        if (!(decision instanceof Decision.PendingManualReview
+          +(var checkpoint))) {                                          
+       53 +            return exitCode(decision);                        
+       54 +        }                                                     
+       55 +        try {                                                 
+       56 +            out.println(Cli.opened(reviewQueue(config).open(ch
+          +eckpoint, Clock.systemUTC().instant())));                     
+       57 +            return exitCode(decision);                        
+       58 +        } catch (IOException e) {                             
+       59 +            err.println("The review case could not be written:
+          + " + e);                                                      
+       60 +            return 4;                                         
+       61 +        }                                                     
+       62 +    }                                                         
+       63 +                                                              
+       64 +    /**                                                       
+       65 +     * Unknown, unreadable and already resolved are one answer
+          + and it is exit 3: a {@link Decision}                         
+       66 +     * describes a lead's fate and none of the three is one.  
+       67 +     */                                                       
+       68 +    private static int resolve(CaseId id, CaseStatus resolutio
+          +n, Config config, PrintStream out, PrintStream err) {         
+       69 +        var queue = reviewQueue(config);                      
+       70 +        var found = queue.find(id).filter(reviewCase -> review
+          +Case.status() == CaseStatus.OPEN);                            
+       71 +        if (found.isEmpty()) {                                
+       72 +            err.println("No open review case " + id.value() + 
+          +".");                                                         
+       73 +            return 3;                                         
+       74 +        }                                                     
+       75 +        var reviewCase = found.get();                         
+       76 +        var lead = reviewCase.checkpoint().lead();            
+       77 +        try {                                                 
+       78 +            // Before the resume, so a crash halfway through o
+          +ne cannot leave a case approvable twice.                      
+       79 +            queue.resolve(reviewCase, resolution);            
+       80 +        } catch (IOException e) {                             
+       81 +            err.println("The review case could not be written:
+          + " + e);                                                      
+       82 +            return 4;                                         
+       83 +        }                                                     
+       84 +        return switch (resolution) {                          
+       85 +            case APPROVED -> {                                
+       86 +                var decision = pipeline(config).run(lead, revi
+          +ewCase.checkpoint().resumeFrom());                            
+       87 +                out.println(Cli.render(lead.id(), decision)); 
+       88 +                yield record(decision, config, out, err);     
+       89 +            }                                                 
+       90 +            case REJECTED -> {                                
+       91 +                out.println(Cli.render(lead.id(), new Decision
+          +.Rejected(new RejectionCause.ReviewRejected(id))));           
+       92 +                yield 1;                                      
+       93 +            }                                                 
+       94 +            case OPEN -> throw new IllegalStateException("revi
+          +ew resolve never parses to OPEN");                            
+       95 +        };                                                    
+       96 +    }                                                         
+       97 +                                                              
+       98 +    private static FileReviewQueue reviewQueue(Config config) 
+          +{                                                             
+       99 +        return new FileReviewQueue(config.data().resolve("revi
+          +ew"));                                                        
+      100 +    }                                                         
+      101 +                                                              
+      102      /** The whole object graph, in one method, top to bottom (
+           ADR 0001). */
+      103      private static Pipeline pipeline(Config config) {
+      104          var fixtures = config.fixtures();
+
+⏺ Update(.trees/06-manual-review/src/main/java/com/addi/lead/Main.java)
+  ⎿  Added 1 line
+      1  package com.addi.lead;
+      2  
+      3  import com.addi.lead.adapter.CachingComplianceBureau;
+      4 +import com.addi.lead.adapter.FileReviewQueue;                   
+      5  import com.addi.lead.adapter.FixtureComplianceBureau;
+      6  import com.addi.lead.adapter.FixtureJudicialRecords;
+      7  import com.addi.lead.adapter.FixtureNationalRegistry;
+
+⏺ Update(.trees/06-manual-review/src/main/java/com/addi/lead/Main.java)
+  ⎿  Added 4 lines
+      12  import com.addi.lead.app.Config;
+      13  import com.addi.lead.app.Pipeline;
+      14  import com.addi.lead.cli.Cli;
+      15 +import com.addi.lead.domain.CaseId;                            
+      16 +import com.addi.lead.domain.CaseStatus;                        
+      17  import com.addi.lead.domain.Decision;
+      18 +import com.addi.lead.domain.RejectionCause;                    
+      19 +import java.io.IOException;                                    
+      20  import java.io.PrintStream;
+      21  import java.time.Clock;
+      22  
+
+  Read 2 files, ran 7 shell commands (ctrl+o to expand)
+
+⏺ Update(.trees/06-manual-review/docs/assumptions.md)
+  ⎿  Added 12 lines
+      79    brief fixes it at 60 and no caller — test, demo or CLI flag —
+           ever varies it.
+      80    `[05]`
+      81  
+      82 +## Manual review                                               
+      83 +                                                               
+      84 +- **The case timestamp is epoch millis, not the ISO instant.** 
+         +The case ID is                                                 
+      85 +  also the filename and an ISO instant carries colons a Windows
+         + filename cannot                                               
+      86 +  hold; the ISO form is inside the file as `openedAt`. `[06]`  
+      87 +- **A case file is `key=value` lines, not the fixtures' CSV.** 
+         +A checkpoint                                                   
+      88 +  reason is adapter prose and will contain commas. `[06]`      
+      89 +- **A case that cannot be resolved is an input error, exit 3, a
+         +nd a case that                                                 
+      90 +  cannot be written is exit 4.** Unknown, unreadable and alread
+         +y resolved                                                     
+      91 +  describe the command rather than the lead, and exiting 2 woul
+         +d name a case a                                                
+      92 +  reviewer will not find. `[06]`                               
+      93 +                                                               
+      94  ## Bootstrap session
+      95  
+      96  - **`validate-lead` takes the national ID and nothing else.** T
+          he lead already
+
+⏺ Four commits, each one compiling on its own.
+
+  Created PR #7, ran 8 shell commands (ctrl+o to expand)
+
+⏺ PR #7 is open and CI is green: https://github.com/qohat/addi-challenge/pull/7
+
+  Spec 06, four commits:
+
+  ┌─────────┬────────────────────────────────────────────────────────────────┐
+  │         │                                                                │
+  ├─────────┼────────────────────────────────────────────────────────────────┤
+  │ e69a1c7 │ FileReviewQueue, one key=value file per case; Atomic.write     │
+  │         │ extracted and shared with the cache                            │
+  ├─────────┼────────────────────────────────────────────────────────────────┤
+  │ af3e722 │ Checkpoint.resumeFrom()                                        │
+  ├─────────┼────────────────────────────────────────────────────────────────┤
+  │ 0ff62df │ review resolve, ReviewRejected, the wiring and the two new     │
+  │         │ exits                                                          │
+  ├─────────┼────────────────────────────────────────────────────────────────┤
+  │ 415b9cd │ three [06] lines in docs/assumptions.md                        │
+  └─────────┴────────────────────────────────────────────────────────────────┘
+
+  98 tests green, ./gradlew check passes. Tests went in first and the red was
+  the compiler naming exactly the four missing symbols — FileReviewQueue,
+  ResolveReview, ReviewRejected, resumeFrom — which is the spec's shape list,
+  and nothing else.
+
+  I also drove it by hand against the shipped fixtures with the bureau turned
+  down, because a green suite proves the tests and not the CLI:
+
+  Lead 1020304050 pending manual review at step BUREAU: the compliance bureau is
+  down.
+  Case 1020304050-1786934813186 opened.
+  $ review resolve 1020304050-1786934813186 --approve
+  Lead 1020304050 rejected: qualification score 26 is not above 60.
+
+  The approve path resumed at SCORE, drew an unseeded 26 and rejected — an
+  approved case ending rejected, which is the behaviour the spec asks for and
+  the one that would look like a bug if you only read the exit code.
+
+  Two judgement calls worth naming: Atomic.write raises rather than swallowing,
+  so each caller decides what a lost write costs — the cache drops it, the queue
+  propagates. And Main.record uses a negated instanceof for the pending case
+  rather than a fourth exhaustive switch over Decision; exitCode right above it
+  is still the exhaustive match, so a new decision case still breaks the build.
+
+  I stopped at the open PR. Spec 07 gets written after you merge, from the code
+  as it then is.
+
+✻ Baked for 12m 12s
+
+❯ merged it, write spec 07                                                      
+  Ran 1 shell command (ctrl+o to expand)
+
+⏺ Skill(create-spec)
+  ⎿  Successfully loaded skill
+  ⎿  Interrupted · What should Claude do instead?
+
+❯ continue                                                                      
+
+  Read 1 file, ran 1 shell command (ctrl+o to expand)
+  ⎿  Interrupted · What should Claude do instead?

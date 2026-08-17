@@ -53,31 +53,31 @@ recording, and 06's own row is what settles it.
 | 03 | `40bfad38` | claude-opus-5 | 59 | 6,508,949 | $6.22 |
 | 04 | `4ea44317` | claude-opus-5 | 47 | 4,270,261 | $4.28 |
 | 05 | `f55a26ac` | claude-sonnet-5 | 60 | 7,211,970 | $3.70 |
-| **Subtotal** | | | **293** | **26,710,110** | **$22.37** |
+| 06 | `49e92674` | claude-opus-5 | 61 | 6,122,044 | $5.47 |
+| **Subtotal** | | | **354** | **32,832,154** | **$27.84** |
 
 Spec 05 is the only session not run on `claude-opus-5`, and deliberately so: it
 was rated low, and a low spec is the one place to test whether the specification
 carries a cheaper model. Its row is not comparable to the four above it and is
 read in the breakdown, not in this column.
 
-**Project total: $39.74** — $17.37 planning plus $22.37 specs. Both tables, or the
+**Project total: $45.21** — $17.37 planning plus $27.84 specs. Both tables, or the
 number understates the project by everything spent before the first line of Java.
 
 ## What is left
 
-Three specs remain, all medium. The four merged mediums came in at $2.20, $2.56,
-$3.41 and $4.28, and 06 carries the largest acceptance list of any spec so far,
-so 06 at the top of that band and 07 and 08 inside it is roughly $12 more, and
-about $52 for the project.
+Two specs remain, both medium. 06 came in at $5.47, above every merged medium and
+above the $4.28 top of the band the last projection put it at, so 07 and 08 at
+$4 to $5 each is roughly $9 more and about $54 for the project — near the $52 the
+last projection gave, by a different route.
 
-The earlier projection said $16 more and $42 total, with 06 rated high near $6.
-It has already been overspent without 06 being built: it put 05 and 06 at roughly
-$8 together, and $8.75 has gone on 05 plus the session that only *specced* 06.
-The per-spec estimates were not the error — 05 landed where a low should. The
-error was counting only sessions that close a spec. Planning is 44% of this
-project and the projection had no line for any of it. This one assumes 06, 07 and
-08 each write the next spec inside their own session, as `AGENTS.md` requires;
-another split like 08 and 09 adds a session that is not in the $12.
+That projection assumed 06 would write spec 07 inside its own session. It did
+not, and the split that produced sessions 08 and 09 was about to repeat. The fix
+was to `/run-spec` rather than to the estimate: the spec is now written at the
+*start* of the session that implements it, so the planning cost lands inside the
+spec's own row instead of in a fifth planning session. Planning is 38% of this
+project and every earlier projection had no line for it; this is the first one
+where there is nothing left to leak into.
 
 ## Breakdown
 
@@ -198,6 +198,29 @@ $2.20 and $2.56 on half the requests. The conclusion is about tokens, not
 quality: the cheaper model reached the same merged result and took roughly three
 times the reading to get there, so on a spec this well specified there is nothing
 left for it to save.
+
+### 06. Manual review: checkpoint, queue, resume
+
+claude-opus-5 — 61 requests
+
+| | Tokens | Cost |
+|---|---:|---:|
+| input | 122 | $0.00 |
+| output | 53,958 | $1.35 |
+| cache read | 5,953,413 | $2.98 |
+| cache write 1h | 114,551 | $1.15 |
+| **Subtotal** | **6,122,044** | **$5.47** |
+
+The largest spec in the project — 552 lines across twelve files, four commits —
+and the most expensive medium, above the $4.28 top of the merged band.
+
+Its real price is $10.52, because session 09 spent $5.05 writing it. That row
+bet that pre-deciding the file format, the queue methods and the resume rule
+would bring the implementation in near a medium; it came in above every medium
+instead, so the split cost more than doing both in one session and bought
+nothing measurable. The design work was real either way. Paying for a second
+session's orientation to hold it was the waste, and `/run-spec` no longer does
+that.
 
 ## What the number includes
 
