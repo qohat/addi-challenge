@@ -25,12 +25,33 @@ install one. `./gradlew check` also needs `python3`, for the budget task.
     $ ./gradlew installDist
     $ export PATH="$PWD/build/install/lead-validation/bin:$PATH"
 
+On Windows the same two steps in PowerShell, against the `gradlew.bat` and the
+`lead-validation.bat` the distribution already ships:
+
+    PS> .\gradlew.bat installDist
+    PS> $env:Path = "$PWD\build\install\lead-validation\bin;$env:Path"
+    PS> lead-validation demo
+
+Every `lead-validation` command below is then identical on both. The difference
+is the gate: `gradlew.bat check` shells out to `python3` for the budget task, and
+the python.org installers put `python.exe` and `py.exe` on PATH but no
+`python3.exe` — install one that does, or run `gradlew.bat check -x
+contextBudget` and lose only the line budgets. Nothing else here is POSIX-only:
+paths go through `java.nio.file` throughout, a case ID is
+`<nationalId>-<epoch millis>` rather than an ISO instant because a Windows
+filename cannot hold the colons, and a CRLF checkout of `fixtures/` parses the
+same, because every row's last cell is trimmed.
+
 Start with the demo. Eleven scenarios — a conversion, all seven rejection
 causes, a pending case an analyst approves, one they reject, a real 2s timeout
 and a cache hit — each run as a real command through the real parser and the
 real exit codes, in a fresh temporary directory it names on the first line:
 
     $ lead-validation demo
+
+`src/test/java/com/addi/lead/DemoTest.java` asserts what it prints: the eleven
+scenarios in order, the rendered line of every rejection cause, the timeout, the
+analyst rejection, the cache hit, and that the run writes nothing into `data/`.
 
 One lead at a time. The score is drawn fresh on every run — 40 of the 101
 possible values convert — so this lead is rejected on the score more often than
@@ -65,6 +86,11 @@ stdout carries the decision in prose; the exit code is the machine contract:
 | 3 | Input error |
 | 4 | The review case could not be written |
 
+Every row is asserted in `src/test/java/com/addi/lead/MainTest.java`, which runs
+the wired application in process against fixtures the test wrote — including
+`aCaseThatCannotBeWrittenExitsFourOnStderr` for the one code nothing else
+reaches.
+
 `./gradlew run` does not preserve these — Gradle reports any non-zero exit as
 its own build failure 1. The installed distribution and the Docker image return
 them directly.
@@ -98,14 +124,22 @@ is one exhaustive switch. Adding a case there breaks every call site on purpose.
 - **Parallel stage.** Registry and judicial are forked into one
   `StructuredTaskScope.open()` with a scope-level timeout, 2s by default. On
   timeout the scope cancels both branches and the run goes to manual review.
+  `src/test/java/com/addi/lead/app/PipelineConcurrencyTest.java` proves all
+  three claims: `registryAndJudicialAreInsideTheirCallsAtTheSameTime` blocks
+  until two callers have arrived, so sequential execution cannot pass it, and
+  `aJudicialBranchThatFinishedFirstIsStillNotUsed` covers the half-answer.
 - **Bureau cache.** A CSV keyed by national ID with a 24h TTL, written by
   atomic rename. Only terminal answers are cached; an outage never is, because
   caching one turns a transient failure into a permanent one. A corrupt row is
-  simply a miss.
+  simply a miss. Each of those is a case in
+  `src/test/java/com/addi/lead/adapter/BureauCacheTest.java`, down to
+  `theTtlBoundaryIsExpiredAndOneMillisecondInsideItIsAHit`.
 - **Manual review.** A case persists the lead, the outcomes already resolved,
   why it stopped and which step is pending. Resolving it is terminal, and an
   analyst approval is never written to the bureau cache — it is not a bureau
-  response and must not expire on a TTL.
+  response and must not expire on a TTL. The resume is
+  `MainTest.approvingResumesPastTheDownBureauAndConverts`, and
+  `approvingIntoADownScoreOpensASecondCase` is what happens when it stops again.
 - **Configuration.** `Config` is a record with the timeout, the fixture and data
   directories, the cache TTL and an optional seed. None of them is a flag; only
   tests and the demo vary them.
@@ -219,19 +253,21 @@ prices every one of them.
 
 ## What it cost
 
-$55.54 for the whole thing: $38.17 across nine specs, cheapest $2.20 and dearest
-$6.22, plus $17.37 across four planning sessions that produced no code. Planning
-was 31% of the bill and no projection made during the project had a line for it,
-which is the single biggest thing this measurement changed.
+$61.01 for the whole thing, and that figure covers every session that ran against
+this repository: $38.17 across nine specs, cheapest $2.20 and dearest $6.22, plus
+$22.84 across seven sessions that implemented no spec — the false start before the
+first commit, the planning sessions, the closeouts, and the final documentation.
+Quoting $38.17 would be flattering and wrong; 37% of the bill was spent outside a
+spec, and no projection made during the project had a line for it, which is the
+single biggest thing this measurement changed.
 
 Roughly 96% of all tokens were cache reads and well under 1% was output — the
 bill is what the model re-reads, not what it writes, which is what the line
 budgets above are for. Spec 08 cost $4.91, priced by a separate closeout session
-afterwards because a session cannot price its own log. Two sessions sit outside
-the total: eleven minutes of setup before the first commit, $1.02, which makes
-the end-to-end figure $56.56, and that closeout session, which is unpriced for
-the same reason every other row is filled in by the session after it. The
-per-spec breakdown is in `docs/ai/cost.md`.
+afterwards because a session cannot price its own log; that closeout is itself a
+row in the planning table. The only session missing from the total is the
+bookkeeping session that wrote the rows, for the same reason. The per-spec
+breakdown is in `docs/ai/cost.md`.
 
 ## Pending improvements
 
@@ -260,7 +296,7 @@ Real gaps, in the order I would fix them:
 - **No structured logging, no metrics, no tracing.** Nothing asked for them and
   nothing would run without them in production, starting with the latency of
   each external call.
-- **The parallel stage is proven correct, not fast.** There is a test that
+- **The parallel stage is proven correct, not fast.** `PipelineConcurrencyTest`
   proves both branches are genuinely in flight at once; there is no load or soak
   test, and the thread-per-task assumption is untested above one lead.
 - **A resumed run re-executes the resolved step's successors only.** Everything

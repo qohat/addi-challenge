@@ -1,0 +1,9 @@
+README is bash only, no mention of Windows. gradlew.bat is there so it should work — add the PowerShell equivalents next to the commands that are already there: installDist, the
+PATH line, the demo. Note that check needs python3 on PATH.
+
+Check if anything assumes POSIX paths, the review queue and the cache file are the likely ones. If something breaks on Windows just say so.
+
+Also: where the README claims something a test proves — the parallel stage, the cache hit, the timeout case, the exit codes — name the test next to the claim, so someone can
+verify it with ./gradlew test instead of trusting me.
+
+Then run the budget script and stop.

@@ -23,17 +23,27 @@ That is what a reviewer wants to see and none of it fits in a column.
 
 ## Planning sessions
 
-Four sessions produced no code and so no spec row will ever carry them:
-`/run-spec` fills a row when it closes a spec, and these closed none. The cost is
-real, so it is priced by the same script and counted in the project total.
+Seven sessions implemented no spec, so no spec row carries their own cost:
+`/run-spec` fills a row when it closes a spec, and none of these closed one of
+their own. The cost is real, so it is priced by the same script and counted in
+the project total.
 
 | Session | Produced | Model | Requests | Tokens | Cost |
 |---|---|---|---:|---:|---:|
+| `0dd4af1c` | Nothing — a false start before the bootstrap | claude-opus-5 | 7 | 364,371 | $1.02 |
 | `9c968601` | Session 00, the bootstrap | claude-opus-5 | 70 | 7,731,852 | $6.81 |
 | `3ed3e39a` | Session 01, ADR 0008 and specs 00 to 03 | claude-opus-5 | 23 | 1,969,675 | $3.12 |
 | `580b4740` | Session 07, closed out spec 04's records and wrote spec 05 | claude-opus-5 | 36 | 2,311,075 | $2.39 |
 | `4032a67d` | Session 09, wrote spec 06 | claude-opus-5 | 64 | 5,951,178 | $5.05 |
-| **Subtotal** | | | **193** | **17,963,780** | **$17.37** |
+| `492118b2` | Session 13, closed out spec 08 | claude-opus-5 | 25 | 1,397,270 | $1.43 |
+| `c14a1c38` | Session 14, the compliance document and the Windows instructions | claude-opus-5 | 31 | 2,800,172 | $3.02 |
+| **Subtotal** | | | **256** | **22,525,593** | **$22.84** |
+
+The first row bought nothing. It is eleven minutes of model and tool
+configuration before the first commit, abandoned and started again, and it is in
+the table because an attempt that was thrown away still cost $1.02. The last two
+are the other end of the same honesty: closeouts and documentation that came
+after the ninth spec merged, which no spec row can absorb.
 
 Session 09 is the most expensive planning session that produced a single spec,
 and it cost more than three of the five merged specs. It was the session that
@@ -63,20 +73,27 @@ was rated low, and a low spec is the one place to test whether the specification
 carries a cheaper model. Its row is not comparable to the four above it and is
 read in the breakdown, not in this column.
 
-**Project total: $55.54** — $17.37 planning plus $38.17 specs. Both tables, or the
-number understates the project by everything spent before the first line of Java.
+**Project total: $61.01** — $22.84 planning plus $38.17 specs. Every session that
+ran against this repository is in one of the two tables, including the false start
+and the sessions that came after the last spec merged. Read the specs table alone
+and the project looks like $38.17, which would be flattering and wrong: 37% of
+the bill was spent outside a spec.
 
-Two sessions sit outside both tables. `0dd4af1c` is eleven minutes of model and
-tool configuration before the first commit, $1.02 over 7 requests, which puts the
-honest end-to-end figure at **$56.56**. The other is the closeout session that
-wrote spec 08's row above: it cannot price itself, for the same reason every
-other row is filled in by the session after it.
+One session sits outside both tables, and always will: this one, the bookkeeping
+session that wrote the rows above. It cannot price itself, for the same reason
+every other row is filled in by the session after it.
 
 ## What the estimate was worth
 
 The last thing this file predicted was "$5 to $6 for 08 puts the project near
-$56". 08 came in at $4.91 and the project at $55.54 — the first forecast here
-made from more than one comparable row, and the only one that held.
+$56". 08 came in at $4.91, so the forecast held on the row it was about — the
+first one here made from more than one comparable row.
+
+The project figure it implied did not, and not because the estimate was off. The
+project is $61.01, because three sessions had never been priced at all: the false
+start, and the two sessions after 08 merged that closed its row and wrote the
+compliance and Windows documentation. Every forecast in this file was a forecast
+about specs, and the thing that moved the total was work that was not a spec.
 
 The forecast rested on 07, the first session to write its own spec and then
 implement it: $5.42 against 06's $10.52 across two sessions, for a spec of

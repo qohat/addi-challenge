@@ -1,0 +1,14 @@
+Final bookkeeping — the project is done and three sessions never got recorded, so docs/ai/cost.md is understating what this cost.
+
+Price these with the script and add them:
+
+- 0dd4af1c — a false start before the bootstrap, 7 requests. Record it as what it was; a first attempt I abandoned is part of the real cost.
+- 492118b2 — closed out spec08.
+- c14a1c38 — wrote the compliance document and the Windows instructions.
+
+They all belong in the planning table, none of them implemented a spec. Then fix the totals: the file currently says $55.54 and the real figure across every session is $61.01.
+
+Update the README's cost section to match, and say plainly that the number covers everything — the false start, the planning sessions, the closeouts and the final documentation
+— not just the nine specs. A total that only counts the specs would be flattering and wrong.
+
+Then stop.
