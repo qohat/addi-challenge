@@ -1,0 +1,973 @@
+ ▐▛███▜▌   Claude Code v2.1.233
+▝▜█████▛▘  Opus 5 · Claude Team
+  ▘▘ ▝▝    ~/Projects/work/addi/addi-challenge/.trees/08-final-documentation
+
+
+❯ /model                                                                        
+  ⎿  Set model to Opus 5 (1M context) and saved as your default for new sessions
+
+❯ I merged spec 07, please run next spec                                        
+
+⏺ I'll start the run-spec skill.
+
+⏺ Skill(run-spec)
+  ⎿  Successfully loaded skill
+
+⏺ I'll start with the closeout of spec 07.
+
+  Read 2 files, ran 4 shell commands (ctrl+o to expand)
+
+⏺ Now the cost ledger updates:
+
+⏺ Update(~/Projects/work/addi/addi-challenge/docs/ai/cost.md)
+  ⎿  Added 2 lines, removed 1 line
+      54  | 04 | `4ea44317` | claude-opus-5 | 47 | 4,270,261 | $4.28 |
+      55  | 05 | `f55a26ac` | claude-sonnet-5 | 60 | 7,211,970 | $3.70 |
+      56  | 06 | `49e92674` | claude-opus-5 | 61 | 6,122,044 | $5.47 |
+      57 -| **Subtotal** | | | **354** | **32,832,154** | **$27.84** |   
+      57 +| 07 | `f51cdff0` | claude-opus-5 | 73 | 6,423,241 | $5.42 |   
+      58 +| **Subtotal** | | | **427** | **39,255,395** | **$33.26** |   
+      59  
+      60  Spec 05 is the only session not run on `claude-opus-5`, and del
+          iberately so: it
+      61  was rated low, and a low spec is the one place to test whether 
+          the specification
+
+⏺ Update(~/Projects/work/addi/addi-challenge/docs/ai/cost.md)
+  ⎿  Added 9 lines, removed 12 lines
+      62  carries a cheaper model. Its row is not comparable to the four 
+          above it and is
+      63  read in the breakdown, not in this column.
+      64  
+      65 -**Project total: $45.21** — $17.37 planning plus $27.84 specs. 
+         -Both tables, or the                                            
+      65 +**Project total: $50.63** — $17.37 planning plus $33.26 specs. 
+         +Both tables, or the                                            
+      66  number understates the project by everything spent before the f
+          irst line of Java.
+      67  
+      68  ## What is left
+      69  
+      70 -Two specs remain, both medium. 06 came in at $5.47, above every
+         - merged medium and                                             
+      71 -above the $4.28 top of the band the last projection put it at, 
+         -so 07 and 08 at                                                
+      72 -$4 to $5 each is roughly $9 more and about $54 for the project 
+         -— near the $52 the                                             
+      73 -last projection gave, by a different route.                    
+      70 +One spec remains, medium. 07 came in at $5.42 with its spec wri
+         +tten inside the                                                
+      71 +same session, so $5 to $6 for 08 puts the project near $56.    
+      72  
+      75 -That projection assumed 06 would write spec 07 inside its own s
+         -ession. It did                                                 
+      76 -not, and the split that produced sessions 08 and 09 was about t
+         -o repeat. The fix                                              
+      77 -was to `/run-spec` rather than to the estimate: the spec is now
+         - written at the                                                
+      78 -*start* of the session that implements it, so the planning cost
+         - lands inside the                                              
+      79 -spec's own row instead of in a fifth planning session. Planning
+         - is 38% of this                                                
+      80 -project and every earlier projection had no line for it; this i
+         -s the first one                                                
+      81 -where there is nothing left to leak into.                      
+      73 +07 is the first row that tests the change made after 06: spec w
+         +ritten at the                                                  
+      74 +start of the implementing session rather than in a session of i
+         +ts own. It cost                                                
+      75 +$5.42 against 06's $10.52 across two sessions, for a spec of co
+         +mparable size, so                                              
+      76 +the merge saved roughly the price of a second session's orienta
+         +tion. It is one                                                
+      77 +data point, but it points the same way the numbers above it do 
+         +— the cost is in                                               
+      78 +sessions, not in specs.                                        
+      79  
+      80  ## Breakdown
+      81  
+
+⏺ Update(~/Projects/work/addi/addi-challenge/docs/ai/cost.md)
+  ⎿  Added 21 lines
+      220  session's orientation to hold it was the waste, and `/run-spec
+           ` no longer does
+      221  that.
+      222  
+      223 +### 07. Demo command and fixtures                             
+      224 +                                                              
+      225 +claude-opus-5 — 73 requests                                   
+      226 +                                                              
+      227 +| | Tokens | Cost |                                           
+      228 +|---|---:|---:|                                               
+      229 +| input | 146 | $0.00 |                                       
+      230 +| output | 47,812 | $1.20 |                                   
+      231 +| cache read | 6,266,613 | $3.13 |                            
+      232 +| cache write 1h | 108,670 | $1.09 |                          
+      233 +| **Subtotal** | **6,423,241** | **$5.42** |                  
+      234 +                                                              
+      235 +The first session to write its spec and then implement it, and
+          + the most requests                                            
+      236 +of any session in the project. The spec is 150 of the 540 line
+          +s the session                                                 
+      237 +produced; the code is 113 lines of `Demo.java` over the pipeli
+          +ne that already                                               
+      238 +existed, plus the fixture rows every outcome needs.           
+      239 +                                                              
+      240 +Against 06's $10.52 across two sessions this is the cheaper ha
+          +lf of the same                                                
+      241 +trade, at a smaller diff. The request count is where the merge
+          + shows: 73 against                                            
+      242 +61, one session doing both jobs rather than two sessions each 
+          +paying to orient.                                             
+      243 +                                                              
+      244  ## What the number includes
+      245  
+      246  With one session per spec, each figure measures session overhe
+           ad — orientation,
+
+⏺ Update(~/Projects/work/addi/addi-challenge/specs/README.md)
+  ⎿  Added 1 line, removed 1 line
+      16  | 04 | Bureau cache | 03 | medium | core | merged |
+      17  | 05 | Qualification score and conversion | 04 | low | core | m
+          erged |
+      18  | 06 | Manual review: checkpoint, queue, resume | 05 | medium |
+           core | merged |
+      19 -| 07 | Demo command and fixtures | 06 | medium | nice-to-have |
+         - specced |                                                     
+      19 +| 07 | Demo command and fixtures | 06 | medium | nice-to-have |
+         + merged |                                                      
+      20  | 08 | Final documentation | 07 | medium | core | not started |
+      21  
+      22  ## If time runs out
+
+  Listed 1 directory, ran 1 shell command (ctrl+o to expand)
+
+⏺ Closeout done. Spec 07 is merged, $5.42 in the ledger, export present.
+
+  Next queue row is 08 — Final documentation (medium, core, last spec). The spec
+  file doesn't exist yet.
+
+⏺ User answered Claude's questions:
+  ⎿  · Spec 08 isn't written. Write it now and implement it in this same 
+     session? → Write it, then run it (Recommended)
+
+⏺ Skill(create-spec)
+  ⎿  Successfully loaded skill
+
+  Searched for 1 pattern, read 2 files, listed 1 directory, ran 1 shell command (ctrl+o to expand)
+
+⏺ Now I'll write spec 08.
+
+⏺ Write(~/Projects/work/addi/addi-challenge/specs/08-final-documentation.md)
+  ⎿  Wrote 128 lines to ../../specs/08-final-documentation.md
+      1 # 08. Final documentation
+      2 
+      4 
+      5 `README.md` stops being a placeholder and becomes the front door 
+        the brief's
+        ow it was
+      7 built, what working with AI actually cost and produced, and what 
+        is still
+        iverable the
+      9 brief names exists and the README says where it is.
+     … +184 lines (ctrl+o to expand)
+
+⏺ Update(~/Projects/work/addi/addi-challenge/specs/README.md)
+  ⎿  Added 1 line, removed 1 line
+      17  | 05 | Qualification score and conversion | 04 | low | core | m
+          erged |
+      18  | 06 | Manual review: checkpoint, queue, resume | 05 | medium |
+           core | merged |
+      19  | 07 | Demo command and fixtures | 06 | medium | nice-to-have |
+           merged |
+      20 -| 08 | Final documentation | 07 | medium | core | not started |
+      20 +| 08 | Final documentation | 07 | medium | core | specced |    
+      21  
+      22  ## If time runs out
+      23  
+
+  Ran 2 shell commands (ctrl+o to expand)
+
+⏺ Spec 08 is on main. Now the worktree.
+  Read 5 files, ran 2 shell commands (ctrl+o to expand)
+  ⎿  Loaded CLAUDE.md
+
+⏺ Tests first. Writing ReadmeTest:
+
+⏺ Write(src/test/java/com/addi/lead/ReadmeTest.java)
+  ⎿  Wrote 84 lines to src/test/java/com/addi/lead/ReadmeTest.java
+       1 package com.addi.lead;
+       2 
+       3 import static org.junit.jupiter.api.Assertions.assertFalse;
+       4 import static org.junit.jupiter.api.Assertions.assertInstanceOf;
+       5 import static org.junit.jupiter.api.Assertions.assertTrue;
+       6 
+       7 import com.addi.lead.cli.Cli;
+       8 import java.io.IOException;
+       9 import java.nio.file.Files;
+      10 import java.nio.file.Path;
+     … +88 lines (ctrl+o to expand)
+
+  Searched for 2 patterns, read 1 file, ran 10 shell commands (ctrl+o to expand)
+
+⏺ Now the README:
+
+⏺ Write(README.md)
+  ⎿  Added 266 lines, removed 16 lines
+        1  # Addi lead validation challenge
+        2  
+        3 -A CLI that qualifies a sales lead into a prospect. Four valida
+          -tions run in the                                              
+        4 -order the brief fixes: national registry and judicial records 
+          -in parallel, then                                             
+        5 -the compliance bureau with a durable cache, then a qualificati
+          -on score.                                                     
+        3 +## What it is                                                 
+        4  
+        7 -Java 25, Gradle, single module, no framework, no external infr
+          -astructure.                                                   
+        5 +A command-line application that qualifies a sales lead into a 
+          +prospect. Four                                                
+        6 +validations run in the order the brief fixes: the national reg
+          +istry and the                                                 
+        7 +judicial archives in parallel, then the compliance bureau behi
+          +nd a durable                                                  
+        8 +cache, then a qualification score that converts only above 60.
+          + A step whose                                                 
+        9 +dependency is down is not a rejection — it stops the pipeline 
+          +at a checkpoint,                                              
+       10 +opens a manual review case and waits for an analyst.          
+       11  
+        9 -**This README is a placeholder.** It is written in full at spe
+          -c 08, once there                                              
+       10 -is a process to describe. The brief asks it to cover the decis
+          -ions, the                                                     
+       11 -assumptions, how the output was refined, the full prompt and c
+          -onversation                                                   
+       12 -history, what worked and what did not with AI, and the pending
+          - improvements.                                                
+       12 +    registry --+                                              
+       13 +               +--> bureau --> score --> converted            
+       14 +    judicial --+                                              
+       15  
+       14 -## Where things are, meanwhile                                
+       16 +Java 25 with preview features, Gradle, a single module, no fra
+          +mework, no                                                    
+       17 +annotations, no reflection, no database and no message queue. 
+          +The external                                                  
+       18 +systems are simulated from CSV fixtures that carry their own l
+          +atency, so every                                              
+       19 +outcome below is reproducible.                                
+       20  
+       21 +## Run it                                                     
+       22 +                                                              
+       23 +JDK 25 is the only requirement, or Docker if you would rather 
+          +not install one.                                              
+       24 +                                                              
+       25 +    $ ./gradlew installDist                                   
+       26 +    $ export PATH="$PWD/build/install/lead-validation/bin:$PAT
+          +H"                                                            
+       27 +                                                              
+       28 +Start with the demo. It runs eleven scenarios — a conversion, 
+          +all seven                                                     
+       29 +rejection causes, a pending case an analyst approves, one they
+          + reject, a real                                               
+       30 +2s timeout and a cache hit — as real commands through the real
+          + parser and the                                               
+       31 +real exit codes, printing each one:                           
+       32 +                                                              
+       33 +    $ lead-validation demo                                    
+       34 +                                                              
+       35 +It works in a fresh temporary directory it names on the first 
+          +line, so it                                                   
+       36 +neither reads nor writes the cache and queue you already have.
+       37 +                                                              
+       38 +One lead at a time:                                           
+       39 +                                                              
+       40 +    $ lead-validation validate-lead --id 1020304050           
+       41 +    Lead 1020304050 converted to prospect. Score 67.          
+       42 +                                                              
+       43 +When a dependency is down the run stops and leaves a case:    
+       44 +                                                              
+       45 +    $ lead-validation validate-lead --id 1090001020           
+       46 +    Lead 1090001020 pending manual review at step BUREAU: the 
+          +compliance bureau is down.                                    
+       47 +    Case 1090001020-1786940581101 opened.                     
+       48 +                                                              
+       49 +The queue is a directory of files, browsable with `ls` and `ca
+          +t`. An analyst                                                
+       50 +resolves a case by ID:                                        
+       51 +                                                              
+       52 +    $ lead-validation review resolve 1090001020-1786940581101 
+          +--approve                                                     
+       53 +    $ lead-validation review resolve 1090001020-1786940581101 
+          +--reject                                                      
+       54 +                                                              
+       55 +Approving means the analyst verified the failed step out of ba
+          +nd and it came                                                
+       56 +back clean. The pipeline resumes at that step and can still re
+          +ject on the score.                                            
+       57 +                                                              
+       58 +stdout carries the decision in prose; the exit code is the mac
+          +hine contract:                                                
+       59 +                                                              
+       60 +| Code | Meaning |                                            
+       61 +|---|---|                                                     
+       62 +| 0 | Converted to prospect |                                 
+       63 +| 1 | Rejected |                                              
+       64 +| 2 | Pending manual review |                                 
+       65 +| 3 | Input error |                                           
+       66 +| 4 | The review case could not be written |                  
+       67 +                                                              
+       68 +`./gradlew run` does not preserve these — Gradle reports any n
+          +on-zero exit as                                               
+       69 +its own build failure 1. The installed distribution and the Do
+          +cker image return                                             
+       70 +them directly.                                                
+       71 +                                                              
+       72 +Everything the project checks, in one task:                   
+       73 +                                                              
+       74 +    $ ./gradlew check                                         
+       75 +                                                              
+       76 +That is the build, 109 tests, and the context budgets in      
+       77 +`scripts/context-budget.py`, which fail the build when a docum
+          +entation file                                                 
+       78 +outgrows its line limit.                                      
+       79 +                                                              
+       80 +Without a JDK:                                                
+       81 +                                                              
+       82 +    $ docker build -t lead-validation .                       
+       83 +    $ docker run --rm lead-validation demo                    
+       84 +                                                              
+       85 +## How it works                                               
+       86 +                                                              
+       87 +Hexagonal, hand-wired. Seven ports name the effects — the four
+          + external systems,                                            
+       88 +the lead repository, the clock's randomness and the simulated 
+          +latency — and the                                             
+       89 +whole object graph is one readable method in                  
+       90 +`src/main/java/com/addi/lead/Main.java`. The domain is pure: n
+          +o I/O, no clock,                                              
+       91 +no randomness, so every test is deterministic by construction 
+          +rather than by                                                
+       92 +sleeping.                                                     
+       93 +                                                              
+       94 +Failures are values, never exceptions. Every step returns its 
+          +own sealed                                                    
+       95 +hierarchy with cases named after what happened, and the one pl
+          +ace where a                                                   
+       96 +business rejection and an unavailable dependency collapse into
+          + a single decision                                            
+       97 +is one exhaustive switch. Adding a case there breaks every cal
+          +l site on purpose.                                            
+       98 +                                                              
+       99 +- **Parallel stage.** Registry and judicial are forked into on
+          +e                                                             
+      100 +  `StructuredTaskScope.open()` with a scope-level timeout, 2s 
+          +by default. On                                                
+      101 +  timeout the scope cancels both branches and the run goes to 
+          +manual review.                                                
+      102 +- **Bureau cache.** A CSV keyed by national ID with a 24h TTL,
+          + written by                                                   
+      103 +  atomic rename. Only terminal answers are cached; an outage n
+          +ever is, because                                              
+      104 +  caching one turns a transient failure into a permanent one. 
+          +A corrupt row is                                              
+      105 +  simply a miss.                                              
+      106 +- **Manual review.** A case persists the lead, the outcomes al
+          +ready resolved,                                               
+      107 +  why it stopped and which step is pending. Resolving it is te
+          +rminal, and an                                                
+      108 +  analyst approval is never written to the bureau cache — it i
+          +s not a bureau                                                
+      109 +  response and must not expire on a TTL.                      
+      110 +- **Configuration.** `Config` is a record with the timeout, th
+          +e fixture and data                                            
+      111 +  directories, the cache TTL and an optional seed. None of the
+          +m is a flag; only                                             
+      112 +  tests and the demo vary them.                               
+      113 +                                                              
+      114 +The reasoning is in `docs/adr/`, one file each:               
+      115 +                                                              
+      116 +| ADR | Decision |                                            
+      117 +|---|---|                                                     
+      118 +| 0001 | Hexagonal architecture with a hand-wired composition 
+          +root |                                                        
+      119 +| 0002 | Java 25 preview structured concurrency for the parall
+          +el stage |                                                    
+      120 +| 0003 | Persistence without a database |                     
+      121 +| 0004 | Manual review is a resume, not an override |         
+      122 +| 0005 | Failure taxonomy: rejection and unavailability are di
+          +fferent |                                                     
+      123 +| 0006 | Determinism is a test property, not a business one | 
+      124 +| 0007 | Docker is a reviewer convenience, never a build depen
+          +dency |                                                       
+      125 +| 0008 | Domain shapes and the single collapse point |        
+      126 +                                                              
+      127 +## Decisions and assumptions                                  
+      128 +                                                              
+      129 +The brief says "three distinct validations" and then lists fou
+          +r. Four was the                                               
+      130 +reading, and the qualification score is the fourth.           
+      131 +                                                              
+      132 +The calls most worth challenging, all of them one-liners in   
+      133 +`docs/assumptions.md`, tagged with the spec that hit them:    
+      134 +                                                              
+      135 +- A national ID absent from the local database is a **business
+          + rejection**, not                                             
+      136 +  an input error. The command line was valid; the precondition
+          + was not.                                                     
+      137 +- A timeout is **never a rejection**. The outside world failin
+          +g says nothing                                                
+      138 +  about the lead.                                             
+      139 +- Judicial rejects on **any** count of one or more; the brief 
+          +gives no severity                                             
+      140 +  dimension, so none was invented.                            
+      141 +- "Greater than 60" is read literally: 60 rejects, 61 converts
+          +.                                                             
+      142 +- Email is **not** part of the registry match. A civil registr
+          +y does not hold                                               
+      143 +  email addresses.                                            
+      144 +- The score is never fixtured, only seeded, so it stays genuin
+          +ely random in                                                 
+      145 +  production and fixed in tests.                              
+      146 +                                                              
+      147 +The full list, and what the brief actually asked for, are in  
+      148 +`docs/assumptions.md` and `docs/PROJECT_CONTEXT.md`. `docs/bri
+          +ef.md` is the                                                 
+      149 +requirements as given.                                        
+      150 +                                                              
+      151 +## How it was built                                           
+      152 +                                                              
+      153 +Nine specs, one per session. A spec is a version of the code t
+          +hat could be                                                  
+      154 +deployed the day it merges, under 150 lines, with its acceptan
+          +ce criteria                                                   
+      155 +written as tests before any code exists. Each one was committe
+          +d to `main` on its                                            
+      156 +own, then implemented in a worktree and merged through a PR sp
+          +lit into                                                      
+      157 +reviewable commits — the history shows `Specify the demo comma
+          +nd...` landing                                                
+      158 +before the branch that built it, every time. The queue and its
+          + ordering are in                                              
+      159 +`specs/README.md`.                                            
+      160 +                                                              
+      161 +Only specs 00 to 03 were written up front. The rest were writt
+          +en at the start of                                            
+      162 +the session that implemented them, from the code as it actuall
+          +y turned out                                                  
+      163 +rather than as it had been imagined.                          
+      164 +                                                              
+      165 +The context an agent loads is budgeted and the budget is in th
+          +e build.                                                      
+      166 +`CLAUDE.md` is a 37-line router re-read on every request; `AGE
+          +NTS.md`,                                                      
+      167 +`CONTRIBUTING.md` and `docs/PROJECT_CONTEXT.md` load once per 
+          +session and are                                               
+      168 +capped at 120 lines; a spec is capped at 150. Over budget mean
+          +s cutting the                                                 
+      169 +file, never raising the limit. The two repeatable procedures —
+          + writing a spec                                               
+      170 +and running one — are checked-in skills under `.claude/skills/
+          +`, so the process                                             
+      171 +is version-controlled rather than retyped.                    
+      172 +                                                              
+      173 +## Working with AI                                            
+      174 +                                                              
+      175 +Every claim here has a number, a commit or a file behind it.  
+      176 +                                                              
+      177 +**The specification made the model substitutable, and that did
+          + not make it                                                  
+      178 +cheaper.** Spec 05 was rated low and deliberately run on Sonne
+          +t instead of Opus.                                            
+      179 +It merged with no shape invented and no criterion dropped, whi
+          +ch is the result                                              
+      180 +the experiment was looking for. It also spent 7.0M tokens acro
+          +ss 60 requests                                                
+      181 +where Opus did the comparable specs 01 and 02 in 2.5M and 2.2M
+          + across 35 and 33.                                            
+      182 +The per-token discount is real and worth about 40%; this sessi
+          +on spent it and                                               
+      183 +more on re-reading. On a spec this well specified there was no
+          +thing left for a                                              
+      184 +cheaper model to save.                                        
+      185 +                                                              
+      186 +**Splitting the planning out of the implementation cost money 
+          +and bought                                                    
+      187 +nothing.** Spec 06 was written in its own session for $5.05 an
+          +d implemented in                                              
+      188 +the next for $5.47 — $10.52, against a merged-medium band that
+          + topped out at                                                
+      189 +$4.28. The bet was that pre-deciding the file format and the r
+          +esume rule would                                              
+      190 +bring the implementation in low. It came in above every medium
+          + instead. The fix                                             
+      191 +was to the skill rather than to the estimate (commit `4bf8f2d`
+          +); spec 07 then                                               
+      192 +did both jobs in one session for $5.42.                       
+      193 +                                                              
+      194 +**The agent will quietly skip bookkeeping that nothing enforce
+          +s.** Two                                                      
+      195 +consecutive sessions ended without closing out the previous sp
+          +ec, leaving the                                               
+      196 +queue claiming `specced` for merged work and one spec file unc
+          +ommitted                                                      
+      197 +(`prompts/05-bookkeeping-mistake.txt`). Nothing in the code wa
+          +s wrong and no                                                
+      198 +test could have caught it. The fix was to make the closeout th
+          +e first step of                                               
+      199 +the skill that starts the next session, because a session's lo
+          +g is not complete                                             
+      200 +until it has closed.                                          
+      201 +                                                              
+      202 +**It plans confidently around things that do not work.** Spec 
+          +00 specified                                                  
+      203 +Spotless with palantir-java-format; the formatter's last relea
+          +se predates JDK 25                                            
+      204 +by three months and dies with a `NoSuchMethodError` on a javac
+          + internal. The                                                
+      205 +spec had named a fallback, so it cost exactly one commit (`ba8
+          +fc5b`) instead of                                             
+      206 +an argument. Relatedly, the model reaches for the Java 21     
+      207 +`new StructuredTaskScope<>()` API from training data — `CONTRI
+          +BUTING.md` names                                              
+      208 +that specific mistake for that specific reason.               
+      209 +                                                              
+      210 +**Refining the output came from three things, none of them pro
+          +mpting.** The                                                 
+      211 +spec, which fixes every shape before the session starts and is
+          + why "medium"                                                 
+      212 +specs stay medium. The gate: `./gradlew check` runs the build,
+          + the tests and the                                            
+      213 +context budgets, and it is the same command in CI. And a human
+          + reading every PR                                             
+      214 +before the next spec begins — the only manual step in the proc
+          +ess. Cost is                                                  
+      215 +computed by `scripts/cost.py` from the session logs rather tha
+          +n self-reported,                                              
+      216 +because a model asked to price its own logs double-counts them
+          +.                                                             
+      217 +                                                              
+      218 +The full record is in the repository: `prompts/` has the promp
+          +t that opened each                                            
+      219 +session, `docs/ai/sessions/` has the complete transcripts, and
+          + `docs/ai/cost.md`                                            
+      220 +prices every one of them.                                     
+      221 +                                                              
+      222 +## What it cost                                               
+      223 +                                                              
+      224 +$50.63 through spec 07: $33.26 across eight specs and $17.37 a
+          +cross four                                                    
+      225 +planning sessions that produced no code. Planning was 34% of t
+          +he bill and no                                                
+      226 +projection made during the project had a line for it, which is
+          + the single                                                   
+      227 +biggest thing this measurement changed.                       
+      228 +                                                              
+      229 +The cheapest spec was $2.20 and the most expensive $6.22. Roug
+          +hly 96% of all                                                
+      230 +tokens were cache reads and well under 1% was output — the bil
+          +l is what the                                                 
+      231 +model re-reads, not what it writes, which is what the line bud
+          +gets above are                                                
+      232 +for. Spec 08, this one, is not yet priced: a session cannot pr
+          +ice its own log.                                              
+      233 +The breakdown per spec, and what each number includes, is in `
+          +docs/ai/cost.md`.                                             
+      234 +                                                              
+      235 +## Pending improvements                                       
+      236 +                                                              
+      237 +Deliberate scope cuts, kept because they were the right call h
+          +ere and would not                                             
+      238 +be in a production system:                                    
+      239 +                                                              
+      240 +- **No `--data-dir`, `--timeout` or `--fixtures` flags.** A fl
+          +ag with no user is                                            
+      241 +  a flag to maintain for nobody; `Config` is injected instead.
+      242 +- **No `review list` or `review show`.** The queue is a direct
+          +ory and `ls` and                                              
+      243 +  `cat` already read it.                                      
+      244 +- **Converted prospects are not persisted.** The lead database
+          + is in-memory and                                             
+      245 +  the process is single-shot, so conversion is stdout and an e
+          +xit code. A real                                              
+      246 +  system writes the prospect back to the CRM.                 
+      247 +- **Only the bureau is cached.** The brief asks for durability
+          + over bureau                                                  
+      248 +  responses and gives the other three steps no such requiremen
+          +t.                                                            
+      249 +- **The demo never deletes its temporary directories.** They a
+          +re the evidence.                                              
+      250 +                                                              
+      251 +Real gaps, in the order I would fix them:                     
+      252 +                                                              
+      253 +- **The cache is read and rewritten whole, with no eviction or
+          + compaction.**                                                
+      254 +  Fine at fixture scale and stated as such in ADR 0003; it is 
+          +linear in the                                                 
+      255 +  number of leads ever seen.                                  
+      256 +- **Concurrency across processes is only what atomic rename gi
+          +ves.** Two                                                    
+      257 +  processes resolving the same case can both read it open befo
+          +re either writes.                                             
+      258 +  A single-shot CLI makes it unlikely, not impossible.        
+      259 +- **No structured logging, no metrics, no tracing.** Nothing a
+          +sked for them and                                             
+      260 +  nothing would run without them in production, starting with 
+          +the latency of                                                
+      261 +  each external call.                                         
+      262 +- **The parallel stage is proven correct, not fast.** There is
+          + a test that                                                  
+      263 +  proves both branches are genuinely in flight at once; there 
+          +is no load or soak                                            
+      264 +  test, and the thread-per-task assumption is untested above o
+          +ne lead.                                                      
+      265 +- **A resumed run re-executes the resolved step's successors o
+          +nly.** Everything                                             
+      266 +  before the checkpoint is trusted from the case file, which i
+          +s correct while                                               
+      267 +  cases are resolved in minutes and wrong once they are resolv
+          +ed in weeks.                                                  
+      268 +                                                              
+      269 +## Repository map                                             
+      270 +                                                              
+      271  | | |
+      272  |---|---|
+      273  | The requirements | `docs/brief.md`, transcribed from `docs/b
+           rief.pdf` |
+      274  | The problem and what is decided about it | `docs/PROJECT_CON
+           TEXT.md` |
+      275  | Why each decision was made | `docs/adr/` |
+      276  | Ambiguities closed, and by whom | `docs/assumptions.md` |
+       22 -| What is built and what is next | `specs/README.md` |        
+      277 +| What was built, in order | `specs/` |                       
+      278  | Prompts, session by session | `prompts/` |
+      279  | Session transcripts | `docs/ai/sessions/` |
+      280  | Cost per spec | `docs/ai/cost.md` |
+      281 +| The simulated external systems | `fixtures/` |              
+      282  | How the work is run | `AGENTS.md`, `CONTRIBUTING.md`, `.clau
+           de/skills/` |
+       27 -                                                              
+       28 -## Running it                                                 
+       29 -                                                              
+       30 -Nothing runs yet. Spec 00 builds the Gradle project, the check
+          -s and the                                                     
+       31 -container; spec 02 is the first spec that produces a command a
+          - reviewer can                                                 
+       32 -invoke. Instructions land with the code that needs them.      
+
+  Ran 1 shell command (ctrl+o to expand)
+
+⏺ Update(src/test/java/com/addi/lead/ReadmeTest.java)
+  ⎿  Added 1 line, removed 1 line
+      22      private static final Path README = Path.of("README.md");
+      23  
+      24      /** The invocations the README teaches, written as a reader
+           would type them. */
+      25 -    private static final Pattern COMMAND = Pattern.compile("(?m
+         -)^\\$ lead-validation (.+)$");                                 
+      25 +    private static final Pattern COMMAND = Pattern.compile("(?m
+         +)^\\s*\\$ lead-validation (.+)$");                             
+      26  
+      27      /** Repository paths, by their roots, so runtime state and 
+          build output are not candidates. */
+      28      private static final Pattern REPOSITORY_PATH =
+
+  Ran 1 shell command (ctrl+o to expand)
+
+⏺ Gate passes. Trimming the redundancy — it came in at 282 against the spec's
+  200-line target:
+
+⏺ Update(README.md)
+  ⎿  Added 3 lines, removed 4 lines
+      13                 +--> bureau --> score --> converted
+      14      judicial --+
+      15  
+      16 -Java 25 with preview features, Gradle, a single module, no fram
+         -ework, no                                                      
+      17 -annotations, no reflection, no database and no message queue. T
+         -he external                                                    
+      18 -systems are simulated from CSV fixtures that carry their own la
+         -tency, so every                                                
+      19 -outcome below is reproducible.                                 
+      16 +Java 25 with preview features, Gradle, a single module, no fram
+         +ework and no                                                   
+      17 +infrastructure. The external systems are simulated from CSV fix
+         +tures carrying                                                 
+      18 +their own latency, so every outcome below is reproducible.     
+      19  
+      20  ## Run it
+      21  
+
+⏺ Update(README.md)
+  ⎿  Added 4 lines, removed 7 lines
+      24      $ ./gradlew installDist
+      25      $ export PATH="$PWD/build/install/lead-validation/bin:$PATH
+          "
+      26  
+      27 -Start with the demo. It runs eleven scenarios — a conversion, a
+         -ll seven                                                       
+      28 -rejection causes, a pending case an analyst approves, one they 
+         -reject, a real                                                 
+      29 -2s timeout and a cache hit — as real commands through the real 
+         -parser and the                                                 
+      30 -real exit codes, printing each one:                            
+      27 +Start with the demo. Eleven scenarios — a conversion, all seven
+         + rejection                                                     
+      28 +causes, a pending case an analyst approves, one they reject, a 
+         +real 2s timeout                                                
+      29 +and a cache hit — each run as a real command through the real p
+         +arser and the                                                  
+      30 +real exit codes, in a fresh temporary directory it names on the
+         + first line:                                                   
+      31  
+      32      $ lead-validation demo
+      33  
+      34 -It works in a fresh temporary directory it names on the first l
+         -ine, so it                                                     
+      35 -neither reads nor writes the cache and queue you already have. 
+      36 -                                                               
+      34  One lead at a time:
+      35  
+      36      $ lead-validation validate-lead --id 1020304050
+
+⏺ Update(README.md)
+  ⎿  Added 3 lines, removed 4 lines
+      81  ## How it works
+      82  
+      83  Hexagonal, hand-wired. Seven ports name the effects — the four 
+          external systems,
+      84 -the lead repository, the clock's randomness and the simulated l
+         -atency — and the                                               
+      85 -whole object graph is one readable method in                   
+      86 -`src/main/java/com/addi/lead/Main.java`. The domain is pure: no
+         - I/O, no clock,                                                
+      87 -no randomness, so every test is deterministic by construction r
+         -ather than by                                                  
+      84 +the lead repository, randomness and the simulated latency — and
+         + the whole object                                              
+      85 +graph is one readable method in `src/main/java/com/addi/lead/Ma
+         +in.java`. The                                                  
+      86 +domain is pure, so every test is deterministic by construction 
+         +rather than by                                                 
+      87  sleeping.
+      88  
+      89  Failures are values, never exceptions. Every step returns its o
+          wn sealed
+
+⏺ Update(README.md)
+  ⎿  Added 2 lines, removed 3 lines
+      134  - Judicial rejects on **any** count of one or more; the brief 
+           gives no severity
+      135    dimension, so none was invented.
+      136  - "Greater than 60" is read literally: 60 rejects, 61 converts
+           .
+      137 -- Email is **not** part of the registry match. A civil registr
+          -y does not hold                                               
+      137 +- Email is **not** part of the registry match; a civil registr
+          +y does not hold                                               
+      138    email addresses.
+      139  - The score is never fixtured, only seeded, so it stays genuin
+           ely random in
+      140    production and fixed in tests.
+      141  
+      142 -The full list, and what the brief actually asked for, are in  
+      143 -`docs/assumptions.md` and `docs/PROJECT_CONTEXT.md`. `docs/bri
+          -ef.md` is the                                                 
+      142 +`docs/PROJECT_CONTEXT.md` holds the rest, and `docs/brief.md` 
+          +is the                                                        
+      143  requirements as given.
+      144  
+      145  ## How it was built
+
+⏺ Update(README.md)
+  ⎿  Added 8 lines, removed 9 lines
+      215  
+      216  ## What it cost
+      217  
+      218 -$50.63 through spec 07: $33.26 across eight specs and $17.37 a
+          -cross four                                                    
+      219 -planning sessions that produced no code. Planning was 34% of t
+          -he bill and no                                                
+      220 -projection made during the project had a line for it, which is
+          - the single                                                   
+      221 -biggest thing this measurement changed.                       
+      218 +$50.63 through spec 07: $33.26 across eight specs, cheapest $2
+          +.20 and dearest                                               
+      219 +$6.22, plus $17.37 across four planning sessions that produced
+          + no code. Planning                                            
+      220 +was 34% of the bill and no projection made during the project 
+          +had a line for it,                                            
+      221 +which is the single biggest thing this measurement changed.   
+      222  
+      223 -The cheapest spec was $2.20 and the most expensive $6.22. Roug
+          -hly 96% of all                                                
+      224 -tokens were cache reads and well under 1% was output — the bil
+          -l is what the                                                 
+      225 -model re-reads, not what it writes, which is what the line bud
+          -gets above are                                                
+      226 -for. Spec 08, this one, is not yet priced: a session cannot pr
+          -ice its own log.                                              
+      227 -The breakdown per spec, and what each number includes, is in `
+          -docs/ai/cost.md`.                                             
+      223 +Roughly 96% of all tokens were cache reads and well under 1% w
+          +as output — the                                               
+      224 +bill is what the model re-reads, not what it writes, which is 
+          +what the line                                                 
+      225 +budgets above are for. Spec 08, this one, is not yet priced: a
+          + session cannot                                               
+      226 +price its own log. The per-spec breakdown is in `docs/ai/cost.
+          +md`.                                                          
+      227  
+      228  ## Pending improvements
+      229  
+
+  Searched for 1 pattern, read 1 file, ran 1 shell command (ctrl+o to expand)
+⏺ Update(docs/assumptions.md)
+  ⎿  Added 6 lines
+       98  - **Each demo scenario carries its own seed and its own direct
+           ory.** Otherwise an
+       99    outcome depends on the order the scenarios happen to run in.
+            `[07]`
+      100  
+      101 +## The README                                                 
+      102 +                                                              
+      103 +- **The README is not context-budgeted.** Every other document
+          + here has a line                                              
+      104 +  limit because a model re-reads it; the README is read once, 
+          +by a person, and                                              
+      105 +  the brief asks for comprehensive. `[08]`                    
+      106 +                                                              
+      107  ## Bootstrap session
+      108  
+      109  - **`validate-lead` takes the national ID and nothing else.** 
+           The lead already
+
+  Searched for 1 pattern, read 2 files, ran 4 shell commands (ctrl+o to expand)
+
+⏺ Update(README.md)
+  ⎿  Added 2 lines, removed 1 line
+      19  
+      20  ## Run it
+      21  
+      22 -JDK 25 is the only requirement, or Docker if you would rather n
+         -ot install one.                                                
+      22 +JDK 25 is the only requirement to run it, or Docker if you woul
+         +d rather not                                                   
+      23 +install one. `./gradlew check` also needs `python3`, for the bu
+         +dget task.                                                     
+      24  
+      25      $ ./gradlew installDist
+      26      $ export PATH="$PWD/build/install/lead-validation/bin:$PATH
+          "
+
+⏺ Update(README.md)
+  ⎿  Added 4 lines, removed 3 lines
+      43      Lead 1090001020 pending manual review at step BUREAU: the c
+          ompliance bureau is down.
+      44      Case 1090001020-1786940581101 opened.
+      45  
+      46 -The queue is a directory of files, browsable with `ls` and `cat
+         -`. An analyst                                                  
+      47 -resolves a case by ID:                                         
+      46 +The queue is `data/review/`, one file per case, browsable with 
+         +`ls` and `cat`.                                                
+      47 +An analyst resolves a case by ID:                              
+      48  
+      49      $ lead-validation review resolve 1090001020-1786940581101 -
+          -approve
+      50      $ lead-validation review resolve 1090001020-1786940581101 -
+          -reject
+      51  
+      52  Approving means the analyst verified the failed step out of ban
+          d and it came
+      53 -back clean. The pipeline resumes at that step and can still rej
+         -ect on the score.                                              
+      53 +back clean. The pipeline picks up after that step and can still
+         + reject on the                                                 
+      54 +score.                                                         
+      55  
+      56  stdout carries the decision in prose; the exit code is the mach
+          ine contract:
+      57  
+
+⏺ Background command "Verify the Docker instructions" completed (exit code 0)
+
+  Read 1 file (ctrl+o to expand)
+
+⏺ Docker verified — builds, runs, propagates exit 1. One fix: the validate-lead
+  example shows a score, but unseeded it's random.
+
+⏺ Update(README.md)
+  ⎿  Added 2 lines, removed 1 line
+      32  
+      33      $ lead-validation demo
+      34  
+      35 -One lead at a time:                                            
+      35 +One lead at a time. The score is drawn fresh on every run, so t
+         +his lead                                                       
+      36 +converts about 39 times in 100 and is rejected on the score the
+         + rest:                                                         
+      37  
+      38      $ lead-validation validate-lead --id 1020304050
+      39      Lead 1020304050 converted to prospect. Score 67.
+
+  Searched for 1 pattern (ctrl+o to expand)
+
+⏺ Update(README.md)
+  ⎿  Added 3 lines, removed 2 lines
+      32  
+      33      $ lead-validation demo
+      34  
+      35 -One lead at a time. The score is drawn fresh on every run, so t
+         -his lead                                                       
+      36 -converts about 39 times in 100 and is rejected on the score the
+         - rest:                                                         
+      35 +One lead at a time. The score is drawn fresh on every run — 40 
+         +of the 101                                                     
+      36 +possible values convert — so this lead is rejected on the score
+         + more often than                                               
+      37 +not:                                                           
+      38  
+      39      $ lead-validation validate-lead --id 1020304050
+      40      Lead 1020304050 converted to prospect. Score 67.
+
+  Ran 1 shell command (ctrl+o to expand)
+
+⏺ Gate green. Opening the PR.
+
+  Pushed to 08-final-documentation, created PR #9 (ctrl+o to expand)
+
+⏺ PR open: https://github.com/qohat/addi-challenge/pull/9
+
+  Closeout of 07 — priced at $5.42 (73 requests, session f51cdff0), row and
+  breakdown in docs/ai/cost.md, queue set to merged, export
+  11-spec-07-demo-command.txt present and now committed. Project total $50.63.
+
+  Spec 08 — written and committed to main first (eddc12e), then built on
+  08-final-documentation:
+
+  - ReadmeTest (3 checks, each watched to fail) — README commands must parse
+  through the real Cli.parse; repository paths it names must exist; nine
+  sections present and in order.
+  - README.md rewritten whole: run instructions, architecture, decisions,
+  process, the AI account with numbers behind every claim, cost, pending
+  improvements, repo map.
+  - One [08] line in docs/assumptions.md.
+
+  ./gradlew check green (109 tests + budgets). Docker verified end to end —
+  image builds, runs, propagates exit 1.
+
+  Two things to flag:
+
+  1. The README is 279 lines against the 200 my own spec targeted. I cut the
+  redundancy I could find; the rest is content section 5 names. The ADR table is
+  the ten lines I'd cut first if you want it shorter.
+  2. Spec 08's cost row can't be written by this session — a session can't price
+  its own log. It needs a short bookkeeping session after you merge.
+
+  Session export is yours to run: /export 
+  docs/ai/sessions/12-spec-08-final-documentation.txt before closing.
+
+✻ Worked for 12m 3s
