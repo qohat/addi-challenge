@@ -23,4 +23,6 @@ public sealed interface RejectionCause {
     record JudicialRecords(int count) implements RejectionCause {}
 
     record Sanctioned(String list) implements RejectionCause {}
+
+    record ScoreTooLow(int value) implements RejectionCause {}
 }

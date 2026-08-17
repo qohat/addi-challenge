@@ -36,7 +36,7 @@ class MainTest {
 
     /** Runtime state goes under the fixture directory, so a test never writes into the project. */
     private Config config(Path fixtures) {
-        return new Config(Duration.ofSeconds(2), fixtures, OptionalLong.of(7), dir.resolve("data"), Duration.ofHours(24));
+        return new Config(Duration.ofSeconds(2), fixtures, OptionalLong.of(0), dir.resolve("data"), Duration.ofHours(24));
     }
 
     private static Result run(Config config, String... args) {
@@ -53,8 +53,19 @@ class MainTest {
         var result = run("validate-lead", "--id", ID);
 
         assertEquals(0, result.code(), result.err());
-        assertTrue(result.out().startsWith("Lead " + ID + " converted to prospect. Score "), result.out());
+        assertEquals("Lead " + ID + " converted to prospect. Score 67.", result.out().strip());
         assertTrue(result.err().isEmpty(), result.err());
+    }
+
+    @Test
+    void aLowScoringLeadIsRejectedAndExitsOne() {
+        FixtureDir.clean(dir);
+
+        var config = new Config(Duration.ofSeconds(2), dir, OptionalLong.of(7), dir.resolve("data"), Duration.ofHours(24));
+        var result = run(config, "validate-lead", "--id", ID);
+
+        assertEquals(1, result.code(), result.err());
+        assertEquals("Lead " + ID + " rejected: qualification score 57 is not above 60.", result.out().strip());
     }
 
     @Test

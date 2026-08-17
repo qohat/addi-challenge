@@ -61,7 +61,7 @@ class PipelineConcurrencyTest {
     }
 
     private Pipeline pipeline(Duration timeout, Latency latency) {
-        var config = new Config(timeout, dir, OptionalLong.of(7), dir.resolve("data"), Duration.ofHours(24));
+        var config = new Config(timeout, dir, OptionalLong.of(0), dir.resolve("data"), Duration.ofHours(24));
         return new Pipeline(
                 config,
                 InMemoryLeadRepository.fromFixtures(dir),
