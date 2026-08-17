@@ -20,6 +20,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.Duration;
 import java.util.List;
+import java.util.Map;
 import java.util.OptionalLong;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
@@ -266,6 +267,24 @@ class MainTest {
 
         assertEquals(0, result.code(), result.err());
         assertTrue(result.out().contains("converted to prospect. Score "), result.out());
+    }
+
+    /** Every demo path is also reachable by hand, which is why the leads live in the shipped fixtures. */
+    @Test
+    void theLeadsTheDemoUsesAreReachableOneByOne() {
+        var expected = Map.of(
+                "1050607080", "not found in the national registry",
+                "1060708090", "national registry data does not match on birthDate",
+                "1070809000", "2 judicial records found",
+                "1080900010", "sanctioned on the OFAC list",
+                "1090001020", "pending manual review at step BUREAU",
+                "1100102030", "pending manual review at step REGISTRY");
+
+        for (var lead : expected.entrySet()) {
+            var result = run(config(Config.defaults().fixtures()), "validate-lead", "--id", lead.getKey());
+
+            assertTrue(result.out().contains(lead.getValue()), lead.getKey() + ": " + result.out());
+        }
     }
 
     @Test
