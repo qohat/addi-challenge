@@ -19,17 +19,21 @@ public final class Cli {
             Usage:
               validate-lead --id <nationalId>              Qualify a lead into a prospect.
               review resolve <case> --approve|--reject     Resolve a case an analyst has reviewed.
+              demo                                         Run every outcome against the fixtures.
 
             Exit codes: 0 converted, 1 rejected, 2 pending manual review, 3 input error,
             4 the review case could not be written.""";
 
-    /** A switch over a handful of tokens, not a library. Gains a case per command in spec 07. */
+    /** A switch over a handful of tokens, not a library. One case per command. */
     public sealed interface Invocation {
 
         record ValidateLead(NationalId id) implements Invocation {}
 
         /** The status the case file gets, which is what a boolean here would not have been. */
         record ResolveReview(CaseId caseId, CaseStatus resolution) implements Invocation {}
+
+        /** No fields: a demo a reviewer has to configure is a worse demo. */
+        record Demo() implements Invocation {}
 
         /** Never reaches the decision switch, which is why {@link Decision} has no fourth case. */
         record InputError(String message) implements Invocation {}
@@ -42,6 +46,9 @@ public final class Cli {
         return switch (args[0]) {
             case "validate-lead" -> validateLead(args);
             case "review" -> review(args);
+            case "demo" -> args.length == 1
+                    ? new Invocation.Demo()
+                    : new Invocation.InputError("demo takes no arguments.");
             default -> new Invocation.InputError("Unknown command: " + args[0]);
         };
     }
