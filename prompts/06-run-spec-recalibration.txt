@@ -1,0 +1,12 @@
+Help me to modify the run-spec skill,
+
+the order should be:
+- close out the prev spec since its PR is merged
+- Two paths here:
+    - The user specify the spec they want to run and the spec was already created, then, just run it!
+    - The user does not specify a spec and there is a "not started" spec in the queue, then, ask if does user want to create the following spec
+        - If so, then create the spec and run it
+
+As a skill run-spec, should always run a spec that's its work.
+
+So in this case, just fix the skill and run the skill, since spec 06 is already merged, I want to create the next spec (07) and run-spec 07
