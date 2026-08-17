@@ -68,6 +68,13 @@ depend on one are `aCleanLeadConvertsAndExitsZero`,
 `aRegistrySlowerThanTheTimeoutExitsTwo` builds its own `Config` with seed 7 and
 never reaches the score, so it stays as it is.
 
+**One seed this spec missed: `PipelineConcurrencyTest`.** Its
+`registryAndJudicialAreInsideTheirCallsAtTheSameTime` builds its own `Config`
+with seed 7, in a local `pipeline` helper, and — unlike
+`aRegistrySlowerThanTheTimeoutExitsTwo` — runs a full clean pipeline through the
+score and asserts `Converted`. 57 now rejects, so it moves to seed 0 alongside
+`MainTest`; the test is about two branches overlapping, not the number.
+
 **Nothing else changes.** `Pipeline`, `ScoreOutcome`, `Prospect`, `Step`,
 `Config`, the exit code map and the fixtures are untouched. `Pipeline.sequential`
 still cannot fall out of its loop, because the score arm decides on both sides of
