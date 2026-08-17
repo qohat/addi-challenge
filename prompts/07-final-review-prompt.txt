@@ -1,0 +1,22 @@
+One final artefact, for the reviewer rather than for us: docs/COMPLIANCE.md.
+
+Go through docs/brief.pdf clause by clause and build a table: every requirement the brief states, where it lives in the code, and one line on the approach. Registry, judicial,
+the parallelism constraint, the bureau with its durable cache, the graceful-failure-or-manual-review branch, the score rule, the CLI, no external database, external systems as
+functions, simulated latency — and the process requirements too: spec-driven development with specs committed before implementation, the comprehensive README, and the AI
+artifacts. Those three are half the grade and the easiest to leave implicit.
+
+Cite files and types with paths, not prose descriptions, so a reviewer can jump straight there. One line of approach each. Where a decision has an ADR, link it instead of
+re-explaining. Where we interpreted an ambiguity, link the assumption.
+
+Every row that is only partially met has to say so. This is the part I care most about: a reviewer who finds an undeclared gap stops trusting the whole table, while one who sees
+the gap declared trusts everything around it. So if a requirement is met by interpretation rather than literally, if coverage is thin somewhere, if something works but not the
+way the brief probably imagined — write that in the row. Don't soften it into an approach description. I would rather hand them the weak spots myself than have them go looking.
+
+Read README.md first and don't repeat it — that file says what the system is, how it works, what it cost and what's still missing. This one answers a different question: does it
+do what was asked, and where do I look. If you find yourself restating a README section, link to it instead.
+
+Add one short closing section on how context was managed, since the brief evaluates orchestration rather than tooling: the cache-read share of total tokens, the budgets enforced
+in CI, the decision to run no MCP servers and why, and the Opus/Sonnet comparison — spec 05 was executed end to end by Sonnet because it was specified well enough, at 60
+requests against 33 for a medium spec on Opus. Keep it to a handful of lines with the real numbers from docs/ai/cost.md.
+
+Then run the budget script and stop.

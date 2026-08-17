@@ -1,0 +1,262 @@
+ ▐▛███▜▌   Claude Code v2.1.233
+▝▜█████▛▘  Opus 5 · Claude Team
+  ▘▘ ▝▝    ~/Projects/work/addi/addi-challenge
+
+
+❯ continue with @prompts/07-final-review-prompt.txt to finalize                 
+  ⎿  Read prompts/07-final-review-prompt.txt (22 lines)
+
+⏺ I'll orient first, then build the compliance table.
+
+  Searched for 1 pattern, read 11 files, listed 2 directories, ran 8 shell commands (ctrl+o to expand)
+
+⏺ Now writing the file.
+
+⏺ Write(docs/COMPLIANCE.md)
+  ⎿  Wrote 193 lines to docs/COMPLIANCE.md
+       1 # Compliance with the brief
+       3 `README.md` says what the system is, how it works, what it cost 
+         and what is
+          of
+          a reviewer
+       6 look. Nothing here is repeated from the README; where the answer
+       7 written there or in an ADR, the row links instead of re-explaini
+         ng.
+       9 Rows marked **partial** are met by interpretation, met narrowly,
+      10 the brief may not have imagined. Each one is spelled out in
+     … +391 lines (ctrl+o to expand)
+
+  Ran 1 shell command (ctrl+o to expand)
+
+⏺ docs/COMPLIANCE.md written. Budgets green (docs/COMPLIANCE.md is unbudgeted,
+  same as the README — read once, by a person).
+
+  Four tables — business logic, execution constraints, technical considerations,
+  section 5 deliverables — each row citing paths and types, linking ADRs and
+  assumptions instead of restating them. Thirteen rows carry a partial marker
+  into a Declared gaps section: three-vs-four validations, email out of the
+  registry match, judicial with no severity, the cache's narrowness,
+  manual-review-only resilience, java.util.Random, parallelism proven correct
+  not fast, the smaller-than-expected CLI, specs 04-08 written just-in-time,
+  terminal captures rather than raw API logs with 8 prompt files for 14
+  sessions, filesystem-as-persistence, CSV ports rather than HTTP stubs, and
+  per-row latency that makes an unknown lead instant.
+
+  The spec-before-implementation claim is the one a reviewer would test, so it
+  cites timestamps: spec 07 at 22:59 (988b557), its PR merged 23:14 (77148f2).
+
+  Closing section has the real numbers: ~96% cache reads, the 40/120/150 budgets
+  wired into check at build.gradle.kts:39-49, why no MCP server exists, and
+  spec 05 on Sonnet at 60 requests/7.2M against 33/2.2M for spec 02.
+
+  Not committed — nothing in the prompt asked for it.
+
+✻ Churned for 3m 50s
+
+❯ Nice, now @prompts/08-windows-support.txt                                     
+  ⎿  Read prompts/08-windows-support.txt (9 lines)
+
+  Searched for 2 patterns, listed 1 directory, ran 6 shell commands (ctrl+o to expand)
+
+⏺ Verified on real runs first (CRLF fixtures, restored after). Now the README
+  edits.
+
+⏺ Update(README.md)
+  ⎿  Added 17 lines
+      25      $ ./gradlew installDist
+      26      $ export PATH="$PWD/build/install/lead-validation/bin:$PATH
+          "
+      27  
+      28 +On Windows the same two steps in PowerShell, against the `gradl
+         +ew.bat` and the                                                
+      29 +`lead-validation.bat` the distribution already ships:          
+      30 +                                                               
+      31 +    PS> .\gradlew.bat installDist                              
+      32 +    PS> $env:Path = "$PWD\build\install\lead-validation\bin;$en
+         +v:Path"                                                        
+      33 +    PS> lead-validation demo                                   
+      34 +                                                               
+      35 +Every `lead-validation` command below is then identical on both
+         +. The difference                                               
+      36 +is the gate: `gradlew.bat check` shells out to `python3` for th
+         +e budget task, and                                             
+      37 +the python.org installers put `python.exe` and `py.exe` on PATH
+         + but no                                                        
+      38 +`python3.exe` — install one that does, or run `gradlew.bat chec
+         +k -x                                                           
+      39 +contextBudget` and lose only the line budgets. Nothing else her
+         +e is POSIX-only:                                               
+      40 +paths go through `java.nio.file` throughout, a case ID is      
+      41 +`<nationalId>-<epoch millis>` rather than an ISO instant becaus
+         +e a Windows                                                    
+      42 +filename cannot hold the colons, and a CRLF checkout of `fixtur
+         +es/` parses the                                                
+      43 +same, because every row's last cell is trimmed.                
+      44 +                                                               
+      45  Start with the demo. Eleven scenarios — a conversion, all seven
+           rejection
+      46  causes, a pending case an analyst approves, one they reject, a 
+          real 2s timeout
+      47  and a cache hit — each run as a real command through the real p
+          arser and the
+
+⏺ Update(README.md)
+  ⎿  Added 4 lines
+      49  
+      50      $ lead-validation demo
+      51  
+      52 +`src/test/java/com/addi/lead/DemoTest.java` asserts what it pri
+         +nts: the eleven                                                
+      53 +scenarios in order, the rendered line of every rejection cause,
+         + the timeout, the                                              
+      54 +analyst rejection, the cache hit, and that the run writes nothi
+         +ng into `data/`.                                               
+      55 +                                                               
+      56  One lead at a time. The score is drawn fresh on every run — 40 
+          of the 101
+      57  possible values convert — so this lead is rejected on the score
+           more often than
+      58  not:
+
+⏺ Update(README.md)  ⎿  Added 5 lines
+      86  | 3 | Input error |
+      87  | 4 | The review case could not be written |
+      88  
+      89 +Every row is asserted in `src/test/java/com/addi/lead/MainTest.
+         +java`, which runs                                              
+      90 +the wired application in process against fixtures the test wrot
+         +e — including                                                  
+      91 +`aCaseThatCannotBeWrittenExitsFourOnStderr` for the one code no
+         +thing else                                                     
+      92 +reaches.                                                       
+      93 +                                                               
+      94  `./gradlew run` does not preserve these — Gradle reports any no
+          n-zero exit as
+      95  its own build failure 1. The installed distribution and the Doc
+          ker image return
+      96  them directly.
+
+⏺ Update(README.md)
+  ⎿  Added 10 lines, removed 2 lines
+      124  - **Parallel stage.** Registry and judicial are forked into on
+           e
+      125    `StructuredTaskScope.open()` with a scope-level timeout, 2s 
+           by default. On
+      126    timeout the scope cancels both branches and the run goes to 
+           manual review.
+      127 +  `src/test/java/com/addi/lead/app/PipelineConcurrencyTest.jav
+          +a` proves all                                                 
+      128 +  three claims: `registryAndJudicialAreInsideTheirCallsAtTheSa
+          +meTime` blocks                                                
+      129 +  until two callers have arrived, so sequential execution cann
+          +ot pass it, and                                               
+      130 +  `aJudicialBranchThatFinishedFirstIsStillNotUsed` covers the 
+          +half-answer.                                                  
+      131  - **Bureau cache.** A CSV keyed by national ID with a 24h TTL,
+            written by
+      132    atomic rename. Only terminal answers are cached; an outage n
+           ever is, because
+      133    caching one turns a transient failure into a permanent one. 
+           A corrupt row is
+      130 -  simply a miss.                                              
+      134 +  simply a miss. Each of those is a case in                   
+      135 +  `src/test/java/com/addi/lead/adapter/BureauCacheTest.java`, 
+          +down to                                                       
+      136 +  `theTtlBoundaryIsExpiredAndOneMillisecondInsideItIsAHit`.   
+      137  - **Manual review.** A case persists the lead, the outcomes al
+           ready resolved,
+      138    why it stopped and which step is pending. Resolving it is te
+           rminal, and an
+      139    analyst approval is never written to the bureau cache — it i
+           s not a bureau
+      134 -  response and must not expire on a TTL.                      
+      140 +  response and must not expire on a TTL. The resume is        
+      141 +  `MainTest.approvingResumesPastTheDownBureauAndConverts`, and
+      142 +  `approvingIntoADownScoreOpensASecondCase` is what happens wh
+          +en it stops again.                                            
+      143  - **Configuration.** `Config` is a record with the timeout, th
+           e fixture and data
+      144    directories, the cache TTL and an optional seed. None of the
+           m is a flag; only
+      145    tests and the demo vary them.
+
+⏺ Update(README.md)
+  ⎿  Added 1 line, removed 1 line
+      294  - **No structured logging, no metrics, no tracing.** Nothing a
+           sked for them and
+      295    nothing would run without them in production, starting with 
+           the latency of
+      296    each external call.
+      297 -- **The parallel stage is proven correct, not fast.** There is
+          - a test that                                                  
+      297 +- **The parallel stage is proven correct, not fast.** `Pipelin
+          +eConcurrencyTest`                                             
+      298    proves both branches are genuinely in flight at once; there 
+           is no load or soak
+      299    test, and the thread-per-task assumption is untested above o
+           ne lead.
+      300  - **A resumed run re-executes the resolved step's successors o
+           nly.** Everything
+
+⏺ Update(src/test/java/com/addi/lead/ReadmeTest.java)
+  ⎿  Added 2 lines, removed 2 lines
+      21  
+      22      private static final Path README = Path.of("README.md");
+      23  
+      24 -    /** The invocations the README teaches, written as a reader
+         - would type them. */                                           
+      25 -    private static final Pattern COMMAND = Pattern.compile("(?m
+         -)^\\s*\\$ lead-validation (.+)$");                             
+      24 +    /** The invocations the README teaches, written as a reader
+         + would type them, bash or PowerShell. */                       
+      25 +    private static final Pattern COMMAND = Pattern.compile("(?m
+         +)^\\s*(?:\\$|PS>) lead-validation (.+)$");                     
+      26  
+      27      /** Repository paths, by their roots, so runtime state and 
+          build output are not candidates. */
+      28      private static final Pattern REPOSITORY_PATH =
+
+  Ran 2 shell commands (ctrl+o to expand)
+
+⏺ ./gradlew check green, 109 tests still accurate, budgets clear.
+
+  Windows. PowerShell block added next to the bash one — .\gradlew.bat 
+  installDist, the $env:Path line, PS> lead-validation demo. gradlew.bat and
+  lead-validation.bat both already exist, the latter from installDist.
+
+  One thing does break: gradlew.bat check fails at contextBudget, which is
+  commandLine("python3", ...) in build.gradle.kts:44. The python.org installers
+  put python.exe and py.exe on PATH, not python3.exe, so unless the Store build
+  is installed the task can't start the process. README says so and gives -x 
+  contextBudget. Left the build file alone — a fallback chain there is code for
+  a machine nobody has yet.
+
+  POSIX audit — nothing else breaks, and I checked by running rather than
+  reading:
+
+  - Paths are java.nio.file throughout; no separators are spelled out anywhere
+  in src/.
+  - The case-ID-as-filename was already Windows-safe on purpose (epoch millis,
+  not an ISO instant with colons).
+  - Atomic.write uses ATOMIC_MOVE, REPLACE_EXISTING, which Windows supports on a
+  same-volume move; Files.write emits the platform separator and readAllLines
+  strips it, so the cache and case files are self-consistent either way.
+  - The real risk was fixture contents, not paths: a CRLF checkout puts a stray
+  \r in every row's last cell. I converted fixtures/*.csv to CRLF and ran the
+  CLI and the full demo — conversion, sanctions, judicial, the 2s timeout, the
+  review round trip and the cache hit (400ms → 195ms) all behaved, because every
+  last-cell read is trimmed. Fixtures restored with git checkout. That run
+  added one row to the gitignored data/bureau-cache.csv.
+
+  Claims now naming their test: demo output → DemoTest; the exit code table →
+  MainTest, including aCaseThatCannotBeWrittenExitsFourOnStderr for code 4;
+  parallel stage → PipelineConcurrencyTest with two methods named; cache →
+  BureauCacheTest.theTtlBoundaryIsExpiredAndOneMillisecondInsideItIsAHit; resume
+  → the two MainTest methods.
+
+  One test change: ReadmeTest's command regex now matches PS> as well as $, so
+  the PowerShell line is verified against the parser like the bash ones —
+  otherwise adding Windows examples would have quietly created README commands
+  no test checks.
+
+✻ Sautéed for 4m 11s

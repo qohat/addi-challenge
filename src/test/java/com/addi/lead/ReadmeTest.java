@@ -21,8 +21,8 @@ class ReadmeTest {
 
     private static final Path README = Path.of("README.md");
 
-    /** The invocations the README teaches, written as a reader would type them. */
-    private static final Pattern COMMAND = Pattern.compile("(?m)^\\s*\\$ lead-validation (.+)$");
+    /** The invocations the README teaches, written as a reader would type them, bash or PowerShell. */
+    private static final Pattern COMMAND = Pattern.compile("(?m)^\\s*(?:\\$|PS>) lead-validation (.+)$");
 
     /** Repository paths, by their roots, so runtime state and build output are not candidates. */
     private static final Pattern REPOSITORY_PATH =
