@@ -1,0 +1,1434 @@
+ ▐▛███▜▌   Claude Code v2.1.233
+▝▜█████▛▘  Opus 5 · Claude Team
+  ▘▘ ▝▝    ~/Projects/work/addi/addi-challenge
+
+
+❯ /model                                                                        
+  ⎿  Set model to Opus 5 (1M context) and saved as your default for new sessions
+
+❯ Need you to create the next spec 06 using create-spec, but previously need    
+  you to check the run-spec skill nd fix it... The "write the next spec" rule   
+  in run-spec needs a carve-out: it assumes the session is running on the       
+  planning model. A session running a low spec on Sonnet should close without   
+  writing the next one — the next spec gets written by Opus in its own session. 
+  Say that explicitly, and note why: writing the next spec in a Sonnet session  
+  both mixes models and destroys the cost comparison that running it on Sonnet  
+  was for.                                                                      
+
+  Searched for 3 patterns, read 4 files, ran 2 shell commands (ctrl+o to expand)
+
+⏺ Update(.claude/skills/run-spec/SKILL.md)
+  ⎿  Added 8 lines
+      73  type that gained a case, a helper that already exists — the spe
+          c written before
+      74  the merge would have missed all of it.
+      75  
+      76 +Except on a cheaper model. A `low` spec runs on Sonnet; that se
+         +ssion stops after                                              
+      77 +the export and writes no spec. Specs are written by the plannin
+         +g model, and Opus                                              
+      78 +writes the next one in its own session. Two reasons: the sessio
+         +n would mix models                                             
+      79 +against the one-model-per-session rule, and its cost row would 
+         +stop being the                                                 
+      80 +Sonnet-versus-Opus comparison that running the spec on Sonnet e
+         +xisted to produce                                              
+      81 +— a planning-shaped Opus spec priced into a Sonnet implementati
+         +on measures                                                    
+      82 +neither.                                                       
+      83 +                                                               
+      84  ## 7. Export
+      85  
+      86  Export the session to `docs/ai/sessions/NN-slug.txt` before clo
+          sing it. The
+
+⏺ Update(.claude/skills/run-spec/SKILL.md)
+  ⎿  Added 2 lines, removed 1 line
+      91  
+      92  - Past roughly forty requests, or about to *implement* a second
+           spec: stop and
+      93    open a new session. Writing the next spec in step 6 is not th
+          at — one spec
+      94 -  built, the next one specified, is exactly how a session is su
+         -pposed to end.                                                 
+      94 +  built, the next one specified, is exactly how a session is su
+         +pposed to end,                                                 
+      95 +  unless this is a cheaper-model session, which ends one step e
+         +arlier.                                                        
+      96  - The spec turns out to be wrong: stop, say so, and fix the spe
+          c on `main`
+      97    rather than improvising in the worktree.
+      98  - A new dependency looks necessary: ask first. That is an archi
+          tecture decision.
+
+⏺ Update(AGENTS.md)
+  ⎿  Added 3 lines, removed 1 line
+      36     it. Nothing advances without that.
+      37  7. After the merge, the next spec is written to `main` with `/c
+          reate-spec`, from
+      38     the code as it now is. A session ends with one spec built an
+          d the next one
+      39 -   written; leaving the queue unwritten strands the next sessio
+         -n.                                                             
+      39 +   written; leaving the queue unwritten strands the next sessio
+         +n. A session on a                                              
+      40 +   cheaper model is the exception: it stops after the export, a
+         +nd the planning                                                
+      41 +   model writes the next spec in its own session.              
+      42  
+      43  A session past roughly forty requests, or *implementing* two sp
+          ecs, has gone
+      44  wrong. Stop it and open a new one. Writing the next spec is ste
+          p 7, not a second
+  ⎿  1 skill available
+
+  Ran 2 shell commands (ctrl+o to expand)
+
+⏺ Skill fixed and committed. Now spec 06.
+
+⏺ Skill(create-spec)
+  ⎿  Successfully loaded skill
+
+  Searched for 5 patterns, read 5 files, listed 1 directory, ran 6 shell commands (ctrl+o to expand)
+
+⏺ Write(specs/06-manual-review.md)
+  ⎿  Wrote 187 lines to specs/06-manual-review.md
+       1 # 06. Manual review: checkpoint, queue, resume
+       3 ## Goal
+       4 
+         isk, and an
+         ct`. Approving
+       7 resumes the pipeline from the checkpoint with the failed step ta
+       8 can still end rejected; rejecting closes the case with a cause o
+         f its own. After
+         e checkpoint that
+         implemented
+     … +264 lines (ctrl+o to expand)
+
+  Ran 1 shell command (ctrl+o to expand)
+
+⏺ Write(specs/06-manual-review.md)
+  ⎿  Added 75 lines, removed 84 lines
+       4  
+       5  A run that stops on an unavailable dependency leaves a case on 
+          disk, and an
+       6  analyst resolves it with `review resolve <case> --approve|--rej
+          ect`. Approving
+       7 -resumes the pipeline from the checkpoint with the failed step t
+         -aken as clean and                                              
+       7 +resumes the pipeline from the checkpoint with the failed step t
+         +aken as clean, and                                             
+       8  can still end rejected; rejecting closes the case with a cause 
+          of its own. After
+       9 -this merges the brief's manual review flow exists end to end, t
+         -he checkpoint that                                             
+      10 -spec 01 built stops being a value nothing reads, and the last u
+         -nimplemented                                                   
+      11 -sentence of the brief is implemented.                          
+       9 +this merges the brief's manual review flow exists end to end an
+         +d the checkpoint                                               
+      10 +spec 01 built stops being a value nothing reads.               
+      11  
+      12  ## Scope
+      13  
+     ...
+      18  
+      19  ## Not in scope
+      20  
+      22 -- `review list` or `review show`. The queue directory is browsa
+         -ble with `ls` and                                              
+      23 -  `cat`, which is the closed assumption `[bootstrap]`.         
+      21 +- `review list` or `review show`. The queue is browsable with `
+         +ls` and `cat`,                                                 
+      22 +  which is the closed assumption `[bootstrap]`.                
+      23  - An analyst forcing a conversion. ADR 0004 rejected it: only t
+          he score converts.
+      25 -- Re-opening a resolved case, or editing one. A resumed run tha
+         -t fails again                                                  
+      26 -  opens a new case (ADR 0004).                                 
+      24 +- Re-opening or editing a resolved case. A resumed run that fai
+         +ls again opens a                                               
+      25 +  new one (ADR 0004).                                          
+      26  - The demo path through this flow and its fixtures — spec 07.
+      27  - Any change to `Decisions.terminal`, `Pipeline`, the four port
+          s or the bureau
+      28    cache. The pipeline already returns `PendingManualReview` and
+           already resumes
+     ...
+      32  
+      33  **The queue is a concrete adapter, not a port.** `FileReviewQue
+          ue(Path
+      34  directory)` in `.adapter`, wired in `Main` over `config.data().
+          resolve("review")`
+      36 -— the same shape as `CachingComplianceBureau`, which is also a 
+         -file with no port                                              
+      37 -of its own. Tests point it at a temp directory and read the fil
+         -es back.                                                       
+      35 +— the shape of `CachingComplianceBureau`, which is also a file 
+         +with no port of                                                
+      36 +its own. Tests point it at a temp directory and read the files 
+         +back.                                                          
+      37  
+      38  ```java
+      39  CaseId open(Checkpoint checkpoint, Instant now) throws IOExcept
+          ion
+     ...
+      41  void resolve(ReviewCase reviewCase, CaseStatus status) throws I
+          OException
+      42  ```
+      43  
+      45 -The instant is a parameter rather than a `Clock` field: the que
+         -ue has no policy                                               
+      46 -about time, it only stamps what it is given. `Main` passes     
+      47 -`Clock.systemUTC().instant()`, as it already does for the cache
+         -.                                                              
+      44 +The instant is a parameter, not a `Clock` field: the queue has 
+         +no policy about                                                
+      45 +time, it stamps what it is given. `Main` passes `Clock.systemUT
+         +C().instant()`, as                                             
+      46 +it already does for the cache.                                 
+      47  
+      49 -**A case ID is `<nationalId>-<epochMillis>` and is also the fil
+         -ename**, with no                                               
+      48 +**A case ID is `<nationalId>-<epochMillis>` and is also the fil
+         +ename**, no                                                    
+      49  extension (ADR 0003). Epoch millis rather than the ISO instant 
+          because
+      51 -`Instant.toString()` carries colons, which are not legal in a W
+         -indows filename;                                               
+      52 -the ISO instant is inside the file as `openedAt`.              
+      50 +`Instant.toString()` carries colons, which a Windows filename c
+         +annot hold; the                                                
+      51 +ISO instant is inside the file as `openedAt`.                  
+      52  
+      54 -**The file is `key=value` lines, not CSV**, one key per line, w
+         -ritten in this                                                 
+      55 -order and parsed by splitting on the first `=`:                
+      53 +**The file is `key=value` lines, not CSV**, one per line, in th
+         +is order, parsed                                               
+      54 +by splitting on the first `=`:                                 
+      55  
+      56      id, openedAt, status, pending, reason,
+      57      leadId, firstName, lastName, birthDate, email
+      58  
+      59  A checkpoint reason is adapter prose and will contain commas, s
+          o the fixtures'
+      61 -comma convention cannot hold it. The lead is stored in full rat
+         -her than looked up                                             
+      62 -again on resume: ADR 0004 says the case persists the lead, and 
+         -a queue that reads                                             
+      63 -the CRM would decide from a record that may have changed since.
+      60 +convention cannot hold it. The lead is stored in full rather th
+         +an looked up again                                             
+      61 +on resume: ADR 0004 says the case persists the lead, and a queu
+         +e that read the                                                
+      62 +CRM would decide from a record that may since have changed.    
+      63  
+      65 -**A missing file, a missing key, an unparseable instant, a date
+         - or an unknown                                                 
+      66 -status word all read as no case** — `find` returns empty and th
+         -rows nothing,                                                  
+      67 -exactly as the cache treats an unreadable row.                 
+      64 +**A missing file, a missing key, an unparseable instant or date
+         +, an unknown                                                   
+      65 +status word: all read as no case.** `find` returns empty and th
+         +rows nothing,                                                  
+      66 +as the cache treats an unreadable row.                         
+      67  
+      68  **A write is temp file then `ATOMIC_MOVE`, and its failure is n
+          ever swallowed.**
+      69  The pattern is `CachingComplianceBureau.write`, extracted to a 
+          package-private
+      71 -`Atomic.write(Path file, List<String> lines) throws IOException
+         -` in `.adapter`                                                
+      72 -that both callers use; the cache keeps catching, the queue prop
+         -agates. Losing a                                               
+      73 -cache entry costs a screening, losing a case loses the analyst'
+         -s only record of                                               
+      74 -it (ADR 0003).                                                 
+      70 +`Atomic.write(Path file, List<String> lines) throws IOException
+         +` that both                                                    
+      71 +callers use; the cache keeps catching, the queue propagates. Lo
+         +sing a cache entry                                             
+      72 +costs a screening, losing a case loses the analyst's only recor
+         +d of it (ADR 0003).                                            
+      73  
+      74  **Approving resumes at the step after the pending one**, on `Ch
+          eckpoint`:
+      75  
+     ...
+      80  ```
+      81  
+      82  A clean outcome for the pending step means the run continues pa
+          st it, and the
+      85 -prefix is implied by the step (ADR 0008). The score is the exce
+         -ption because an                                               
+      86 -analyst cannot attest a number, so approving it re-runs the por
+         -t (ADR 0004).                                                  
+      87 -`pending = REGISTRY` resumes at `JUDICIAL`, which then runs for
+         - real — a timeout                                              
+      88 -that killed both branches needs no special case.               
+      83 +prefix is implied by the step (ADR 0008). The score is the exce
+         +ption: an analyst                                              
+      84 +cannot attest a number, so approving it re-runs the port (ADR 0
+         +004). `pending =                                               
+      85 +REGISTRY` resumes at `JUDICIAL`, which then runs for real, so a
+         + timeout that                                                  
+      86 +killed both branches needs no special case.                    
+      87  
+      88  **One new cause, `RejectionCause.ReviewRejected(CaseId caseId)`
+          **, built in
+      89  `Main` and never by the switch, so `Decisions` does not change.
+           `Cli.reason`
+     ...
+       93              "manual review case " + caseId.value() + " was rej
+           ected by an analyst.";
+       94  
+       95  **`Cli.Invocation` gains `ResolveReview(CaseId caseId, CaseSta
+           tus resolution)`**,
+       98 -where `--approve` parses to `APPROVED` and `--reject` to `REJE
+          -CTED`. Reusing                                                
+       99 -`CaseStatus` rather than a boolean: the parsed value is the st
+          -atus the file gets.                                           
+      100 -Parsing is `review resolve <case> --approve|--reject`, exactly
+          - four tokens, and                                             
+      101 -`USAGE` gains the line.                                       
+       96 +`--approve` parsing to `APPROVED` and `--reject` to `REJECTED`
+          + — the parsed value                                           
+       97 +is the status the file gets, which a boolean would not be. Exa
+          +ctly four tokens,                                             
+       98 +and `USAGE` gains the line.                                   
+       99  
+      103 -**A case that cannot be resolved is an input error, not a deci
+          -sion.** Unknown                                               
+      104 -case, unreadable case, and a case already `APPROVED` or `REJEC
+          -TED` each print to                                            
+      105 -stderr and exit 3. `Decision` describes a lead's fate and none
+          - of these is one.                                             
+      100 +**A case that cannot be resolved is an input error, not a deci
+          +sion.** Unknown,                                              
+      101 +unreadable, or already `APPROVED` or `REJECTED`: stderr and ex
+          +it 3. `Decision`                                              
+      102 +describes a lead's fate and none of these is one.             
+      103  
+      104  **Exit code 4: the case could not be written.** An `IOExceptio
+           n` out of `open` or
+      105  `resolve` prints to stderr and exits 4, because exiting 2 woul
+           d claim a case a
+      109 -reviewer will not find. `USAGE` and the exit-code line gain it
+          -.                                                             
+      106 +reviewer will not find. `USAGE` gains it.                     
+      107  
+      108  **`Main` prints the case ID on a second line** — `Cli.opened(C
+           aseId)`, rendering
+      112 -`Case <id> opened.` — after the decision line, whenever a run 
+          -opens a case. The                                             
+      113 -renderer stays pure and its signature does not change. `review
+          - resolve                                                      
+      114 ---approve` prints the resumed decision line and, if that run o
+          -pened a case, that                                            
+      115 -line too; `--reject` prints only the decision line, which alre
+          -ady names the case.                                           
+      109 +`Case <id> opened.` — after the decision line, whenever a run 
+          +opens a case, so                                              
+      110 +`render` stays pure and keeps its signature. `--approve` print
+          +s the resumed                                                 
+      111 +decision line and that line if the resumed run opened a case; 
+          +`--reject` prints                                             
+      112 +only the decision line, which already names the case.         
+      113  
+      117 -**Order on resolve: the status is written before the resume ru
+          -ns.** The                                                     
+      118 -analyst's decision is the durable fact; a crash mid-resume mus
+          -t not leave a case                                            
+      119 -that can be approved twice.                                   
+      114 +**The status is written before an approved resume runs.** The 
+          +analyst's decision                                            
+      115 +is the durable fact, and a crash mid-resume must not leave a c
+          +ase approvable                                                
+      116 +twice.                                                        
+      117  
+      118  ## Acceptance criteria
+      119  
+      120  `ReviewQueueTest`, on a temp directory:
+      121  
+      125 -1. `open` on an empty directory creates it and writes exactly 
+          -one file, named by                                            
+      122 +1. `open` on an absent directory creates it and writes exactly
+          + one file, named by                                           
+      123     the returned case ID, which is the national ID and the inst
+           ant's epoch millis.
+      127 -2. A case survives the round trip: `find` returns every lead f
+          -ield, `openedAt`,                                             
+      128 -   `pending`, `reason` and `status` `OPEN` unchanged.         
+      129 -3. A reason containing commas and spaces survives it, so the f
+          -ormat is not CSV.                                             
+      130 -4. Two `open` calls for the same lead at different instants ar
+          -e two files, both                                             
+      124 +2. A case survives the round trip: every lead field, `openedAt
+          +`, `pending`,                                                 
+      125 +   `reason` and status `OPEN`, unchanged. A reason containing 
+          +commas survives it.                                           
+      126 +3. Two `open` calls for the same lead at different instants ar
+          +e two files, both                                             
+      127     findable.
+      132 -5. `resolve` leaves one file whose status is `APPROVED` and wh
+          -ose case ID,                                                  
+      133 -   `openedAt` and checkpoint are unchanged.                   
+      134 -6. An unknown ID, a file missing a key, an unparseable `opened
+          -At` and an unknown                                            
+      128 +4. `resolve` leaves one file, `APPROVED`, its case ID, `opened
+          +At` and checkpoint                                            
+      129 +   unchanged.                                                 
+      130 +5. An unknown ID, a file missing a key, an unparseable `opened
+          +At` and an unknown                                            
+      131     status word each give an empty `find` and throw nothing.
+      132  
+      133  `CheckpointTest`:
+      134  
+      139 -7. `resumeFrom` is `JUDICIAL` for `REGISTRY`, `BUREAU` for `JU
+          -DICIAL` and `SCORE`                                           
+      140 -   for `BUREAU`.                                              
+      141 -8. `resumeFrom` is `SCORE` for `SCORE` — approval re-runs the 
+          -port.                                                         
+      135 +6. `resumeFrom` is `JUDICIAL` for `REGISTRY`, `BUREAU` for `JU
+          +DICIAL`, `SCORE`                                              
+      136 +   for `BUREAU`, and `SCORE` for `SCORE` — the last because ap
+          +proval re-runs it.                                            
+      137  
+      138  `CliTest`:
+      139  
+      145 -9. `review resolve X --approve` parses to `ResolveReview(new C
+          -aseId("X"),                                                   
+      146 -   APPROVED)`, and `--reject` to `REJECTED`.                  
+      147 -10. `review`, `review resolve X`, `review resolve X --maybe` a
+          -nd `review list`                                              
+      148 -    are each an `InputError`.                                 
+      149 -11. Rendering `Rejected(new ReviewRejected(new CaseId("1020304
+          -050-17553")))` for                                            
+      150 -    `1020304050` gives exactly `Lead 1020304050 rejected: manu
+          -al review case                                                
+      151 -    1020304050-17553 was rejected by an analyst.`             
+      152 -12. The completeness test over every cause gains `ReviewReject
+          -ed`.                                                          
+      140 +7. `review resolve X --approve` parses to `ResolveReview(new C
+          +aseId("X"),                                                   
+      141 +   APPROVED)`, `--reject` to `REJECTED`; `review`, `review res
+          +olve X`, `review                                              
+      142 +   resolve X --maybe` and `review list` are each an `InputErro
+          +r`.                                                           
+      143 +8. Rendering `Rejected(new ReviewRejected(new CaseId("10203040
+          +50-17553")))` for                                             
+      144 +   `1020304050` gives exactly `Lead 1020304050 rejected: manua
+          +l review case                                                 
+      145 +   1020304050-17553 was rejected by an analyst.`, and the comp
+          +leteness test over                                            
+      146 +   every cause gains that case.                               
+      147  
+      148  `MainTest`, end to end on fixtures it writes:
+      149  
+      156 -13. A down bureau exits 2, prints `Case <id> opened.` below th
+          -e decision line,                                              
+      157 -    and leaves that file holding `status=OPEN` and `pending=BU
+          -REAU`.                                                        
+      158 -14. Approving that case with the bureau still down exits 0, pr
+          -ints                                                          
+      159 -    `Lead 1020304050 converted to prospect. Score 67.`, and le
+          -aves the file                                                 
+      160 -    `APPROVED`.                                               
+      161 -15. After 14 the bureau cache holds no row for that lead — an 
+          -approval is not a                                             
+      150 +9. A down bureau exits 2, prints `Case <id> opened.` below the
+          + decision line, and                                           
+      151 +   leaves that file holding `status=OPEN` and `pending=BUREAU`
+          +.                                                             
+      152 +10. Approving it with the bureau still down exits 0, prints `L
+          +ead 1020304050                                                
+      153 +    converted to prospect. Score 67.`, and leaves the file `AP
+          +PROVED`.                                                      
+      154 +11. After 10 the bureau cache holds no row for that lead — an 
+          +approval is not a                                             
+      155      bureau answer (ADR 0004).
+      163 -16. Rejecting a case exits 1, prints the analyst rejection lin
+          -e, and leaves the                                             
+      156 +12. Rejecting a case exits 1, prints the analyst rejection lin
+          +e, and leaves the                                             
+      157      file `REJECTED`.
+      165 -17. Resolving an already-resolved case exits 3 and leaves the 
+          -file byte for byte                                            
+      158 +13. Resolving an already-resolved case exits 3 and leaves its 
+          +file byte for byte                                            
+      159      as it was; an unknown case exits 3 and writes nothing.
+      167 -18. With bureau and score both down, approving the bureau case
+          - exits 2 and leaves                                           
+      160 +14. With bureau and score both down, approving the bureau case
+          + exits 2 and leaves                                           
+      161      two files: the first `APPROVED`, a second `OPEN` at `pendi
+           ng=SCORE`.
+      169 -19. With `data/review` occupied by a regular file, a down bure
+          -au exits 4 and says                                           
+      162 +15. With `data/review` occupied by a regular file, a down bure
+          +au exits 4 and says                                           
+      163      so on stderr.
+      164  
+      165  ## Effort
+      166  
+      167  medium. The queue row said high because it was written before 
+           any of this
+      175 -existed; every shape it worried about is fixed above — the fil
+          -e format, the three                                           
+      176 -queue methods, the resume rule, the new cause, the parse and t
+          -he two new exit                                               
+      177 -paths. What is left is the typing and the nineteen tests.     
+      168 +existed. Every shape is fixed above: the file format, the thre
+          +e queue methods,                                              
+      169 +the resume rule, the new cause, the parse and the two new exit
+          + paths.                                                       
+      170  
+      171  ## Docs
+      172  
+      173  Three lines in `docs/assumptions.md` tagged `[06]`: the case t
+           imestamp is epoch
+      182 -millis because ISO instants carry colons that Windows filename
+          -s cannot; a case                                              
+      174 +millis because ISO instants carry colons a Windows filename ca
+          +nnot hold; a case                                             
+      175  file is `key=value` lines because a checkpoint reason contains
+            commas; a case
+      184 -that cannot be resolved is an input error rather than a decisi
+          -on, and exit 4 is                                             
+      185 -a case that could not be written. No ADR — ADR 0004 decided th
+          -e semantics and                                               
+      186 -ADR 0003 the storage, and this spec only fixes their columns a
+          -nd commands. The                                              
+      187 -README is spec 08.                                            
+      176 +that cannot be resolved is an input error, and exit 4 is a cas
+          +e that could not be                                           
+      177 +written. No ADR — ADR 0004 decided the semantics and ADR 0003 
+          +the storage, and                                              
+      178 +this spec only fixes their columns and commands. The README is
+          + spec 08.                                                     
+
+  Ran 1 shell command (ctrl+o to expand)
+
+⏺ Write(specs/06-manual-review.md)  ⎿  Added 21 lines, removed 29 lines
+       4  
+       5  A run that stops on an unavailable dependency leaves a case on 
+          disk, and an
+       6  analyst resolves it with `review resolve <case> --approve|--rej
+          ect`. Approving
+       7 -resumes the pipeline from the checkpoint with the failed step t
+         -aken as clean, and                                             
+       8 -can still end rejected; rejecting closes the case with a cause 
+         -of its own. After                                              
+       9 -this merges the brief's manual review flow exists end to end an
+         -d the checkpoint                                               
+      10 -spec 01 built stops being a value nothing reads.               
+       7 +resumes the pipeline from the checkpoint with the failed step t
+         +aken as clean and                                              
+       8 +can still end rejected; rejecting closes the case with a cause 
+         +of its own. The                                                
+       9 +brief's manual review flow then exists end to end.             
+      10  
+      11  ## Scope
+      12  
+     ...
+      17  
+      18  ## Not in scope
+      19  
+      21 -- `review list` or `review show`. The queue is browsable with `
+         -ls` and `cat`,                                                 
+      22 -  which is the closed assumption `[bootstrap]`.                
+      20 +- `review list` or `review show` — `ls` and `cat`, assumption `
+         +[bootstrap]`.                                                  
+      21  - An analyst forcing a conversion. ADR 0004 rejected it: only t
+          he score converts.
+      22  - Re-opening or editing a resolved case. A resumed run that fai
+          ls again opens a
+      23    new one (ADR 0004).
+     ...
+      44  it already does for the cache.
+      45  
+      46  **A case ID is `<nationalId>-<epochMillis>` and is also the fil
+          ename**, no
+      49 -extension (ADR 0003). Epoch millis rather than the ISO instant 
+         -because                                                        
+      50 -`Instant.toString()` carries colons, which a Windows filename c
+         -annot hold; the                                                
+      51 -ISO instant is inside the file as `openedAt`.                  
+      47 +extension (ADR 0003). Epoch millis rather than the ISO instant,
+         + which carries                                                 
+      48 +colons a Windows filename cannot hold; the ISO form is inside a
+         +s `openedAt`.                                                  
+      49  
+      50  **The file is `key=value` lines, not CSV**, one per line, in th
+          is order, parsed
+      51  by splitting on the first `=`:
+     ...
+      54      leadId, firstName, lastName, birthDate, email
+      55  
+      56  A checkpoint reason is adapter prose and will contain commas, s
+          o the fixtures'
+      60 -convention cannot hold it. The lead is stored in full rather th
+         -an looked up again                                             
+      61 -on resume: ADR 0004 says the case persists the lead, and a queu
+         -e that read the                                                
+      62 -CRM would decide from a record that may since have changed.    
+      57 +convention cannot hold it. The lead is stored in full rather th
+         +an read from the                                               
+      58 +CRM on resume: ADR 0004 says the case persists the lead, and th
+         +e CRM record may                                               
+      59 +since have changed.                                            
+      60  
+      61  **A missing file, a missing key, an unparseable instant or date
+          , an unknown
+      65 -status word: all read as no case.** `find` returns empty and th
+         -rows nothing,                                                  
+      66 -as the cache treats an unreadable row.                         
+      62 +status word: all read as no case.** `find` returns empty and th
+         +rows nothing, as                                               
+      63 +the cache treats an unreadable row.                            
+      64  
+      65  **A write is temp file then `ATOMIC_MOVE`, and its failure is n
+          ever swallowed.**
+      66  The pattern is `CachingComplianceBureau.write`, extracted to a 
+          package-private
+     ...
+      71  **Approving resumes at the step after the pending one**, on `Ch
+          eckpoint`:
+      72  
+      73  ```java
+      77 -public Step resumeFrom() {                                     
+      78 -    return pending == Step.SCORE ? Step.SCORE : Step.values()[p
+         -ending.ordinal() + 1];                                         
+      79 -}                                                              
+      74 +return pending == Step.SCORE ? Step.SCORE : Step.values()[pendi
+         +ng.ordinal() + 1];                                             
+      75  ```
+      76  
+      77  A clean outcome for the pending step means the run continues pa
+          st it, and the
+     ...
+      82  
+      83  **One new cause, `RejectionCause.ReviewRejected(CaseId caseId)`
+          **, built in
+      84  `Main` and never by the switch, so `Decisions` does not change.
+           `Cli.reason`
+      90 -gains its last arm:                                            
+      85 +gains its last arm, `"manual review case " + caseId.value() + "
+         + was rejected by                                               
+      86 +an analyst."`.                                                 
+      87  
+      92 -    case RejectionCause.ReviewRejected(var caseId) ->          
+      93 -            "manual review case " + caseId.value() + " was reje
+         -cted by an analyst.";                                          
+      94 -                                                               
+      88  **`Cli.Invocation` gains `ResolveReview(CaseId caseId, CaseStat
+          us resolution)`**,
+      89  `--approve` parsing to `APPROVED` and `--reject` to `REJECTED` 
+          — the parsed value
+      90  is the status the file gets, which a boolean would not be. Exac
+          tly four tokens,
+     ...
+      101  **`Main` prints the case ID on a second line** — `Cli.opened(C
+           aseId)`, rendering
+      102  `Case <id> opened.` — after the decision line, whenever a run 
+           opens a case, so
+      103  `render` stays pure and keeps its signature. `--approve` print
+           s the resumed
+      111 -decision line and that line if the resumed run opened a case; 
+          -`--reject` prints                                             
+      104 +decision line, plus that line if the resumed run opened a case
+          +; `--reject` prints                                           
+      105  only the decision line, which already names the case.
+      106  
+      107  **The status is written before an approved resume runs.** The 
+           analyst's decision
+     ...
+      143  9. A down bureau exits 2, prints `Case <id> opened.` below the
+            decision line, and
+      144     leaves that file holding `status=OPEN` and `pending=BUREAU`
+           .
+      145  10. Approving it with the bureau still down exits 0, prints `L
+           ead 1020304050
+      153 -    converted to prospect. Score 67.`, and leaves the file `AP
+          -PROVED`.                                                      
+      154 -11. After 10 the bureau cache holds no row for that lead — an 
+          -approval is not a                                             
+      155 -    bureau answer (ADR 0004).                                 
+      156 -12. Rejecting a case exits 1, prints the analyst rejection lin
+          -e, and leaves the                                             
+      146 +    converted to prospect. Score 67.`, leaves the file `APPROV
+          +ED`, and writes no                                            
+      147 +    bureau cache row for that lead — an approval is not a bure
+          +au answer.                                                    
+      148 +11. Rejecting a case exits 1, prints the analyst rejection lin
+          +e, and leaves the                                             
+      149      file `REJECTED`.
+      158 -13. Resolving an already-resolved case exits 3 and leaves its 
+          -file byte for byte                                            
+      150 +12. Resolving an already-resolved case exits 3 and leaves its 
+          +file byte for byte                                            
+      151      as it was; an unknown case exits 3 and writes nothing.
+      160 -14. With bureau and score both down, approving the bureau case
+          - exits 2 and leaves                                           
+      152 +13. With bureau and score both down, approving the bureau case
+          + exits 2 and leaves                                           
+      153      two files: the first `APPROVED`, a second `OPEN` at `pendi
+           ng=SCORE`.
+      162 -15. With `data/review` occupied by a regular file, a down bure
+          -au exits 4 and says                                           
+      154 +14. With `data/review` occupied by a regular file, a down bure
+          +au exits 4 and says                                           
+      155      so on stderr.
+      156  
+      157  ## Effort
+
+  Ran 1 shell command (ctrl+o to expand)
+
+⏺ Update(specs/06-manual-review.md)
+  ⎿  Added 5 lines, removed 6 lines
+      18  ## Not in scope
+      19  
+      20  - `review list` or `review show` — `ls` and `cat`, assumption `
+          [bootstrap]`.
+      21 -- An analyst forcing a conversion. ADR 0004 rejected it: only t
+         -he score converts.                                             
+      22 -- Re-opening or editing a resolved case. A resumed run that fai
+         -ls again opens a                                               
+      23 -  new one (ADR 0004).                                          
+      21 +- An analyst forcing a conversion, or re-opening a resolved cas
+         +e. ADR 0004                                                    
+      22 +  rejected both: only the score converts, and a failed resume o
+         +pens a new case.                                               
+      23  - The demo path through this flow and its fixtures — spec 07.
+      25 -- Any change to `Decisions.terminal`, `Pipeline`, the four port
+         -s or the bureau                                                
+      26 -  cache. The pipeline already returns `PendingManualReview` and
+         - already resumes                                               
+      27 -  through `run(lead, from)`.                                   
+      24 +- Any change to `Decisions.terminal`, `Pipeline` or the four po
+         +rts. The pipeline                                              
+      25 +  already returns `PendingManualReview` and already resumes thr
+         +ough                                                           
+      26 +  `run(lead, from)`.                                           
+      27  
+      28  ## Design decisions
+      29  
+
+⏺ Update(specs/06-manual-review.md)
+  ⎿  Added 2 lines, removed 3 lines
+      38  void resolve(ReviewCase reviewCase, CaseStatus status) throws I
+          OException
+      39  ```
+      40  
+      41 -The instant is a parameter, not a `Clock` field: the queue has 
+         -no policy about                                                
+      42 -time, it stamps what it is given. `Main` passes `Clock.systemUT
+         -C().instant()`, as                                             
+      43 -it already does for the cache.                                 
+      41 +The instant is a parameter, not a `Clock` field: the queue stam
+         +ps what it is                                                  
+      42 +given. `Main` passes `Clock.systemUTC().instant()`, as it does 
+         +for the cache.                                                 
+      43  
+      44  **A case ID is `<nationalId>-<epochMillis>` and is also the fil
+          ename**, no
+      45  extension (ADR 0003). Epoch millis rather than the ISO instant,
+           which carries
+
+⏺ Update(specs/06-manual-review.md)
+  ⎿  Added 4 lines, removed 4 lines
+      61  the cache treats an unreadable row.
+      62  
+      63  **A write is temp file then `ATOMIC_MOVE`, and its failure is n
+          ever swallowed.**
+      64 -The pattern is `CachingComplianceBureau.write`, extracted to a 
+         -package-private                                                
+      65 -`Atomic.write(Path file, List<String> lines) throws IOException
+         -` that both                                                    
+      66 -callers use; the cache keeps catching, the queue propagates. Lo
+         -sing a cache entry                                             
+      67 -costs a screening, losing a case loses the analyst's only recor
+         -d of it (ADR 0003).                                            
+      64 +`CachingComplianceBureau.write` extracted to a package-private 
+         +`Atomic.write(Path                                             
+      65 +file, List<String> lines) throws IOException` both callers use;
+         + the cache keeps                                               
+      66 +catching, the queue propagates. Losing a cache entry costs a sc
+         +reening, losing a                                              
+      67 +case loses the analyst's only record of it (ADR 0003).         
+      68  
+      69  **Approving resumes at the step after the pending one**, on `Ch
+          eckpoint`:
+      70  
+
+⏺ Update(specs/06-manual-review.md)
+  ⎿  Added 3 lines, removed 3 lines
+      75  A clean outcome for the pending step means the run continues pa
+          st it, and the
+      76  prefix is implied by the step (ADR 0008). The score is the exce
+          ption: an analyst
+      77  cannot attest a number, so approving it re-runs the port (ADR 0
+          004). `pending =
+      78 -REGISTRY` resumes at `JUDICIAL`, which then runs for real, so a
+         - timeout that                                                  
+      79 -killed both branches needs no special case.                    
+      78 +REGISTRY` resumes at `JUDICIAL`, which runs for real, so a time
+         +out that killed                                                
+      79 +both branches needs no special case.                           
+      80  
+      81  **One new cause, `RejectionCause.ReviewRejected(CaseId caseId)`
+          **, built in
+      82  `Main` and never by the switch, so `Decisions` does not change.
+           `Cli.reason`
+     ...
+      85  
+      86  **`Cli.Invocation` gains `ResolveReview(CaseId caseId, CaseStat
+          us resolution)`**,
+      87  `--approve` parsing to `APPROVED` and `--reject` to `REJECTED` 
+          — the parsed value
+      88 -is the status the file gets, which a boolean would not be. Exac
+         -tly four tokens,                                               
+      88 +is the status the file gets, which a boolean would not be. Four
+         + tokens exactly,                                               
+      89  and `USAGE` gains the line.
+      90  
+      91  **A case that cannot be resolved is an input error, not a decis
+          ion.** Unknown,
+
+  Read 1 file (ctrl+o to expand)
+
+⏺ Update(specs/06-manual-review.md)
+  ⎿  Added 10 lines, removed 15 lines
+       88  is the status the file gets, which a boolean would not be. Fou
+           r tokens exactly,
+       89  and `USAGE` gains the line.
+       90  
+       91 -**A case that cannot be resolved is an input error, not a deci
+          -sion.** Unknown,                                              
+       92 -unreadable, or already `APPROVED` or `REJECTED`: stderr and ex
+          -it 3. `Decision`                                              
+       93 -describes a lead's fate and none of these is one.             
+       91 +**A case that cannot be resolved is an input error, not a deci
+          +sion**: unknown,                                              
+       92 +unreadable, or already `APPROVED` or `REJECTED` all print to s
+          +tderr and exit 3,                                             
+       93 +because `Decision` describes a lead's fate and none of these i
+          +s one. **An                                                   
+       94 +`IOException` out of `open` or `resolve` exits 4**, a new code
+          + `USAGE` gains,                                               
+       95 +because exiting 2 would claim a case a reviewer will not find.
+       96  
+       95 -**Exit code 4: the case could not be written.** An `IOExceptio
+          -n` out of `open` or                                           
+       96 -`resolve` prints to stderr and exits 4, because exiting 2 woul
+          -d claim a case a                                              
+       97 -reviewer will not find. `USAGE` gains it.                     
+       98 -                                                              
+       97  **`Main` prints the case ID on a second line** — `Cli.opened(C
+           aseId)`, rendering
+      100 -`Case <id> opened.` — after the decision line, whenever a run 
+          -opens a case, so                                              
+      101 -`render` stays pure and keeps its signature. `--approve` print
+          -s the resumed                                                 
+      102 -decision line, plus that line if the resumed run opened a case
+          -; `--reject` prints                                           
+      103 -only the decision line, which already names the case.         
+       98 +`Case <id> opened.` — whenever a run opens a case, so `render`
+          + stays pure and                                               
+       99 +keeps its signature. `--approve` prints the resumed decision l
+          +ine and that line                                             
+      100 +if the resume opened a case; `--reject` prints the decision li
+          +ne alone, which                                               
+      101 +already names the case. The status is written before an approv
+          +ed resume runs: a                                             
+      102 +crash mid-resume must not leave a case approvable twice.      
+      103  
+      105 -**The status is written before an approved resume runs.** The 
+          -analyst's decision                                            
+      106 -is the durable fact, and a crash mid-resume must not leave a c
+          -ase approvable                                                
+      107 -twice.                                                        
+      108 -                                                              
+      104  ## Acceptance criteria
+      105  
+      106  `ReviewQueueTest`, on a temp directory:
+
+⏺ Update(specs/06-manual-review.md)
+  ⎿  Added 3 lines, removed 3 lines
+      124  `CliTest`:
+      125  
+      126  7. `review resolve X --approve` parses to `ResolveReview(new C
+           aseId("X"),
+      127 -   APPROVED)`, `--reject` to `REJECTED`; `review`, `review res
+          -olve X`, `review                                              
+      128 -   resolve X --maybe` and `review list` are each an `InputErro
+          -r`.                                                           
+      127 +   APPROVED)` and `--reject` to `REJECTED`; `review`, `review 
+          +resolve X`,                                                   
+      128 +   `review resolve X --maybe` and `review list` are each an `I
+          +nputError`.                                                   
+      129  8. Rendering `Rejected(new ReviewRejected(new CaseId("10203040
+           50-17553")))` for
+      130     `1020304050` gives exactly `Lead 1020304050 rejected: manua
+           l review case
+      131     1020304050-17553 was rejected by an analyst.`, and the comp
+           leteness test over
+      132 -   every cause gains that case.                               
+      132 +   every cause gains it.                                      
+      133  
+      134  `MainTest`, end to end on fixtures it writes:
+      135  
+
+⏺ Update(specs/06-manual-review.md)
+  ⎿  Added 1 line, removed 1 line
+      150  ## Effort
+      151  
+      152  medium. The queue row said high because it was written before 
+           any of this
+      153 -existed. Every shape is fixed above: the file format, the thre
+          -e queue methods,                                              
+      153 +existed; every shape is fixed above — the file format, the thr
+          +ee queue methods,                                             
+      154  the resume rule, the new cause, the parse and the two new exit
+            paths.
+      155  
+      156  ## Docs
+
+  Read 1 file (ctrl+o to expand)
+
+⏺ Update(specs/06-manual-review.md)
+  ⎿  Added 2 lines, removed 3 lines
+      21  - An analyst forcing a conversion, or re-opening a resolved cas
+          e. ADR 0004
+      22    rejected both: only the score converts, and a failed resume o
+          pens a new case.
+      23  - The demo path through this flow and its fixtures — spec 07.
+      24 -- Any change to `Decisions.terminal`, `Pipeline` or the four po
+         -rts. The pipeline                                              
+      25 -  already returns `PendingManualReview` and already resumes thr
+         -ough                                                           
+      26 -  `run(lead, from)`.                                           
+      24 +- Any change to `Decisions.terminal`, `Pipeline` or the four po
+         +rts: the pipeline                                              
+      25 +  already returns `PendingManualReview` and resumes through `ru
+         +n(lead, from)`.                                                
+      26  
+      27  ## Design decisions
+      28  
+
+⏺ Update(specs/06-manual-review.md)
+  ⎿  Added 5 lines, removed 9 lines
+      45  colons a Windows filename cannot hold; the ISO form is inside a
+          s `openedAt`.
+      46  
+      47  **The file is `key=value` lines, not CSV**, one per line, in th
+          is order, parsed
+      48 -by splitting on the first `=`:                                 
+      48 +by splitting on the first `=`: `id`, `openedAt`, `status`, `pen
+         +ding`, `reason`,                                               
+      49 +`leadId`, `firstName`, `lastName`, `birthDate`, `email`. A chec
+         +kpoint reason is                                               
+      50 +adapter prose and will contain commas, so the fixtures' convent
+         +ion cannot hold                                                
+      51 +it. The lead is stored in full rather than read from the CRM on
+         + resume: ADR 0004                                              
+      52 +says the case persists the lead, and the CRM record may since h
+         +ave changed.                                                   
+      53  
+      50 -    id, openedAt, status, pending, reason,                     
+      51 -    leadId, firstName, lastName, birthDate, email              
+      52 -                                                               
+      53 -A checkpoint reason is adapter prose and will contain commas, s
+         -o the fixtures'                                                
+      54 -convention cannot hold it. The lead is stored in full rather th
+         -an read from the                                               
+      55 -CRM on resume: ADR 0004 says the case persists the lead, and th
+         -e CRM record may                                               
+      56 -since have changed.                                            
+      57 -                                                               
+      54  **A missing file, a missing key, an unparseable instant or date
+          , an unknown
+      55  status word: all read as no case.** `find` returns empty and th
+          rows nothing, as
+      56  the cache treats an unreadable row.
+
+  Read 1 file (ctrl+o to expand)
+
+⏺ Update(specs/06-manual-review.md)
+  ⎿  Added 7 lines, removed 11 lines
+      61  catching, the queue propagates. Losing a cache entry costs a sc
+          reening, losing a
+      62  case loses the analyst's only record of it (ADR 0003).
+      63  
+      64 -**Approving resumes at the step after the pending one**, on `Ch
+         -eckpoint`:                                                     
+      64 +**Approving resumes at the step after the pending one**, as `Ch
+         +eckpoint.                                                      
+      65 +resumeFrom()`: `pending == Step.SCORE ? Step.SCORE : Step.value
+         +s()[pending.                                                   
+      66 +ordinal() + 1]`. A clean outcome for the pending step means the
+         + run continues                                                 
+      67 +past it, and the prefix is implied by the step (ADR 0008). The 
+         +score is the                                                   
+      68 +exception: an analyst cannot attest a number, so approving it r
+         +e-runs the port                                                
+      69 +(ADR 0004). `pending = REGISTRY` resumes at `JUDICIAL`, which r
+         +uns for real, so a                                             
+      70 +timeout that killed both branches needs no special case.       
+      71  
+      66 -```java                                                        
+      67 -return pending == Step.SCORE ? Step.SCORE : Step.values()[pendi
+         -ng.ordinal() + 1];                                             
+      68 -```                                                            
+      69 -                                                               
+      70 -A clean outcome for the pending step means the run continues pa
+         -st it, and the                                                 
+      71 -prefix is implied by the step (ADR 0008). The score is the exce
+         -ption: an analyst                                              
+      72 -cannot attest a number, so approving it re-runs the port (ADR 0
+         -004). `pending =                                               
+      73 -REGISTRY` resumes at `JUDICIAL`, which runs for real, so a time
+         -out that killed                                                
+      74 -both branches needs no special case.                           
+      75 -                                                               
+      72  **One new cause, `RejectionCause.ReviewRejected(CaseId caseId)`
+          **, built in
+      73  `Main` and never by the switch, so `Decisions` does not change.
+           `Cli.reason`
+      74  gains its last arm, `"manual review case " + caseId.value() + "
+           was rejected by
+
+  Ran 1 shell command (ctrl+o to expand)
+
+⏺ Update(specs/06-manual-review.md)
+  ⎿  Added 7 lines, removed 7 lines
+      61  catching, the queue propagates. Losing a cache entry costs a sc
+          reening, losing a
+      62  case loses the analyst's only record of it (ADR 0003).
+      63  
+      64 -**Approving resumes at the step after the pending one**, as `Ch
+         -eckpoint.                                                      
+      65 -resumeFrom()`: `pending == Step.SCORE ? Step.SCORE : Step.value
+         -s()[pending.                                                   
+      66 -ordinal() + 1]`. A clean outcome for the pending step means the
+         - run continues                                                 
+      67 -past it, and the prefix is implied by the step (ADR 0008). The 
+         -score is the                                                   
+      68 -exception: an analyst cannot attest a number, so approving it r
+         -e-runs the port                                                
+      69 -(ADR 0004). `pending = REGISTRY` resumes at `JUDICIAL`, which r
+         -uns for real, so a                                             
+      70 -timeout that killed both branches needs no special case.       
+      64 +**Approving resumes at the step after the pending one**, as a `
+         +resumeFrom()`                                                  
+      65 +method on `Checkpoint` returning the next `Step` in declaration
+         + order, or `SCORE`                                             
+      66 +itself when `SCORE` is pending. A clean outcome for the pending
+         + step means the                                                
+      67 +run continues past it, and the prefix is implied by the step (A
+         +DR 0008). The                                                  
+      68 +score is the exception because an analyst cannot attest a numbe
+         +r, so approving it                                             
+      69 +re-runs the port (ADR 0004). `pending = REGISTRY` resumes at `J
+         +UDICIAL`, which                                                
+      70 +runs for real, so a timeout that killed both branches needs no 
+         +special case.                                                  
+      71  
+      72  **One new cause, `RejectionCause.ReviewRejected(CaseId caseId)`
+          **, built in
+      73  `Main` and never by the switch, so `Decisions` does not change.
+           `Cli.reason`
+
+⏺ Update(specs/06-manual-review.md)
+  ⎿  Added 3 lines, removed 3 lines
+      148  
+      149  Three lines in `docs/assumptions.md` tagged `[06]`: the case t
+           imestamp is epoch
+      150  millis because ISO instants carry colons a Windows filename ca
+           nnot hold; a case
+      151 -file is `key=value` lines because a checkpoint reason contains
+          - commas; a case                                               
+      152 -that cannot be resolved is an input error, and exit 4 is a cas
+          -e that could not be                                           
+      151 +file is `key=value` because a checkpoint reason contains comma
+          +s; a case that                                                
+      152 +cannot be resolved is an input error, and exit 4 is a case tha
+          +t could not be                                                
+      153  written. No ADR — ADR 0004 decided the semantics and ADR 0003 
+           the storage, and
+      154 -this spec only fixes their columns and commands. The README is
+          - spec 08.                                                     
+      154 +this spec only fixes their columns. The README is spec 08.    
+
+  Read 1 file (ctrl+o to expand)
+
+⏺ Update(specs/06-manual-review.md)
+  ⎿  Added 2 lines, removed 3 lines
+      101  2. A case survives the round trip: every lead field, `openedAt
+           `, `pending`,
+      102     `reason` and status `OPEN`, unchanged. A reason containing 
+           commas survives it.
+      103  3. Two `open` calls for the same lead at different instants ar
+           e two files, both
+      104 -   findable.                                                  
+      105 -4. `resolve` leaves one file, `APPROVED`, its case ID, `opened
+          -At` and checkpoint                                            
+      106 -   unchanged.                                                 
+      104 +   findable; `resolve` leaves one file, `APPROVED`, with its c
+          +ase ID, `openedAt`                                            
+      105 +   and checkpoint unchanged.                                  
+      106  5. An unknown ID, a file missing a key, an unparseable `opened
+           At` and an unknown
+      107     status word each give an empty `find` and throw nothing.
+      108  
+
+  Ran 1 shell command (ctrl+o to expand)
+⏺ Update(specs/06-manual-review.md)
+  ⎿  Added 13 lines, removed 14 lines
+      103  3. Two `open` calls for the same lead at different instants ar
+           e two files, both
+      104     findable; `resolve` leaves one file, `APPROVED`, with its c
+           ase ID, `openedAt`
+      105     and checkpoint unchanged.
+      106 -5. An unknown ID, a file missing a key, an unparseable `opened
+          -At` and an unknown                                            
+      106 +4. An unknown ID, a file missing a key, an unparseable `opened
+          +At` and an unknown                                            
+      107     status word each give an empty `find` and throw nothing.
+      108  
+      109  `CheckpointTest`:
+      110  
+      111 -6. `resumeFrom` is `JUDICIAL` for `REGISTRY`, `BUREAU` for `JU
+          -DICIAL`, `SCORE`                                              
+      111 +5. `resumeFrom` is `JUDICIAL` for `REGISTRY`, `BUREAU` for `JU
+          +DICIAL`, `SCORE`                                              
+      112     for `BUREAU`, and `SCORE` for `SCORE` — the last because ap
+           proval re-runs it.
+      113  
+      114  `CliTest`:
+      115  
+      116 -7. `review resolve X --approve` parses to `ResolveReview(new C
+          -aseId("X"),                                                   
+      116 +6. `review resolve X --approve` parses to `ResolveReview(new C
+          +aseId("X"),                                                   
+      117     APPROVED)` and `--reject` to `REJECTED`; `review`, `review 
+           resolve X`,
+      118     `review resolve X --maybe` and `review list` are each an `I
+           nputError`.
+      119 -8. Rendering `Rejected(new ReviewRejected(new CaseId("10203040
+          -50-17553")))` for                                             
+      119 +7. Rendering `Rejected(new ReviewRejected(new CaseId("10203040
+          +50-17553")))` for                                             
+      120     `1020304050` gives exactly `Lead 1020304050 rejected: manua
+           l review case
+      121     1020304050-17553 was rejected by an analyst.`, and the comp
+           leteness test over
+      122     every cause gains it.
+      123  
+      124  `MainTest`, end to end on fixtures it writes:
+      125  
+      126 -9. A down bureau exits 2, prints `Case <id> opened.` below the
+          - decision line, and                                           
+      126 +8. A down bureau exits 2, prints `Case <id> opened.` below the
+          + decision line, and                                           
+      127     leaves that file holding `status=OPEN` and `pending=BUREAU`
+           .
+      128 -10. Approving it with the bureau still down exits 0, prints `L
+          -ead 1020304050                                                
+      129 -    converted to prospect. Score 67.`, leaves the file `APPROV
+          -ED`, and writes no                                            
+      130 -    bureau cache row for that lead — an approval is not a bure
+          -au answer.                                                    
+      131 -11. Rejecting a case exits 1, prints the analyst rejection lin
+          -e, and leaves the                                             
+      132 -    file `REJECTED`.                                          
+      133 -12. Resolving an already-resolved case exits 3 and leaves its 
+          -file byte for byte                                            
+      134 -    as it was; an unknown case exits 3 and writes nothing.    
+      135 -13. With bureau and score both down, approving the bureau case
+          - exits 2 and leaves                                           
+      128 +9. Approving it with the bureau still down exits 0, prints `Le
+          +ad 1020304050                                                 
+      129 +   converted to prospect. Score 67.`, leaves the file `APPROVE
+          +D`, and writes no                                             
+      130 +   bureau cache row for that lead — an approval is not a burea
+          +u answer.                                                     
+      131 +10. Rejecting a case exits 1, prints the analyst rejection lin
+          +e and leaves the                                              
+      132 +    file `REJECTED`; resolving an already-resolved case exits 
+          +3 and leaves its                                              
+      133 +    file byte for byte as it was; an unknown case exits 3 and 
+          +writes nothing.                                               
+      134 +11. With bureau and score both down, approving the bureau case
+          + exits 2 and leaves                                           
+      135      two files: the first `APPROVED`, a second `OPEN` at `pendi
+           ng=SCORE`.
+      137 -14. With `data/review` occupied by a regular file, a down bure
+          -au exits 4 and says                                           
+      136 +12. With `data/review` occupied by a regular file, a down bure
+          +au exits 4 and says                                           
+      137      so on stderr.
+      138  
+      139  ## Effort
+
+  Ran 1 shell command (ctrl+o to expand)
+
+⏺ Update(specs/06-manual-review.md)
+  ⎿  Added 2 lines, removed 1 line
+       6  analyst resolves it with `review resolve <case> --approve|--rej
+          ect`. Approving
+       7  resumes the pipeline from the checkpoint with the failed step t
+          aken as clean and
+       8  can still end rejected; rejecting closes the case with a cause 
+          of its own. The
+       9 -brief's manual review flow then exists end to end.             
+       9 +brief's manual review flow exists end to end after this merges,
+         + and the                                                       
+      10 +checkpoint spec 01 built stops being a value nothing reads.    
+      11  
+      12  ## Scope
+      13  
+
+⏺ Update(specs/06-manual-review.md)
+  ⎿  Added 1 line, removed 2 lines
+      29  
+      30  **The queue is a concrete adapter, not a port.** `FileReviewQue
+          ue(Path
+      31  directory)` in `.adapter`, wired in `Main` over `config.data().
+          resolve("review")`
+      32 -— the shape of `CachingComplianceBureau`, which is also a file 
+         -with no port of                                                
+      33 -its own. Tests point it at a temp directory and read the files 
+         -back.                                                          
+      32 +— the shape of `CachingComplianceBureau`, also a file with no p
+         +ort of its own.                                                
+      33  
+      34  ```java
+      35  CaseId open(Checkpoint checkpoint, Instant now) throws IOExcept
+          ion
+
+⏺ Update(specs/06-manual-review.md)
+  ⎿  Added 3 lines, removed 2 lines
+      37  void resolve(ReviewCase reviewCase, CaseStatus status) throws I
+          OException
+      38  ```
+      39  
+      40 -The instant is a parameter, not a `Clock` field: the queue stam
+         -ps what it is                                                  
+      41 -given. `Main` passes `Clock.systemUTC().instant()`, as it does 
+         -for the cache.                                                 
+      40 +Tests point it at a temp directory and read the files back. The
+         + instant is a                                                  
+      41 +parameter, not a `Clock` field: the queue stamps what it is giv
+         +en, and `Main`                                                 
+      42 +passes `Clock.systemUTC().instant()` as it does for the cache. 
+      43  
+      44  **A case ID is `<nationalId>-<epochMillis>` and is also the fil
+          ename**, no
+      45  extension (ADR 0003). Epoch millis rather than the ISO instant,
+           which carries
+
+  Read 1 file, ran 1 shell command (ctrl+o to expand)
+
+⏺ Update(specs/06-manual-review.md)
+  ⎿  Added 4 lines, removed 5 lines
+      50  `leadId`, `firstName`, `lastName`, `birthDate`, `email`. A chec
+          kpoint reason is
+      51  adapter prose and will contain commas, so the fixtures' convent
+          ion cannot hold
+      52  it. The lead is stored in full rather than read from the CRM on
+           resume: ADR 0004
+      53 -says the case persists the lead, and the CRM record may since h
+         -ave changed.                                                   
+      53 +says the case persists the lead, and the CRM record may since h
+         +ave changed. A                                                 
+      54 +missing file, a missing key, an unparseable instant or date and
+         + an unknown status                                             
+      55 +word all read as no case: `find` returns empty and throws nothi
+         +ng, as the cache                                               
+      56 +treats an unreadable row.                                      
+      57  
+      55 -**A missing file, a missing key, an unparseable instant or date
+         -, an unknown                                                   
+      56 -status word: all read as no case.** `find` returns empty and th
+         -rows nothing, as                                               
+      57 -the cache treats an unreadable row.                            
+      58 -                                                               
+      58  **A write is temp file then `ATOMIC_MOVE`, and its failure is n
+          ever swallowed.**
+      59  `CachingComplianceBureau.write` extracted to a package-private 
+          `Atomic.write(Path
+      60  file, List<String> lines) throws IOException` both callers use;
+           the cache keeps
+
+  Ran 1 shell command (ctrl+o to expand)
+
+⏺ Update(specs/06-manual-review.md)
+  ⎿  Added 1 line, removed 1 line
+      77  **`Cli.Invocation` gains `ResolveReview(CaseId caseId, CaseStat
+          us resolution)`**,
+      78  `--approve` parsing to `APPROVED` and `--reject` to `REJECTED` 
+          — the parsed value
+      79  is the status the file gets, which a boolean would not be. Four
+           tokens exactly,
+      80 -and `USAGE` gains the line.                                    
+      80 +and `USAGE` gains the line and the new exit code.              
+      81  
+      82  **A case that cannot be resolved is an input error, not a decis
+          ion**: unknown,
+      83  unreadable, or already `APPROVED` or `REJECTED` all print to st
+          derr and exit 3,
+
+⏺ Update(specs/06-manual-review.md)
+  ⎿  Added 2 lines, removed 2 lines
+      82  **A case that cannot be resolved is an input error, not a decis
+          ion**: unknown,
+      83  unreadable, or already `APPROVED` or `REJECTED` all print to st
+          derr and exit 3,
+      84  because `Decision` describes a lead's fate and none of these is
+           one. **An
+      85 -`IOException` out of `open` or `resolve` exits 4**, a new code 
+         -`USAGE` gains,                                                 
+      86 -because exiting 2 would claim a case a reviewer will not find. 
+      85 +`IOException` out of `open` or `resolve` exits 4**, because exi
+         +ting 2 would claim                                             
+      86 +a case a reviewer will not find.                               
+      87  
+      88  **`Main` prints the case ID on a second line** — `Cli.opened(Ca
+          seId)`, rendering
+      89  `Case <id> opened.` — whenever a run opens a case, so `render` 
+          stays pure and
+
+  Ran 1 shell command (ctrl+o to expand)
+
+⏺ Update(specs/06-manual-review.md)
+  ⎿  Added 1 line, removed 2 lines
+       6  analyst resolves it with `review resolve <case> --approve|--rej
+          ect`. Approving
+       7  resumes the pipeline from the checkpoint with the failed step t
+          aken as clean and
+       8  can still end rejected; rejecting closes the case with a cause 
+          of its own. The
+       9 -brief's manual review flow exists end to end after this merges,
+         - and the                                                       
+      10 -checkpoint spec 01 built stops being a value nothing reads.    
+       9 +brief's manual review flow then exists end to end.             
+      10  
+      11  ## Scope
+      12  
+
+⏺ Update(specs/06-manual-review.md)
+  ⎿  Added 1 line, removed 1 line
+      139  
+      140  medium. The queue row said high because it was written before 
+           any of this
+      141  existed; every shape is fixed above — the file format, the thr
+           ee queue methods,
+      142 -the resume rule, the new cause, the parse and the two new exit
+          - paths.                                                       
+      142 +the resume rule, the cause, the parse and the new exit paths. 
+      143  
+      144  ## Docs
+      145  
+
+  Ran 1 shell command (ctrl+o to expand)
+
+⏺ Update(specs/06-manual-review.md)
+  ⎿  Added 1 line, removed 1 line
+      21  - An analyst forcing a conversion, or re-opening a resolved cas
+          e. ADR 0004
+      22    rejected both: only the score converts, and a failed resume o
+          pens a new case.
+      23  - The demo path through this flow and its fixtures — spec 07.
+      24 -- Any change to `Decisions.terminal`, `Pipeline` or the four po
+         -rts: the pipeline                                              
+      24 +- Any change to `Decisions.terminal`, `Pipeline` or the ports: 
+         +the pipeline                                                   
+      25    already returns `PendingManualReview` and resumes through `ru
+          n(lead, from)`.
+      26  
+      27  ## Design decisions
+
+⏺ Update(specs/06-manual-review.md)
+  ⎿  Added 2 lines, removed 3 lines
+      131      file `REJECTED`; resolving an already-resolved case exits 
+           3 and leaves its
+      132      file byte for byte as it was; an unknown case exits 3 and 
+           writes nothing.
+      133  11. With bureau and score both down, approving the bureau case
+            exits 2 and leaves
+      134 -    two files: the first `APPROVED`, a second `OPEN` at `pendi
+          -ng=SCORE`.                                                    
+      135 -12. With `data/review` occupied by a regular file, a down bure
+          -au exits 4 and says                                           
+      136 -    so on stderr.                                             
+      134 +    two files: the first `APPROVED`, a second `OPEN` at `pendi
+          +ng=SCORE`. With                                               
+      135 +    `data/review` occupied by a regular file, a down bureau ex
+          +its 4 on stderr.                                              
+      136  
+      137  ## Effort
+      138  
+
+  Ran 1 shell command (ctrl+o to expand)
+
+⏺ Budget passes at 150. Now the queue row and the commit.
+
+⏺ Update(specs/README.md)
+  ⎿  Added 1 line, removed 1 line
+      15  | 03 | Simulated adapters and structured concurrency | 02 | hig
+          h | core | merged |
+      16  | 04 | Bureau cache | 03 | medium | core | merged |
+      17  | 05 | Qualification score and conversion | 04 | low | core | s
+          pecced |
+      18 -| 06 | Manual review: checkpoint, queue, resume | 05 | high | c
+         -ore | not started |                                            
+      18 +| 06 | Manual review: checkpoint, queue, resume | 05 | medium |
+         + core | specced |                                              
+      19  | 07 | Demo command and fixtures | 06 | medium | nice-to-have |
+           not started |
+      20  | 08 | Final documentation | 07 | medium | core | not started |
+      21  
+
+  Ran 1 shell command (ctrl+o to expand)
+
+⏺ Both done, on main, two commits.
+
+  run-spec fix (7c859f1) — step 6 gains the carve-out: a low spec runs on
+  Sonnet, and that session stops after the export. Stated reasons: it would mix
+  models inside one session against the one-model-per-session rule, and it would
+  price a planning-shaped Opus spec into the Sonnet cost row that exists to
+  compare the two. Also patched the stop condition, and AGENTS.md rule 7, which
+  carried the same unconditional claim.
+
+  Spec 06 (31def95) — specs/06-manual-review.md, 150 lines, queue row now
+  specced and medium, not high: the row was rated before the shapes existed, and
+  everything is fixed here.
+
+  - FileReviewQueue(Path directory) — a concrete adapter like
+  CachingComplianceBureau, three methods, the instant passed in rather than a
+  Clock field.
+  - One key=value file per case, named <nationalId>-<epochMillis> — not CSV,
+  because a checkpoint reason contains commas; not an ISO instant, because
+  colons are illegal in Windows filenames.
+  - Checkpoint.resumeFrom(): the next step, except SCORE which re-runs itself
+  (ADR 0004 — an analyst cannot attest a number).
+  - Atomic.write extracted from the cache; the cache keeps swallowing failures,
+  the queue does not — a lost case is unrecoverable.
+  - Exit 3 for a case that cannot be resolved, exit 4 for a case that cannot be
+  written, 12 acceptance criteria across four test classes.
+
+  Skipped: a ReviewQueue port (one implementation, tests use temp dirs) and any
+  review list command. Three assumption lines are the only docs it asks for.
+
+✻ Sautéed for 9m 46s
+
+❯ Push all to main please                                                       
+
+  Pushed to main (ctrl+o to expand)
+⏺ Pushed — a04899b..31def95 on origin/main, both commits (the run-spec carve-out
+  and spec 06). Working tree clean, nothing left ahead.
+
+✻ Brewed for 7s

@@ -1,0 +1,12 @@
+Before anything else, fix the bookkeeping — the last two sessions skipped the closeout and the state is now wrong.
+
+Spec 05's PR is merged but the queue still says specced and it never made it into docs/ai/cost.md. Close it out properly: price session f55a26ac with the script and record it,
+noting that it ran on Sonnet — that session exists to measure whether a low spec was well enough specified for a cheaper model, so the row should say so.
+
+Then record session 4032a67d too. It wrote spec 06 and nothing else, produced no commits, and cost $5.05 across 64 requests. That's a planning session, not a spec, so it goes in
+the planning table. Commit specs/06-manual-review.md, which is still sitting uncommitted.
+
+One more thing: 06 is marked medium in the queue but I specced it as high. Tell me what changed your mind — if the shapes really are all decided now, medium is right and I want
+to know why; if it was optimism, put it back.
+
+Then run spec 06.
