@@ -1,0 +1,4 @@
+id,firstName,lastName,birthDate,latencyMs,status
+1020304050,Ana,Restrepo,1990-03-14,120,UP
+1030405060,Carlos,Mejia,1985-11-02,150,UP
+1040506070,LUCIA,gomez,1997-06-25,90,UP

@@ -4,7 +4,9 @@ import com.addi.lead.domain.Email;
 import com.addi.lead.domain.Lead;
 import com.addi.lead.domain.NationalId;
 import com.addi.lead.port.LeadRepository;
+import java.nio.file.Path;
 import java.time.LocalDate;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
@@ -15,30 +17,24 @@ public record InMemoryLeadRepository(Map<NationalId, Lead> leads) implements Lea
         leads = Map.copyOf(leads);
     }
 
-    /** Three hand-written leads. Spec 03 replaces the seed with fixtures keyed by national id. */
-    public static InMemoryLeadRepository seeded() {
-        return new InMemoryLeadRepository(Map.of(
-                new NationalId("1020304050"),
-                        new Lead(
-                                new NationalId("1020304050"),
-                                "Ana",
-                                "Restrepo",
-                                LocalDate.of(1990, 3, 14),
-                                new Email("ana.restrepo@example.com")),
-                new NationalId("1030405060"),
-                        new Lead(
-                                new NationalId("1030405060"),
-                                "Carlos",
-                                "Mejia",
-                                LocalDate.of(1985, 11, 2),
-                                new Email("carlos.mejia@example.com")),
-                new NationalId("1040506070"),
-                        new Lead(
-                                new NationalId("1040506070"),
-                                "Lucia",
-                                "Gomez",
-                                LocalDate.of(1997, 6, 25),
-                                new Email("lucia.gomez@example.com"))));
+    /**
+     * Seeded from {@code leads.csv}, once, at wiring time. An unreadable seed leaves the database
+     * empty rather than throwing: {@link LeadRepository} has no unavailable case, and a lead that is
+     * not in the database is already a decision the CLI can print.
+     */
+    public static InMemoryLeadRepository fromFixtures(Path fixtures) {
+        var leads = new HashMap<NationalId, Lead>();
+        try {
+            for (var cells : Fixtures.rows(fixtures, "leads.csv")) {
+                var id = new NationalId(cells[0].trim());
+                leads.put(
+                        id,
+                        new Lead(id, cells[1], cells[2], LocalDate.parse(cells[3].trim()), new Email(cells[4].trim())));
+            }
+        } catch (Exception e) {
+            return new InMemoryLeadRepository(Map.of());
+        }
+        return new InMemoryLeadRepository(leads);
     }
 
     @Override

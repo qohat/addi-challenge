@@ -1,0 +1,4 @@
+id,recordCount,latencyMs,status
+1020304050,0,80,UP
+1030405060,0,110,UP
+1040506070,0,95,UP
