@@ -23,7 +23,7 @@ That is what a reviewer wants to see and none of it fits in a column.
 
 ## Planning sessions
 
-Three sessions produced no code and so no spec row will ever carry them:
+Four sessions produced no code and so no spec row will ever carry them:
 `/run-spec` fills a row when it closes a spec, and these closed none. The cost is
 real, so it is priced by the same script and counted in the project total.
 
@@ -32,7 +32,16 @@ real, so it is priced by the same script and counted in the project total.
 | `9c968601` | Session 00, the bootstrap | claude-opus-5 | 70 | 7,731,852 | $6.81 |
 | `3ed3e39a` | Session 01, ADR 0008 and specs 00 to 03 | claude-opus-5 | 23 | 1,969,675 | $3.12 |
 | `580b4740` | Session 07, closed out spec 04's records and wrote spec 05 | claude-opus-5 | 36 | 2,311,075 | $2.39 |
-| **Subtotal** | | | **129** | **12,012,602** | **$12.32** |
+| `4032a67d` | Session 09, wrote spec 06 | claude-opus-5 | 64 | 5,951,178 | $5.05 |
+| **Subtotal** | | | **193** | **17,963,780** | **$17.37** |
+
+Session 09 is the most expensive planning session that produced a single spec,
+and it cost more than three of the five merged specs. It was the session that
+turned 06 from a title into fixed shapes — the file format, the three queue
+methods, the resume rule, the exits — which is work that has to happen either
+here or inside the implementing session. Paying it here is the cheaper half of
+the trade only if 06 then comes in near a medium; that is the bet this row is
+recording, and 06's own row is what settles it.
 
 ## Summary
 
@@ -43,18 +52,32 @@ real, so it is priced by the same script and counted in the project total.
 | 02 | `9f3baa51` | claude-opus-5 | 33 | 2,160,355 | $2.20 |
 | 03 | `40bfad38` | claude-opus-5 | 59 | 6,508,949 | $6.22 |
 | 04 | `4ea44317` | claude-opus-5 | 47 | 4,270,261 | $4.28 |
-| **Subtotal** | | | **233** | **19,498,140** | **$18.67** |
+| 05 | `f55a26ac` | claude-sonnet-5 | 60 | 7,211,970 | $3.70 |
+| **Subtotal** | | | **293** | **26,710,110** | **$22.37** |
 
-**Project total: $30.99** — $12.32 planning plus $18.67 specs. Both tables, or the
+Spec 05 is the only session not run on `claude-opus-5`, and deliberately so: it
+was rated low, and a low spec is the one place to test whether the specification
+carries a cheaper model. Its row is not comparable to the four above it and is
+read in the breakdown, not in this column.
+
+**Project total: $39.74** — $17.37 planning plus $22.37 specs. Both tables, or the
 number understates the project by everything spent before the first line of Java.
 
 ## What is left
 
-Four specs remain. The four merged mediums came in at $2.20, $2.56, $3.41 and
-$4.28 and the one high at $6.22, so 05 (low) sits under a medium, 06 (high) near
-the high, and 07 and 08 (medium) in the medium band: roughly $16 more, and about
-$42 for the project. A projection, not a budget — nothing is cancelled for
-exceeding it, and the point of writing it down is to be wrong in public.
+Three specs remain, all medium. The four merged mediums came in at $2.20, $2.56,
+$3.41 and $4.28, and 06 carries the largest acceptance list of any spec so far,
+so 06 at the top of that band and 07 and 08 inside it is roughly $12 more, and
+about $52 for the project.
+
+The earlier projection said $16 more and $42 total, with 06 rated high near $6.
+It has already been overspent without 06 being built: it put 05 and 06 at roughly
+$8 together, and $8.75 has gone on 05 plus the session that only *specced* 06.
+The per-spec estimates were not the error — 05 landed where a low should. The
+error was counting only sessions that close a spec. Planning is 44% of this
+project and the projection had no line for any of it. This one assumes 06, 07 and
+08 each write the next spec inside their own session, as `AGENTS.md` requires;
+another split like 08 and 09 adds a session that is not in the $12.
 
 ## Breakdown
 
@@ -147,6 +170,34 @@ commits and 407 lines, but twelve acceptance criteria — most of them a way the
 cache file can be wrong rather than a way it works — and each one is a test
 written, watched to fail, then made to pass. Rated medium because no shape was
 left open, which held; the price was breadth, not design.
+
+### 05. Qualification score and conversion
+
+claude-sonnet-5 — 60 requests
+
+| | Tokens | Cost |
+|---|---:|---:|
+| input | 120 | $0.00 |
+| output | 55,674 | $0.84 |
+| cache read | 7,029,857 | $2.11 |
+| cache write 1h | 126,319 | $0.76 |
+| **Subtotal** | **7,211,970** | **$3.70** |
+
+The one session run on a cheaper model, on purpose. A low spec is where the
+`specs/README.md` experiment belongs: if the specification is doing the work, the
+model should be substitutable, and the cheapest spec is the safest place to find
+out. It merged — four commits, 72 lines across nine files, no shape invented and
+no criterion dropped — so the specification held.
+
+The price did not. It is the smallest diff in the project and the third most
+expensive spec: 60 requests and 7.0M cache read, more of both than any Opus
+session except the two rated high. Sonnet's per-token discount is real and worth
+about 40%, but this session spent it and more on volume — the same tokens on
+Opus would have been $6.17, while Opus did the comparable mediums 02 and 01 for
+$2.20 and $2.56 on half the requests. The conclusion is about tokens, not
+quality: the cheaper model reached the same merged result and took roughly three
+times the reading to get there, so on a spec this well specified there is nothing
+left for it to save.
 
 ## What the number includes
 
