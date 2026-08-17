@@ -23,7 +23,7 @@ That is what a reviewer wants to see and none of it fits in a column.
 
 ## Planning sessions
 
-Two sessions produced no code and so no spec row will ever carry them:
+Three sessions produced no code and so no spec row will ever carry them:
 `/run-spec` fills a row when it closes a spec, and these closed none. The cost is
 real, so it is priced by the same script and counted in the project total.
 
@@ -31,7 +31,8 @@ real, so it is priced by the same script and counted in the project total.
 |---|---|---|---:|---:|---:|
 | `9c968601` | Session 00, the bootstrap | claude-opus-5 | 70 | 7,731,852 | $6.81 |
 | `3ed3e39a` | Session 01, ADR 0008 and specs 00 to 03 | claude-opus-5 | 23 | 1,969,675 | $3.12 |
-| **Subtotal** | | | **93** | **9,701,527** | **$9.93** |
+| `580b4740` | Session 07, closed out spec 04's records and wrote spec 05 | claude-opus-5 | 36 | 2,311,075 | $2.39 |
+| **Subtotal** | | | **129** | **12,012,602** | **$12.32** |
 
 ## Summary
 
@@ -44,7 +45,7 @@ real, so it is priced by the same script and counted in the project total.
 | 04 | `4ea44317` | claude-opus-5 | 47 | 4,270,261 | $4.28 |
 | **Subtotal** | | | **233** | **19,498,140** | **$18.67** |
 
-**Project total: $28.60** — $9.93 planning plus $18.67 specs. Both tables, or the
+**Project total: $30.99** — $12.32 planning plus $18.67 specs. Both tables, or the
 number understates the project by everything spent before the first line of Java.
 
 ## What is left
