@@ -1,0 +1,8 @@
+Write spec 04 with create-spec. Only that one.
+
+The scope is already decided — docs/PROJECT_CONTEXT.md has the cache rules and ADR 0003 has the persistence reasoning. What you don't have yet is how the compliance port
+actually turned out in spec 03, so read that before writing anything: the spec exists to bridge the decisions to the code as it now is, not to re-decide them.
+
+If specs/README.md has no paragraph explaining why 04 sits where it does, add one while you're there.
+
+Then run it.
