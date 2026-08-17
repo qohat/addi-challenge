@@ -80,6 +80,13 @@ class CliTest {
     }
 
     @Test
+    void namesTheNumberAndTheMinimumOnTheScoreRejectionLine() {
+        assertEquals(
+                "Lead 1020304050 rejected: qualification score 57 is not above 60.",
+                Cli.render(ID, new Decision.Rejected(new RejectionCause.ScoreTooLow(57))));
+    }
+
+    @Test
     void namesTheStepAndTheReasonOnThePendingLine() {
         assertEquals(
                 "Lead 1020304050 pending manual review at step BUREAU: connection refused.",
@@ -96,7 +103,8 @@ class CliTest {
                 new Decision.Rejected(new RejectionCause.RegistryNotFound()),
                 new Decision.Rejected(new RejectionCause.RegistryMismatch(List.of("firstName"))),
                 new Decision.Rejected(new RejectionCause.JudicialRecords(2)),
-                new Decision.Rejected(new RejectionCause.Sanctioned("OFAC")));
+                new Decision.Rejected(new RejectionCause.Sanctioned("OFAC")),
+                new Decision.Rejected(new RejectionCause.ScoreTooLow(12)));
 
         for (var decision : decisions) {
             var line = Cli.render(ID, decision);

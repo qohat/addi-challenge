@@ -1,6 +1,7 @@
 package com.addi.lead.cli;
 
 import com.addi.lead.domain.Decision;
+import com.addi.lead.domain.Decisions;
 import com.addi.lead.domain.NationalId;
 import com.addi.lead.domain.RejectionCause;
 
@@ -68,6 +69,8 @@ public final class Cli {
                     + String.join(", ", fields) + ".";
             case RejectionCause.JudicialRecords(var count) -> count + " judicial records found.";
             case RejectionCause.Sanctioned(var list) -> "sanctioned on the " + list + " list.";
+            case RejectionCause.ScoreTooLow(var value) ->
+                    "qualification score " + value + " is not above " + Decisions.MINIMUM_SCORE + ".";
         };
     }
 
