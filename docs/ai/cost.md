@@ -55,27 +55,38 @@ recording, and 06's own row is what settles it.
 | 05 | `f55a26ac` | claude-sonnet-5 | 60 | 7,211,970 | $3.70 |
 | 06 | `49e92674` | claude-opus-5 | 61 | 6,122,044 | $5.47 |
 | 07 | `f51cdff0` | claude-opus-5 | 73 | 6,423,241 | $5.42 |
-| **Subtotal** | | | **427** | **39,255,395** | **$33.26** |
+| 08 | `dd3ee7b3` | claude-opus-5 | 65 | 5,849,596 | $4.91 |
+| **Subtotal** | | | **492** | **45,104,991** | **$38.17** |
 
 Spec 05 is the only session not run on `claude-opus-5`, and deliberately so: it
 was rated low, and a low spec is the one place to test whether the specification
 carries a cheaper model. Its row is not comparable to the four above it and is
 read in the breakdown, not in this column.
 
-**Project total: $50.63** — $17.37 planning plus $33.26 specs. Both tables, or the
+**Project total: $55.54** — $17.37 planning plus $38.17 specs. Both tables, or the
 number understates the project by everything spent before the first line of Java.
 
-## What is left
+Two sessions sit outside both tables. `0dd4af1c` is eleven minutes of model and
+tool configuration before the first commit, $1.02 over 7 requests, which puts the
+honest end-to-end figure at **$56.56**. The other is the closeout session that
+wrote spec 08's row above: it cannot price itself, for the same reason every
+other row is filled in by the session after it.
 
-One spec remains, medium. 07 came in at $5.42 with its spec written inside the
-same session, so $5 to $6 for 08 puts the project near $56.
+## What the estimate was worth
 
-07 is the first row that tests the change made after 06: spec written at the
-start of the implementing session rather than in a session of its own. It cost
-$5.42 against 06's $10.52 across two sessions, for a spec of comparable size, so
-the merge saved roughly the price of a second session's orientation. It is one
-data point, but it points the same way the numbers above it do — the cost is in
-sessions, not in specs.
+The last thing this file predicted was "$5 to $6 for 08 puts the project near
+$56". 08 came in at $4.91 and the project at $55.54 — the first forecast here
+made from more than one comparable row, and the only one that held.
+
+The forecast rested on 07, the first session to write its own spec and then
+implement it: $5.42 against 06's $10.52 across two sessions, for a spec of
+comparable size. 08 is the second row on that shape and it came in under 07, so
+the change made after 06 is now two data points rather than one, both pointing
+the same way — the cost is in sessions, not in specs.
+
+Nine specs across nine implementing sessions, none rated high after 03, and a
+spread from $2.20 to $6.22 narrow enough that the session, not the spec, is the
+unit that sets the bill.
 
 ## Breakdown
 
@@ -240,6 +251,32 @@ existed, plus the fixture rows every outcome needs.
 Against 06's $10.52 across two sessions this is the cheaper half of the same
 trade, at a smaller diff. The request count is where the merge shows: 73 against
 61, one session doing both jobs rather than two sessions each paying to orient.
+
+### 08. Final documentation
+
+claude-opus-5 — 65 requests
+
+| | Tokens | Cost |
+|---|---:|---:|
+| input | 130 | $0.00 |
+| output | 38,367 | $0.96 |
+| cache read | 5,700,932 | $2.85 |
+| cache write 1h | 110,167 | $1.10 |
+| **Subtotal** | **5,849,596** | **$4.91** |
+
+The second session to write its own spec and then implement it, and cheaper than
+the first at 65 requests against 73. Four commits after the spec: `ReadmeTest`,
+the README itself, the assumption line that says why the README is the one
+document with no line budget, and a correction to what section 2 claims a
+reviewer sees.
+
+Output is the lowest of the last four sessions — 38k against 05's 56k — while the
+merged README is 279 lines, the longest thing in the repository written to be
+read by a person. That is what a documentation spec should look like: the work is
+deciding what is true and finding the commit that proves it, and that work is
+reading. 97.5% of the tokens were cache reads.
+
+This row was filled in by a later bookkeeping session, not by the one it prices.
 
 ## What the number includes
 
