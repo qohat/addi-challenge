@@ -16,8 +16,8 @@ file, then its assigned spec, then `git log --oneline -15`.
 | 04 | Bureau cache | 03 | medium | core | merged |
 | 05 | Qualification score and conversion | 04 | low | core | merged |
 | 06 | Manual review: checkpoint, queue, resume | 05 | medium | core | merged |
-| 07 | Demo command and fixtures | 06 | medium | nice-to-have | specced |
-| 08 | Final documentation | 07 | medium | core | not started |
+| 07 | Demo command and fixtures | 06 | medium | nice-to-have | merged |
+| 08 | Final documentation | 07 | medium | core | specced |
 
 ## If time runs out
 

@@ -98,6 +98,12 @@ reading the brief, before any code existed.
 - **Each demo scenario carries its own seed and its own directory.** Otherwise an
   outcome depends on the order the scenarios happen to run in. `[07]`
 
+## The README
+
+- **The README is not context-budgeted.** Every other document here has a line
+  limit because a model re-reads it; the README is read once, by a person, and
+  the brief asks for comprehensive. `[08]`
+
 ## Bootstrap session
 
 - **`validate-lead` takes the national ID and nothing else.** The lead already
