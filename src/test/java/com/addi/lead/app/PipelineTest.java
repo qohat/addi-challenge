@@ -148,6 +148,20 @@ class PipelineTest {
     }
 
     @Test
+    void aLowScoreRejectsAfterAllFourStepsRan() {
+        var decision = pipeline(
+                        new RegistryOutcome.Matched(),
+                        new JudicialOutcome.Clear(),
+                        new BureauOutcome.Clear(),
+                        new ScoreOutcome.Scored(60))
+                .validate(LEAD.id());
+
+        assertEquals(new Decision.Rejected(new RejectionCause.ScoreTooLow(60)), decision);
+        assertEquals(Set.of(Step.REGISTRY, Step.JUDICIAL), Set.copyOf(calls.subList(0, 2)));
+        assertEquals(List.of(Step.BUREAU, Step.SCORE), calls.subList(2, 4));
+    }
+
+    @Test
     void resumingAtTheBureauSkipsTheStepsBeforeIt() {
         var decision = cleanPipeline().run(LEAD, Step.BUREAU);
 
