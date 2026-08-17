@@ -40,9 +40,10 @@ real, so it is priced by the same script and counted in the project total.
 | 00 | `d617a871` | claude-opus-5 | 59 | 4,088,542 | $3.41 |
 | 01 | `e76bafcf` | claude-opus-5 | 35 | 2,470,033 | $2.56 |
 | 02 | `9f3baa51` | claude-opus-5 | 33 | 2,160,355 | $2.20 |
-| **Subtotal** | | | **127** | **8,718,930** | **$8.17** |
+| 03 | `40bfad38` | claude-opus-5 | 59 | 6,508,949 | $6.22 |
+| **Subtotal** | | | **186** | **15,227,879** | **$14.39** |
 
-**Project total: $18.10** — $9.93 planning plus $8.17 specs. Both tables, or the
+**Project total: $24.32** — $9.93 planning plus $14.39 specs. Both tables, or the
 number understates the project by everything spent before the first line of Java.
 
 ## Breakdown
@@ -99,6 +100,25 @@ parser, a renderer and twenty lines of wiring: the spec had already fixed the
 `Invocation` shape, the exit code map and the four prose lines, so there was
 nothing left to decide. The trend across 00, 01 and 02 is the specification
 getting more precise, not the work getting smaller.
+
+### 03. Simulated adapters and structured concurrency
+
+claude-opus-5 — 59 requests
+
+| | Tokens | Cost |
+|---|---:|---:|
+| input | 118 | $0.00 |
+| output | 70,612 | $1.77 |
+| cache read | 6,308,064 | $3.15 |
+| cache write 1h | 130,155 | $1.30 |
+| **Subtotal** | **6,508,949** | **$6.22** |
+
+The most expensive spec so far, and the only one so far rated high: three times
+the output of spec 02 across four commits, a thousand lines, and the fork-join
+shape the whole brief turns on. The extra cost is the concurrency test — proving
+two adapters are inside their calls at the same time without sleeping took more
+iterations than any other criterion. Where 00 to 02 were transcription, this
+session was designing, which is what the effort field predicts.
 
 ## What the number includes
 

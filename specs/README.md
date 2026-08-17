@@ -12,7 +12,7 @@ file, then its assigned spec, then `git log --oneline -15`.
 | 00 | Build, checks and CI | — | medium | merged |
 | 01 | Domain types, pipeline, four stubbed ports | 00 | medium | merged |
 | 02 | CLI `validate-lead` and composition root | 01 | medium | merged |
-| 03 | Simulated adapters and structured concurrency | 02 | high | specced |
+| 03 | Simulated adapters and structured concurrency | 02 | high | merged |
 | 04 | Bureau cache | 03 | medium | specced |
 | 05 | Qualification score and conversion | 04 | low | not started |
 | 06 | Manual review: checkpoint, queue, resume | 05 | high | not started |
