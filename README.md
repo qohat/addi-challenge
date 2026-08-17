@@ -219,15 +219,19 @@ prices every one of them.
 
 ## What it cost
 
-$50.63 through spec 07: $33.26 across eight specs, cheapest $2.20 and dearest
+$55.54 for the whole thing: $38.17 across nine specs, cheapest $2.20 and dearest
 $6.22, plus $17.37 across four planning sessions that produced no code. Planning
-was 34% of the bill and no projection made during the project had a line for it,
+was 31% of the bill and no projection made during the project had a line for it,
 which is the single biggest thing this measurement changed.
 
 Roughly 96% of all tokens were cache reads and well under 1% was output — the
 bill is what the model re-reads, not what it writes, which is what the line
-budgets above are for. Spec 08, this one, is not yet priced: a session cannot
-price its own log. The per-spec breakdown is in `docs/ai/cost.md`.
+budgets above are for. Spec 08 cost $4.91, priced by a separate closeout session
+afterwards because a session cannot price its own log. Two sessions sit outside
+the total: eleven minutes of setup before the first commit, $1.02, which makes
+the end-to-end figure $56.56, and that closeout session, which is unpriced for
+the same reason every other row is filled in by the session after it. The
+per-spec breakdown is in `docs/ai/cost.md`.
 
 ## Pending improvements
 
