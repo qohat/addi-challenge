@@ -19,7 +19,8 @@ their own latency, so every outcome below is reproducible.
 
 ## Run it
 
-JDK 25 is the only requirement, or Docker if you would rather not install one.
+JDK 25 is the only requirement to run it, or Docker if you would rather not
+install one. `./gradlew check` also needs `python3`, for the budget task.
 
     $ ./gradlew installDist
     $ export PATH="$PWD/build/install/lead-validation/bin:$PATH"
@@ -31,7 +32,9 @@ real exit codes, in a fresh temporary directory it names on the first line:
 
     $ lead-validation demo
 
-One lead at a time:
+One lead at a time. The score is drawn fresh on every run — 40 of the 101
+possible values convert — so this lead is rejected on the score more often than
+not:
 
     $ lead-validation validate-lead --id 1020304050
     Lead 1020304050 converted to prospect. Score 67.
@@ -42,14 +45,15 @@ When a dependency is down the run stops and leaves a case:
     Lead 1090001020 pending manual review at step BUREAU: the compliance bureau is down.
     Case 1090001020-1786940581101 opened.
 
-The queue is a directory of files, browsable with `ls` and `cat`. An analyst
-resolves a case by ID:
+The queue is `data/review/`, one file per case, browsable with `ls` and `cat`.
+An analyst resolves a case by ID:
 
     $ lead-validation review resolve 1090001020-1786940581101 --approve
     $ lead-validation review resolve 1090001020-1786940581101 --reject
 
 Approving means the analyst verified the failed step out of band and it came
-back clean. The pipeline resumes at that step and can still reject on the score.
+back clean. The pipeline picks up after that step and can still reject on the
+score.
 
 stdout carries the decision in prose; the exit code is the machine contract:
 
