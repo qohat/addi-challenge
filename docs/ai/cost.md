@@ -41,10 +41,19 @@ real, so it is priced by the same script and counted in the project total.
 | 01 | `e76bafcf` | claude-opus-5 | 35 | 2,470,033 | $2.56 |
 | 02 | `9f3baa51` | claude-opus-5 | 33 | 2,160,355 | $2.20 |
 | 03 | `40bfad38` | claude-opus-5 | 59 | 6,508,949 | $6.22 |
-| **Subtotal** | | | **186** | **15,227,879** | **$14.39** |
+| 04 | `4ea44317` | claude-opus-5 | 47 | 4,270,261 | $4.28 |
+| **Subtotal** | | | **233** | **19,498,140** | **$18.67** |
 
-**Project total: $24.32** — $9.93 planning plus $14.39 specs. Both tables, or the
+**Project total: $28.60** — $9.93 planning plus $18.67 specs. Both tables, or the
 number understates the project by everything spent before the first line of Java.
+
+## What is left
+
+Four specs remain. The four merged mediums came in at $2.20, $2.56, $3.41 and
+$4.28 and the one high at $6.22, so 05 (low) sits under a medium, 06 (high) near
+the high, and 07 and 08 (medium) in the medium band: roughly $16 more, and about
+$42 for the project. A projection, not a budget — nothing is cancelled for
+exceeding it, and the point of writing it down is to be wrong in public.
 
 ## Breakdown
 
@@ -119,6 +128,24 @@ shape the whole brief turns on. The extra cost is the concurrency test — provi
 two adapters are inside their calls at the same time without sleeping took more
 iterations than any other criterion. Where 00 to 02 were transcription, this
 session was designing, which is what the effort field predicts.
+
+### 04. Bureau cache
+
+claude-opus-5 — 47 requests
+
+| | Tokens | Cost |
+|---|---:|---:|
+| input | 94 | $0.00 |
+| output | 47,906 | $1.20 |
+| cache read | 4,119,770 | $2.06 |
+| cache write 1h | 102,491 | $1.02 |
+| **Subtotal** | **4,270,261** | **$4.28** |
+
+The most expensive medium, and above the trend 00 to 02 was setting. Three
+commits and 407 lines, but twelve acceptance criteria — most of them a way the
+cache file can be wrong rather than a way it works — and each one is a test
+written, watched to fail, then made to pass. Rated medium because no shape was
+left open, which held; the price was breadth, not design.
 
 ## What the number includes
 

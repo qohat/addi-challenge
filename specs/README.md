@@ -7,17 +7,29 @@ something that runs.
 Status is the source of truth for where the project is. A new session reads this
 file, then its assigned spec, then `git log --oneline -15`.
 
-| # | Title | Depends on | Effort | Status |
-|---|---|---|---|---|
-| 00 | Build, checks and CI | — | medium | merged |
-| 01 | Domain types, pipeline, four stubbed ports | 00 | medium | merged |
-| 02 | CLI `validate-lead` and composition root | 01 | medium | merged |
-| 03 | Simulated adapters and structured concurrency | 02 | high | merged |
-| 04 | Bureau cache | 03 | medium | specced |
-| 05 | Qualification score and conversion | 04 | low | not started |
-| 06 | Manual review: checkpoint, queue, resume | 05 | high | not started |
-| 07 | Demo command and fixtures | 06 | medium | not started |
-| 08 | Final documentation | 07 | medium | not started |
+| # | Title | Depends on | Effort | Priority | Status |
+|---|---|---|---|---|---|
+| 00 | Build, checks and CI | — | medium | core | merged |
+| 01 | Domain types, pipeline, four stubbed ports | 00 | medium | core | merged |
+| 02 | CLI `validate-lead` and composition root | 01 | medium | core | merged |
+| 03 | Simulated adapters and structured concurrency | 02 | high | core | merged |
+| 04 | Bureau cache | 03 | medium | core | merged |
+| 05 | Qualification score and conversion | 04 | low | core | not started |
+| 06 | Manual review: checkpoint, queue, resume | 05 | high | core | not started |
+| 07 | Demo command and fixtures | 06 | medium | nice-to-have | not started |
+| 08 | Final documentation | 07 | medium | core | not started |
+
+## If time runs out
+
+05, 06 and 08 are core. 05 and 06 are the last two business rules the brief
+asks for, and 08 is the README section 5 requires — a submission without it is
+missing a stated deliverable, whatever the code does.
+
+07 is the only nice-to-have. A demo command is reviewer convenience: it runs
+paths that `validate-lead` already runs, with fixtures that already exist.
+Dropping it leaves a coherent system — every rule implemented, every outcome
+reachable from the CLI, the README explaining how — and 08 then depends on 06.
+It gets dropped first, and it is the only thing that gets dropped.
 
 ## Why this order
 

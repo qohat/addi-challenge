@@ -34,9 +34,13 @@ One spec per session, opened clean, exported before it closes.
 5. `./gradlew check` passes before the PR exists.
 6. One PR per spec, split into reviewable commits. The author reads and merges
    it. Nothing advances without that.
+7. After the merge, the next spec is written to `main` with `/create-spec`, from
+   the code as it now is. A session ends with one spec built and the next one
+   written; leaving the queue unwritten strands the next session.
 
-A session past roughly forty requests, or touching two specs, has gone wrong.
-Stop it and open a new one.
+A session past roughly forty requests, or *implementing* two specs, has gone
+wrong. Stop it and open a new one. Writing the next spec is step 7, not a second
+spec.
 
 The model is chosen when the session opens, never mid-session — caches are
 per-model, and switching at turn 30 throws the entire prefix away.

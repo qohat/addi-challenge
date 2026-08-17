@@ -61,7 +61,19 @@ Split the work into reviewable commits — the domain types, the adapter, the
 wiring, the docs. Not one commit, and not one per file. Open the PR and stop.
 The author reads and merges it; nothing advances without that.
 
-## 6. Export
+## 6. Write the next spec
+
+Once the author has merged the PR, write the next `not started` row in the queue
+with `/create-spec`, committed straight to `main` — no worktree, no code. This
+step is not optional and it is what ends the session: a session that implements a
+spec and leaves the queue unwritten hands the next one an empty desk.
+
+It happens here, after the merge, because the next spec is written from the code
+as it now is rather than as it was planned. A shape that came out different, a
+type that gained a case, a helper that already exists — the spec written before
+the merge would have missed all of it.
+
+## 7. Export
 
 Export the session to `docs/ai/sessions/NN-slug.txt` before closing it. The
 export directory is part of the submission, so the way the work is done and the
@@ -69,8 +81,9 @@ way it is submitted are the same thing.
 
 ## Stop conditions
 
-- Past roughly forty requests, or about to touch a second spec: stop and open a
-  new session.
+- Past roughly forty requests, or about to *implement* a second spec: stop and
+  open a new session. Writing the next spec in step 6 is not that — one spec
+  built, the next one specified, is exactly how a session is supposed to end.
 - The spec turns out to be wrong: stop, say so, and fix the spec on `main`
   rather than improvising in the worktree.
 - A new dependency looks necessary: ask first. That is an architecture decision.
