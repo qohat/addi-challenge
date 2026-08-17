@@ -58,7 +58,7 @@ shows the real case ID. Exactly one file is expected; more than one or none is a
 ```
 == 8. The bureau is down, an analyst approves, the lead converts
 $ validate-lead --id 1090001020
-Lead 1090001020 pending manual review at step BUREAU: the compliance bureau is unavailable.
+Lead 1090001020 pending manual review at step BUREAU: the compliance bureau is down.
 Case 1090001020-1755300000000 opened.
 exit 2 in 412ms
 $ review resolve 1090001020-1755300000000 --approve
