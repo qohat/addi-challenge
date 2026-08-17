@@ -1,0 +1,677 @@
+ ▐▛███▜▌   Claude Code v2.1.233
+▝▜█████▛▘  Opus 5 · Claude Team
+  ▘▘ ▝▝    ~/Projects/work/addi/addi-challenge/.trees/04-bureau-cache
+
+
+❯ Continue with  @prompts/write-spec04.txt                                      
+  ⎿  Read prompts/write-spec04.txt (8 lines)
+
+  Searched for 1 pattern, read 5 files, ran 6 shell commands (ctrl+o to expand)
+
+⏺ Skill(create-spec)
+  ⎿  Successfully loaded skill
+
+  Ran 2 shell commands (ctrl+o to expand)
+  ⎿  Interrupted · What should Claude do instead?
+
+❯ I just merged the spec 03 PR, so you can continue                             
+
+  Searched for 2 patterns, ran 1 shell command (ctrl+o to expand)
+
+⏺ Write(~/Projects/work/addi/addi-challenge/specs/04-bureau-cache.md)
+  ⎿  Wrote 126 lines to ../../specs/04-bureau-cache.md
+      1 # 04. The bureau cache
+      3 ## Goal
+      4 
+      5 A lead the compliance bureau has already answered for is not scre
+      6 terminal bureau answer is written to a file under `./data`, keyed
+         by national ID,
+        he same person
+      8 decides the same way with none of the bureau's latency and does i
+        t in a later
+        sks for.
+     … +177 lines (ctrl+o to expand)
+
+⏺ Now the queue row and the "why 04 sits here" paragraph:
+
+⏺ Update(~/Projects/work/addi/addi-challenge/specs/README.md)
+  ⎿  Added 1 line, removed 1 line
+      13  | 01 | Domain types, pipeline, four stubbed ports | 00 | medium
+           | merged |
+      14  | 02 | CLI `validate-lead` and composition root | 01 | medium |
+           merged |
+      15  | 03 | Simulated adapters and structured concurrency | 02 | hig
+          h | specced |
+      16 -| 04 | Bureau cache | 03 | medium | not started |              
+      16 +| 04 | Bureau cache | 03 | medium | specced |                  
+      17  | 05 | Qualification score and conversion | 04 | low | not star
+          ted |
+      18  | 06 | Manual review: checkpoint, queue, resume | 05 | high | n
+          ot started |
+      19  | 07 | Demo command and fixtures | 06 | medium | not started |
+
+⏺ Update(~/Projects/work/addi/addi-challenge/specs/README.md)
+  ⎿  Added 8 lines, removed 2 lines
+      47  adapters driven by fixtures that carry per-row latency — which 
+          is how a demo
+      48  lead can be slow enough to fire the real timeout rather than a 
+          shrunk one.
+      49  
+      50 -**04 to 06** are the resilience story, in dependency order rath
+         -er than the order                                              
+      51 -the brief lists them. The score rule comes before manual review
+         - because                                                       
+      50 +**04** is the brief's durability requirement, and it comes firs
+         +t of the three                                                 
+      51 +because it is the only one that changes nothing about the pipel
+         +ine: the cache                                                 
+      52 +sits behind the bureau port, so it lands while the score still 
+         +converts on any                                                
+      53 +number and pending still reaches no disk. It also builds the da
+         +ta directory and                                               
+      54 +the atomic write that 06 reuses for the review queue.          
+      55 +                                                               
+      56 +**05 and 06** are the rest of the resilience story, in dependen
+         +cy order rather                                                
+      57 +than the order the brief lists them. The score rule comes befor
+         +e manual review because                                        
+      58  approving a pending score step re-runs the score port, so the r
+          ule has to exist
+      59  before resume can be specified. At the end of 05 the whole pipe
+          line is real; 06
+      60  adds the checkpoint, the queue and `review resolve`.
+
+⏺ Update(~/Projects/work/addi/addi-challenge/specs/README.md)
+  ⎿  Added 1 line, removed 1 line
+      69  
+      70  ## Provisional past 03
+      71  
+      72 -Only 00 to 03 are planned with any confidence. Everything below
+         - is a title and a                                              
+      72 +Only 00 to 04 are planned with any confidence. Everything below
+         + is a title and a                                              
+      73  guess at effort, written before the code exists, and it will mo
+          ve. The last
+      74  project put thirteen specs in this table up front and ended up 
+          with a sixty-line
+      75  section explaining why four of them ran out of numeric order — 
+          which was the
+
+  Ran 3 shell commands (ctrl+o to expand)
+
+⏺ Spec 04 is on main. Now running it.
+
+⏺ Skill(run-spec)
+  ⎿  Successfully loaded skill
+
+  Read 1 file, listed 1 directory, ran 2 shell commands (ctrl+o to expand)
+
+⏺ Closing out spec 03: cost row, breakdown and status.
+
+⏺ Update(~/Projects/work/addi/addi-challenge/docs/ai/cost.md)
+  ⎿  Added 3 lines, removed 2 lines
+      40  | 00 | `d617a871` | claude-opus-5 | 59 | 4,088,542 | $3.41 |
+      41  | 01 | `e76bafcf` | claude-opus-5 | 35 | 2,470,033 | $2.56 |
+      42  | 02 | `9f3baa51` | claude-opus-5 | 33 | 2,160,355 | $2.20 |
+      43 -| **Subtotal** | | | **127** | **8,718,930** | **$8.17** |     
+      43 +| 03 | `40bfad38` | claude-opus-5 | 59 | 6,508,949 | $6.22 |   
+      44 +| **Subtotal** | | | **186** | **15,227,879** | **$14.39** |   
+      45  
+      45 -**Project total: $18.10** — $9.93 planning plus $8.17 specs. Bo
+         -th tables, or the                                              
+      46 +**Project total: $24.32** — $9.93 planning plus $14.39 specs. B
+         +oth tables, or the                                             
+      47  number understates the project by everything spent before the f
+          irst line of Java.
+      48  
+      49  ## Breakdown
+⏺ Update(~/Projects/work/addi/addi-challenge/docs/ai/cost.md)
+  ⎿  Added 19 lines
+      101  nothing left to decide. The trend across 00, 01 and 02 is the 
+           specification
+      102  getting more precise, not the work getting smaller.
+      103  
+      104 +### 03. Simulated adapters and structured concurrency         
+      105 +                                                              
+      106 +claude-opus-5 — 59 requests                                   
+      107 +                                                              
+      108 +| | Tokens | Cost |                                           
+      109 +|---|---:|---:|                                               
+      110 +| input | 118 | $0.00 |                                       
+      111 +| output | 70,612 | $1.77 |                                   
+      112 +| cache read | 6,308,064 | $3.15 |                            
+      113 +| cache write 1h | 130,155 | $1.30 |                          
+      114 +| **Subtotal** | **6,508,949** | **$6.22** |                  
+      115 +                                                              
+      116 +The most expensive spec so far, and the only one so far rated 
+          +high: three times                                             
+      117 +the output of spec 02 across four commits, a thousand lines, a
+          +nd the fork-join                                              
+      118 +shape the whole brief turns on. The extra cost is the concurre
+          +ncy test — proving                                            
+      119 +two adapters are inside their calls at the same time without s
+          +leeping took more                                             
+      120 +iterations than any other criterion. Where 00 to 02 were trans
+          +cription, this                                                
+      121 +session was designing, which is what the effort field predicts
+          +.                                                             
+      122 +                                                              
+      123  ## What the number includes
+      124  
+      125  With one session per spec, each figure measures session overhe
+           ad — orientation,
+
+⏺ Update(~/Projects/work/addi/addi-challenge/specs/README.md)
+  ⎿  Added 1 line, removed 1 line
+      12  | 00 | Build, checks and CI | — | medium | merged |
+      13  | 01 | Domain types, pipeline, four stubbed ports | 00 | medium
+           | merged |
+      14  | 02 | CLI `validate-lead` and composition root | 01 | medium |
+           merged |
+      15 -| 03 | Simulated adapters and structured concurrency | 02 | hig
+         -h | specced |                                                  
+      15 +| 03 | Simulated adapters and structured concurrency | 02 | hig
+         +h | merged |                                                   
+      16  | 04 | Bureau cache | 03 | medium | specced |
+      17  | 05 | Qualification score and conversion | 04 | low | not star
+          ted |
+      18  | 06 | Manual review: checkpoint, queue, resume | 05 | high | n
+          ot started |
+
+  Searched for 1 pattern, read 4 files, ran 4 shell commands (ctrl+o to expand)
+  ⎿  Loaded .trees/04-bureau-cache/CLAUDE.md
+
+⏺ Tests first. Writing the cache test from the acceptance criteria:
+
+⏺ Write(src/test/java/com/addi/lead/adapter/BureauCacheTest.java)
+  ⎿  Wrote 208 lines to
+     src/test/java/com/addi/lead/adapter/BureauCacheTest.java
+       1 package com.addi.lead.adapter;
+       2 
+       3 import static com.addi.lead.FixtureDir.ID;
+       4 import static com.addi.lead.FixtureDir.LEAD;
+       5 import static org.junit.jupiter.api.Assertions.assertEquals;
+       6 import static org.junit.jupiter.api.Assertions.assertFalse;
+       7 
+       8 import com.addi.lead.FixtureDir;
+       9 import com.addi.lead.domain.BureauOutcome;
+      10 import com.addi.lead.domain.Lead;
+     … +235 lines (ctrl+o to expand)
+
+⏺ Update(src/test/java/com/addi/lead/MainTest.java)
+  ⎿  Added 6 lines, removed 1 line
+      29      private record Result(int code, String out, String err) {}
+      30  
+      31      private Result run(String... args) {
+      32 -        return run(new Config(Duration.ofSeconds(2), dir, Optio
+         -nalLong.of(7)), args);                                         
+      32 +        return run(config(dir), args);                         
+      33      }
+      34  
+      35 +    /** Runtime state goes under the fixture directory, so a te
+         +st never writes into the project. */                           
+      36 +    private Config config(Path fixtures) {                     
+      37 +        return new Config(Duration.ofSeconds(2), fixtures, Opti
+         +onalLong.of(7), dir.resolve("data"), Duration.ofHours(24));    
+      38 +    }                                                          
+      39 +                                                               
+      40      private static Result run(Config config, String... args) {
+      41          var out = new ByteArrayOutputStream();
+      42          var err = new ByteArrayOutputStream();
+
+⏺ Update(src/test/java/com/addi/lead/MainTest.java)
+  ⎿  Added 2 lines, removed 1 line
+      125          FixtureDir.clean(dir);
+      126          FixtureDir.write(dir, "registry.csv", ID + ",Ana,Restr
+           epo,1990-03-14,10000,UP");
+      127  
+      128 -        var result = run(new Config(Duration.ofMillis(100), di
+          -r, OptionalLong.of(7)), "validate-lead", "--id", ID);         
+      128 +        var config = new Config(Duration.ofMillis(100), dir, O
+          +ptionalLong.of(7), dir.resolve("data"), Duration.ofHours(24));
+      129 +        var result = run(config, "validate-lead", "--id", ID);
+      130  
+      131          assertEquals(2, result.code());
+      132          assertTrue(result.out().contains("pending manual revie
+           w at step REGISTRY"), result.out());
+
+⏺ Update(src/test/java/com/addi/lead/MainTest.java)
+  ⎿  Added 1 line, removed 1 line
+      134  
+      135      @Test
+      136      void theFixturesTheProjectShipsConvertEndToEnd() {
+      137 -        var result = run(Config.defaults(), "validate-lead", "
+          ---id", "1020304050");                                         
+      137 +        var result = run(config(Config.defaults().fixtures()),
+          + "validate-lead", "--id", "1020304050");                      
+      138  
+      139          assertEquals(0, result.code(), result.err());
+      140          assertTrue(result.out().contains("converted to prospec
+           t. Score "), result.out());
+
+⏺ Update(src/test/java/com/addi/lead/MainTest.java)
+  ⎿  Added 26 lines
+      141      }
+      142  
+      143      @Test
+      144 +    void aCachedBureauAnswerOutlivesTheBureauItself() throws I
+          +OException {                                                  
+      145 +        FixtureDir.clean(dir);                                
+      146 +        var first = run("validate-lead", "--id", ID);         
+      147 +                                                              
+      148 +        Files.delete(dir.resolve("bureau.csv"));              
+      149 +        var second = run("validate-lead", "--id", ID);        
+      150 +                                                              
+      151 +        assertEquals(0, first.code(), first.err());           
+      152 +        assertEquals(0, second.code(), second.err());         
+      153 +        assertEquals(first.out(), second.out(), "the cache cha
+          +nged the decision it served");                                
+      154 +    }                                                         
+      155 +                                                              
+      156 +    @Test                                                     
+      157 +    void anEntryOlderThanTheTtlIsIgnoredAndTheRunDecidesFromTh
+          +eFixture() throws IOException {                               
+      158 +        FixtureDir.clean(dir);                                
+      159 +        Files.createDirectories(dir.resolve("data"));         
+      160 +        Files.writeString(                                    
+      161 +                dir.resolve("data").resolve("bureau-cache.csv"
+          +),                                                            
+      162 +                "id,recordedAt,outcome,list\n" + ID + ",2020-0
+          +1-01T00:00:00Z,SANCTIONED,OFAC\n");                           
+      163 +                                                              
+      164 +        var result = run("validate-lead", "--id", ID);        
+      165 +                                                              
+      166 +        assertEquals(0, result.code(), result.out());         
+      167 +    }                                                         
+      168 +                                                              
+      169 +    @Test                                                     
+      170      void pendingManualReviewExitsTwo() {
+      171          assertEquals(
+      172                  2,
+
+⏺ Update(src/test/java/com/addi/lead/MainTest.java)
+  ⎿  Added 2 lines
+      13  import com.addi.lead.domain.RejectionCause;
+      14  import com.addi.lead.domain.Step;
+      15  import java.io.ByteArrayOutputStream;
+      16 +import java.io.IOException;                                    
+      17  import java.io.PrintStream;
+      18 +import java.nio.file.Files;                                    
+      19  import java.nio.file.Path;
+      20  import java.time.Duration;
+      21  import java.util.OptionalLong;
+
+⏺ Now Config, the two other Config call sites, and a pass-through stub so the
+  tests can be watched failing:
+
+⏺ Write(src/main/java/com/addi/lead/app/Config.java)
+  ⎿  Added 4 lines, removed 2 lines
+      10   *
+      11   * <p>An empty seed is a fresh one per process, which is what "
+          random" means.
+      12   */
+      13 -public record Config(Duration parallelTimeout, Path fixtures, O
+         -ptionalLong seed) {                                            
+      13 +public record Config(                                          
+      14 +        Duration parallelTimeout, Path fixtures, OptionalLong s
+         +eed, Path data, Duration bureauCacheTtl) {                     
+      15  
+      16      public static Config defaults() {
+      16 -        return new Config(Duration.ofSeconds(2), Path.of("fixtu
+         -res"), OptionalLong.empty());                                  
+      17 +        return new Config(                                     
+      18 +                Duration.ofSeconds(2), Path.of("fixtures"), Opt
+         +ionalLong.empty(), Path.of("data"), Duration.ofHours(24));     
+      19      }
+      20  }
+
+⏺ Write(src/main/java/com/addi/lead/adapter/CachingComplianceBureau.java)
+  ⎿  Wrote 18 lines to
+     src/main/java/com/addi/lead/adapter/CachingComplianceBureau.java
+       1 package com.addi.lead.adapter;
+       2 
+       3 import com.addi.lead.domain.BureauOutcome;
+       4 import com.addi.lead.domain.Lead;
+       5 import com.addi.lead.port.ComplianceBureau;
+       7 import java.time.Clock;
+       8 import java.time.Duration;
+       9 
+      10 /** Stub: no cache yet, so the tests written from spec 04 have s
+         omething to fail against. */
+     … +10 lines (ctrl+o to expand)
+
+  Ran 2 shell commands (ctrl+o to expand)
+
+⏺ Red as expected. Now the implementation:
+
+⏺ Write(src/main/java/com/addi/lead/adapter/CachingComplianceBureau.java)
+  ⎿  Added 118 lines, removed 2 lines
+        1  package com.addi.lead.adapter;
+        2  
+        3 +import static java.nio.file.StandardCopyOption.ATOMIC_MOVE;   
+        4 +import static java.nio.file.StandardCopyOption.REPLACE_EXISTIN
+          +G;                                                            
+        5 +                                                              
+        6  import com.addi.lead.domain.BureauOutcome;
+        7  import com.addi.lead.domain.Lead;
+        8 +import com.addi.lead.domain.NationalId;                       
+        9  import com.addi.lead.port.ComplianceBureau;
+       10 +import java.io.IOException;                                   
+       11 +import java.nio.file.Files;                                   
+       12  import java.nio.file.Path;
+       13  import java.time.Clock;
+       14  import java.time.Duration;
+       15 +import java.time.Instant;                                     
+       16 +import java.util.List;                                        
+       17 +import java.util.Optional;                                    
+       18 +import java.util.stream.Stream;                               
+       19  
+       10 -/** Stub: no cache yet, so the tests written from spec 04 have
+          - something to fail against. */                                
+       20 +/**                                                           
+       21 + * The bureau with its answers remembered on disk (ADR 0003). 
+          +A decorator rather than a port of its                         
+       22 + * own: the cache is not a fifth external system and nothing a
+          +bove the composition root can tell that                       
+       23 + * an answer came from a file.                                
+       24 + *                                                            
+       25 + * <p>Nothing here throws. A cache that cannot be read is a mi
+          +ss and a cache that cannot be written                         
+       26 + * is a miss next time, and neither is a reason to fail a scre
+          +ening.                                                        
+       27 + */                                                           
+       28  public record CachingComplianceBureau(ComplianceBureau delegat
+           e, Path file, Duration ttl, Clock clock)
+       29          implements ComplianceBureau {
+       30  
+       31 +    private static final String HEADER = "id,recordedAt,outcom
+          +e,list";                                                      
+       32 +                                                              
+       33      @Override
+       34      public BureauOutcome screen(Lead lead) {
+       16 -        return delegate.screen(lead);                         
+       35 +        return cached(lead.id()).orElseGet(() -> screenAndReme
+          +mber(lead));                                                  
+       36      }
+       37 +                                                              
+       38 +    private BureauOutcome screenAndRemember(Lead lead) {      
+       39 +        var outcome = delegate.screen(lead);                  
+       40 +        switch (outcome) {                                    
+       41 +            case BureauOutcome.Clear ignored -> write(new Entr
+          +y(lead.id().value(), clock.instant(), outcome));              
+       42 +            case BureauOutcome.Sanctioned ignored -> write(new
+          + Entry(lead.id().value(), clock.instant(), outcome));         
+       43 +                // Never: caching an outage turns a transient 
+          +failure into a permanent one (ADR 0003).                      
+       44 +            case BureauOutcome.Unavailable ignored -> {}      
+       45 +        }                                                     
+       46 +        return outcome;                                       
+       47 +    }                                                         
+       48 +                                                              
+       49 +    /** The boundary is expired: an entry recorded exactly one
+          + TTL ago has no life left in it. */                           
+       50 +    private Optional<BureauOutcome> cached(NationalId id) {   
+       51 +        var now = clock.instant();                            
+       52 +        return entries()                                      
+       53 +                .filter(entry -> entry.id().equals(id.value())
+          +)                                                             
+       54 +                .filter(entry -> now.isBefore(entry.recordedAt
+          +().plus(ttl)))                                                
+       55 +                .map(Entry::outcome)                          
+       56 +                .findFirst();                                 
+       57 +    }                                                         
+       58 +                                                              
+       59 +    /** Read whole, which ADR 0003 accepts at this scale. A ro
+          +w that does not parse is not an entry. */                     
+       60 +    private Stream<Entry> entries() {                         
+       61 +        try {                                                 
+       62 +            return Files.readAllLines(file).stream().skip(1).m
+          +ap(Entry::parse).flatMap(Optional::stream);                   
+       63 +        } catch (Exception e) {                               
+       64 +            return Stream.empty();                            
+       65 +        }                                                     
+       66 +    }                                                         
+       67 +                                                              
+       68 +    /**                                                       
+       69 +     * Temp file then rename, so a reader never sees half a ca
+          +che. The rewrite is also the only                             
+       70 +     * pruning there is: rows that no longer parse do not surv
+          +ive it.                                                       
+       71 +     */                                                       
+       72 +    private void write(Entry entry) {                         
+       73 +        var kept = entries().filter(other -> !other.id().equal
+          +s(entry.id()));                                               
+       74 +        var body = Stream.concat(kept, Stream.of(entry)).map(E
+          +ntry::line).toList();                                         
+       75 +        var temp = file.resolveSibling(file.getFileName() + ".
+          +tmp");                                                        
+       76 +        try {                                                 
+       77 +            Files.createDirectories(file.getParent());        
+       78 +            Files.write(temp, Stream.concat(Stream.of(HEADER),
+          + body.stream()).toList());                                    
+       79 +            Files.move(temp, file, ATOMIC_MOVE, REPLACE_EXISTI
+          +NG);                                                          
+       80 +        } catch (Exception e) {                               
+       81 +            deleteQuietly(temp);                              
+       82 +        }                                                     
+       83 +    }                                                         
+       84 +                                                              
+       85 +    /** A half-written temp file is not a cache entry and not 
+          +something a reviewer should find. */                          
+       86 +    private static void deleteQuietly(Path path) {            
+       87 +        try {                                                 
+       88 +            Files.deleteIfExists(path);                       
+       89 +        } catch (IOException e) {                             
+       90 +            // The write already failed and the screening deci
+          +ded without it. Nothing left to do.                           
+       91 +        }                                                     
+       92 +    }                                                         
+       93 +                                                              
+       94 +    /** One cached answer: the key, when it was recorded, and 
+          +what the bureau said. */                                      
+       95 +    private record Entry(String id, Instant recordedAt, Bureau
+          +Outcome outcome) {                                            
+       96 +                                                              
+       97 +        private static final int COLUMNS = 4;                 
+       98 +                                                              
+       99 +        static Optional<Entry> parse(String line) {           
+      100 +            var cells = List.of(line.split(",", -1));         
+      101 +            if (cells.size() != COLUMNS) {                    
+      102 +                return Optional.empty();                      
+      103 +            }                                                 
+      104 +            return outcome(cells.get(2).trim(), cells.get(3).t
+          +rim())                                                        
+      105 +                    .flatMap(what -> recordedAt(cells.get(1).t
+          +rim())                                                        
+      106 +                            .map(when -> new Entry(cells.getFi
+          +rst().trim(), when, what)));                                  
+      107 +        }                                                     
+      108 +                                                              
+      109 +        String line() {                                       
+      110 +            return switch (outcome) {                         
+      111 +                case BureauOutcome.Clear ignored -> id + "," +
+          + recordedAt + ",CLEAR,";                                      
+      112 +                case BureauOutcome.Sanctioned(var list) -> id 
+          ++ "," + recordedAt + ",SANCTIONED," + list;                   
+      113 +                    // Unreachable: an unavailable bureau neve
+          +r becomes an entry.                                           
+      114 +                case BureauOutcome.Unavailable(var reason) -> 
+          +throw new IllegalStateException(reason);                      
+      115 +            };                                                
+      116 +        }                                                     
+      117 +                                                              
+      118 +        private static Optional<BureauOutcome> outcome(String 
+          +word, String list) {                                          
+      119 +            return switch (word) {                            
+      120 +                case "CLEAR" -> Optional.of(new BureauOutcome.
+          +Clear());                                                     
+      121 +                case "SANCTIONED" -> Optional.of(new BureauOut
+          +come.Sanctioned(list));                                       
+      122 +                default -> Optional.empty();                  
+      123 +            };                                                
+      124 +        }                                                     
+      125 +                                                              
+      126 +        private static Optional<Instant> recordedAt(String val
+          +ue) {                                                         
+      127 +            try {                                             
+      128 +                return Optional.of(Instant.parse(value));     
+      129 +            } catch (Exception e) {                           
+      130 +                return Optional.empty();                      
+      131 +            }                                                 
+      132 +        }                                                     
+      133 +    }                                                         
+      134  }
+
+⏺ Update(src/main/java/com/addi/lead/adapter/CachingComplianceBureau.java)
+  ⎿  Added 11 lines, removed 5 lines
+      37  
+      38      private BureauOutcome screenAndRemember(Lead lead) {
+      39          var outcome = delegate.screen(lead);
+      40 -        switch (outcome) {                                     
+      41 -            case BureauOutcome.Clear ignored -> write(new Entry
+         -(lead.id().value(), clock.instant(), outcome));                
+      42 -            case BureauOutcome.Sanctioned ignored -> write(new 
+         -Entry(lead.id().value(), clock.instant(), outcome));           
+      43 -                // Never: caching an outage turns a transient f
+         -ailure into a permanent one (ADR 0003).                        
+      44 -            case BureauOutcome.Unavailable ignored -> {}       
+      40 +        if (terminal(outcome)) {                               
+      41 +            write(new Entry(lead.id().value(), clock.instant(),
+         + outcome));                                                    
+      42          }
+      43          return outcome;
+      44      }
+      45  
+      46 +    /** An outage is not an answer: caching one turns a transie
+         +nt failure into a permanent one (ADR 0003). */                 
+      47 +    private static boolean terminal(BureauOutcome outcome) {   
+      48 +        return switch (outcome) {                              
+      49 +            case BureauOutcome.Clear ignored -> true;          
+      50 +            case BureauOutcome.Sanctioned ignored -> true;     
+      51 +            case BureauOutcome.Unavailable ignored -> false;   
+      52 +        };                                                     
+      53 +    }                                                          
+      54 +                                                               
+      55      /** The boundary is expired: an entry recorded exactly one 
+          TTL ago has no life left in it. */
+      56      private Optional<BureauOutcome> cached(NationalId id) {
+      57          var now = clock.instant();
+
+⏺ Update(src/main/java/com/addi/lead/adapter/CachingComplianceBureau.java)  ⎿  Added 2 lines, removed 2 lines
+      116              return switch (outcome) {
+      117                  case BureauOutcome.Clear ignored -> id + "," +
+            recordedAt + ",CLEAR,";
+      118                  case BureauOutcome.Sanctioned(var list) -> id 
+           + "," + recordedAt + ",SANCTIONED," + list;
+      119 -                    // Unreachable: an unavailable bureau neve
+          -r becomes an entry.                                           
+      120 -                case BureauOutcome.Unavailable(var reason) -> 
+          -throw new IllegalStateException(reason);                      
+      119 +                case BureauOutcome.Unavailable(var reason) -> 
+          +throw new IllegalStateException(                              
+      120 +                        "an unavailable bureau is never an ent
+          +ry: " + reason);                                              
+      121              };
+      122          }
+      123  
+
+⏺ Update(src/main/java/com/addi/lead/Main.java)
+  ⎿  Added 5 lines, removed 1 line
+      48          var leads = InMemoryLeadRepository.fromFixtures(fixture
+          s);
+      49          var registry = new FixtureNationalRegistry(fixtures, la
+          tency);
+      50          var judicial = new FixtureJudicialRecords(fixtures, lat
+          ency);
+      51 -        var bureau = new FixtureComplianceBureau(fixtures, late
+         -ncy);                                                          
+      51 +        var bureau = new CachingComplianceBureau(              
+      52 +                new FixtureComplianceBureau(fixtures, latency),
+      53 +                config.data().resolve("bureau-cache.csv"),     
+      54 +                config.bureauCacheTtl(),                       
+      55 +                Clock.systemUTC());                            
+      56          var score = new FixtureQualificationScore(fixtures, lat
+          ency, randomness);
+      57          return new Pipeline(config, leads, registry, judicial, 
+          bureau, score);
+      58      }
+
+⏺ Update(src/main/java/com/addi/lead/Main.java)
+  ⎿  Added 1 line
+      1  package com.addi.lead;
+      2  
+      3 +import com.addi.lead.adapter.CachingComplianceBureau;           
+      4  import com.addi.lead.adapter.FixtureComplianceBureau;
+      5  import com.addi.lead.adapter.FixtureJudicialRecords;
+      6  import com.addi.lead.adapter.FixtureNationalRegistry;
+
+⏺ Update(src/main/java/com/addi/lead/Main.java)
+  ⎿  Added 1 line
+      13  import com.addi.lead.cli.Cli;
+      14  import com.addi.lead.domain.Decision;
+      15  import java.io.PrintStream;
+      16 +import java.time.Clock;                                        
+      17  
+      18  /**
+      19   * The composition root and the exit codes, and nothing else. s
+          tdout carries the decision line and
+
+  Read 1 file, ran 3 shell commands (ctrl+o to expand)
+
+⏺ Update(docs/assumptions.md)
+  ⎿  Added 9 lines
+      64    `src/main/resources`.** Resources live inside the jar, where 
+          nothing can point
+      65    a test or the demo at a different directory. `[03]`
+      66  
+      67 +## The bureau cache                                            
+      68 +                                                               
+      69 +- **The clock is `java.time.Clock`, not a port of our own.** Th
+         +e standard library                                             
+      70 +  already provides the injection point; a `port.Clock` with one
+         + `Instant now()`                                               
+      71 +  would be that class with the name changed. `[04]`            
+      72 +- **A cache row that does not parse is dropped by the next writ
+         +e rather than                                                  
+      73 +  repaired.** It already reads as a miss, and the write rewrite
+         +s the file whole,                                              
+      74 +  so keeping it costs a line of code and buys nothing. `[04]`  
+      75 +                                                               
+      76  ## Bootstrap session
+      77  
+      78  - **`validate-lead` takes the national ID and nothing else.** T
+          he lead already
+
+  Created PR #5, ran 3 shell commands (ctrl+o to expand)
+
+⏺ Done. Spec 04 written, committed to main, and implemented — PR #5 is open.
+
+  Spec (specs/04-bureau-cache.md, on main at 0547a96): written against how the
+  port actually came out in spec 03 — ComplianceBureau.screen(Lead) -> 
+  BureauOutcome, whose javadoc already said the cache lives behind it. So the
+  spec fixed a decorator, not a new port. Added the missing paragraph to
+  specs/README.md explaining why 04 sits where it does (it is the only one of
+  04-06 that changes nothing about the pipeline, and it builds the data
+  directory 06 reuses), and split the old "04 to 06" paragraph accordingly.
+
+  Implementation (04-bureau-cache, three commits): CachingComplianceBureau over
+  one data/bureau-cache.csv, atomic rewrite, only terminal outcomes cached,
+  every read failure a miss. Config gained data and bureauCacheTtl. 79 tests, 12
+  new, ./gradlew check green; verified by hand that a second run converts with
+  fixtures/bureau.csv moved away.
+
+  Two judgement calls, both recorded in docs/assumptions.md:
+  - The clock is java.time.Clock, not a port.Clock — the stdlib already is that
+  port.
+  - Main uses the system clock; no test injects one end to end. The end-to-end
+  expiry test writes an old cache row instead, which proves the file is read
+  rather than remembered.
+
+  Spec 03's close-out landed too: cost row ($6.22, session 40bfad38), breakdown
+  section, status merged.
+
+  Left for you: merge PR #5, and run /export to
+  docs/ai/sessions/06-spec-04-bureau-cache.txt — I can't write the transcript
+  myself.
+
+✻ Churned for 9m 39s
