@@ -79,6 +79,18 @@ reading the brief, before any code existed.
   brief fixes it at 60 and no caller — test, demo or CLI flag — ever varies it.
   `[05]`
 
+## Manual review
+
+- **The case timestamp is epoch millis, not the ISO instant.** The case ID is
+  also the filename and an ISO instant carries colons a Windows filename cannot
+  hold; the ISO form is inside the file as `openedAt`. `[06]`
+- **A case file is `key=value` lines, not the fixtures' CSV.** A checkpoint
+  reason is adapter prose and will contain commas. `[06]`
+- **A case that cannot be resolved is an input error, exit 3, and a case that
+  cannot be written is exit 4.** Unknown, unreadable and already resolved
+  describe the command rather than the lead, and exiting 2 would name a case a
+  reviewer will not find. `[06]`
+
 ## Bootstrap session
 
 - **`validate-lead` takes the national ID and nothing else.** The lead already
