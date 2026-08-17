@@ -13,7 +13,7 @@ file, then its assigned spec, then `git log --oneline -15`.
 | 01 | Domain types, pipeline, four stubbed ports | 00 | medium | merged |
 | 02 | CLI `validate-lead` and composition root | 01 | medium | merged |
 | 03 | Simulated adapters and structured concurrency | 02 | high | specced |
-| 04 | Bureau cache | 03 | medium | not started |
+| 04 | Bureau cache | 03 | medium | specced |
 | 05 | Qualification score and conversion | 04 | low | not started |
 | 06 | Manual review: checkpoint, queue, resume | 05 | high | not started |
 | 07 | Demo command and fixtures | 06 | medium | not started |
@@ -47,8 +47,14 @@ parallel under a `StructuredTaskScope`, a scope-level timeout, and simulated
 adapters driven by fixtures that carry per-row latency — which is how a demo
 lead can be slow enough to fire the real timeout rather than a shrunk one.
 
-**04 to 06** are the resilience story, in dependency order rather than the order
-the brief lists them. The score rule comes before manual review because
+**04** is the brief's durability requirement, and it comes first of the three
+because it is the only one that changes nothing about the pipeline: the cache
+sits behind the bureau port, so it lands while the score still converts on any
+number and pending still reaches no disk. It also builds the data directory and
+the atomic write that 06 reuses for the review queue.
+
+**05 and 06** are the rest of the resilience story, in dependency order rather
+than the order the brief lists them. The score rule comes before manual review because
 approving a pending score step re-runs the score port, so the rule has to exist
 before resume can be specified. At the end of 05 the whole pipeline is real; 06
 adds the checkpoint, the queue and `review resolve`.
@@ -63,7 +69,7 @@ working. Each site gets fixed deliberately.
 
 ## Provisional past 03
 
-Only 00 to 03 are planned with any confidence. Everything below is a title and a
+Only 00 to 04 are planned with any confidence. Everything below is a title and a
 guess at effort, written before the code exists, and it will move. The last
 project put thirteen specs in this table up front and ended up with a sixty-line
 section explaining why four of them ran out of numeric order — which was the
