@@ -36,7 +36,9 @@ One spec per session, opened clean, exported before it closes.
    it. Nothing advances without that.
 7. After the merge, the next spec is written to `main` with `/create-spec`, from
    the code as it now is. A session ends with one spec built and the next one
-   written; leaving the queue unwritten strands the next session.
+   written; leaving the queue unwritten strands the next session. A session on a
+   cheaper model is the exception: it stops after the export, and the planning
+   model writes the next spec in its own session.
 
 A session past roughly forty requests, or *implementing* two specs, has gone
 wrong. Stop it and open a new one. Writing the next spec is step 7, not a second

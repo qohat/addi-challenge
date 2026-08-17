@@ -73,6 +73,14 @@ as it now is rather than as it was planned. A shape that came out different, a
 type that gained a case, a helper that already exists — the spec written before
 the merge would have missed all of it.
 
+Except on a cheaper model. A `low` spec runs on Sonnet; that session stops after
+the export and writes no spec. Specs are written by the planning model, and Opus
+writes the next one in its own session. Two reasons: the session would mix models
+against the one-model-per-session rule, and its cost row would stop being the
+Sonnet-versus-Opus comparison that running the spec on Sonnet existed to produce
+— a planning-shaped Opus spec priced into a Sonnet implementation measures
+neither.
+
 ## 7. Export
 
 Export the session to `docs/ai/sessions/NN-slug.txt` before closing it. The
@@ -83,7 +91,8 @@ way it is submitted are the same thing.
 
 - Past roughly forty requests, or about to *implement* a second spec: stop and
   open a new session. Writing the next spec in step 6 is not that — one spec
-  built, the next one specified, is exactly how a session is supposed to end.
+  built, the next one specified, is exactly how a session is supposed to end,
+  unless this is a cheaper-model session, which ends one step earlier.
 - The spec turns out to be wrong: stop, say so, and fix the spec on `main`
   rather than improvising in the worktree.
 - A new dependency looks necessary: ask first. That is an architecture decision.
