@@ -1,8 +1,5 @@
 package com.addi.lead.adapter;
 
-import static java.nio.file.StandardCopyOption.ATOMIC_MOVE;
-import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
-
 import com.addi.lead.domain.BureauOutcome;
 import com.addi.lead.domain.Lead;
 import com.addi.lead.domain.NationalId;
@@ -72,28 +69,17 @@ public record CachingComplianceBureau(ComplianceBureau delegate, Path file, Dura
     }
 
     /**
-     * Temp file then rename, so a reader never sees half a cache. The rewrite is also the only
-     * pruning there is: rows that no longer parse do not survive it.
+     * The whole file every time, which is also the only pruning there is: rows that no longer parse do
+     * not survive the rewrite. A failure is dropped here rather than raised, because the screening has
+     * already decided and a lost entry costs one repeat call (ADR 0003).
      */
     private void write(Entry entry) {
         var kept = entries().filter(other -> !other.id().equals(entry.id()));
-        var body = Stream.concat(kept, Stream.of(entry)).map(Entry::line).toList();
-        var temp = file.resolveSibling(file.getFileName() + ".tmp");
+        var body = Stream.concat(kept, Stream.of(entry)).map(Entry::line);
         try {
-            Files.createDirectories(file.getParent());
-            Files.write(temp, Stream.concat(Stream.of(HEADER), body.stream()).toList());
-            Files.move(temp, file, ATOMIC_MOVE, REPLACE_EXISTING);
-        } catch (Exception e) {
-            deleteQuietly(temp);
-        }
-    }
-
-    /** A half-written temp file is not a cache entry and not something a reviewer should find. */
-    private static void deleteQuietly(Path path) {
-        try {
-            Files.deleteIfExists(path);
+            Atomic.write(file, Stream.concat(Stream.of(HEADER), body).toList());
         } catch (IOException e) {
-            // The write already failed and the screening decided without it. Nothing left to do.
+            // Nothing to do and nobody to tell: the answer is returned either way.
         }
     }
 
