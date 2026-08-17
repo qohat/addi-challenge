@@ -54,30 +54,28 @@ recording, and 06's own row is what settles it.
 | 04 | `4ea44317` | claude-opus-5 | 47 | 4,270,261 | $4.28 |
 | 05 | `f55a26ac` | claude-sonnet-5 | 60 | 7,211,970 | $3.70 |
 | 06 | `49e92674` | claude-opus-5 | 61 | 6,122,044 | $5.47 |
-| **Subtotal** | | | **354** | **32,832,154** | **$27.84** |
+| 07 | `f51cdff0` | claude-opus-5 | 73 | 6,423,241 | $5.42 |
+| **Subtotal** | | | **427** | **39,255,395** | **$33.26** |
 
 Spec 05 is the only session not run on `claude-opus-5`, and deliberately so: it
 was rated low, and a low spec is the one place to test whether the specification
 carries a cheaper model. Its row is not comparable to the four above it and is
 read in the breakdown, not in this column.
 
-**Project total: $45.21** — $17.37 planning plus $27.84 specs. Both tables, or the
+**Project total: $50.63** — $17.37 planning plus $33.26 specs. Both tables, or the
 number understates the project by everything spent before the first line of Java.
 
 ## What is left
 
-Two specs remain, both medium. 06 came in at $5.47, above every merged medium and
-above the $4.28 top of the band the last projection put it at, so 07 and 08 at
-$4 to $5 each is roughly $9 more and about $54 for the project — near the $52 the
-last projection gave, by a different route.
+One spec remains, medium. 07 came in at $5.42 with its spec written inside the
+same session, so $5 to $6 for 08 puts the project near $56.
 
-That projection assumed 06 would write spec 07 inside its own session. It did
-not, and the split that produced sessions 08 and 09 was about to repeat. The fix
-was to `/run-spec` rather than to the estimate: the spec is now written at the
-*start* of the session that implements it, so the planning cost lands inside the
-spec's own row instead of in a fifth planning session. Planning is 38% of this
-project and every earlier projection had no line for it; this is the first one
-where there is nothing left to leak into.
+07 is the first row that tests the change made after 06: spec written at the
+start of the implementing session rather than in a session of its own. It cost
+$5.42 against 06's $10.52 across two sessions, for a spec of comparable size, so
+the merge saved roughly the price of a second session's orientation. It is one
+data point, but it points the same way the numbers above it do — the cost is in
+sessions, not in specs.
 
 ## Breakdown
 
@@ -221,6 +219,27 @@ instead, so the split cost more than doing both in one session and bought
 nothing measurable. The design work was real either way. Paying for a second
 session's orientation to hold it was the waste, and `/run-spec` no longer does
 that.
+
+### 07. Demo command and fixtures
+
+claude-opus-5 — 73 requests
+
+| | Tokens | Cost |
+|---|---:|---:|
+| input | 146 | $0.00 |
+| output | 47,812 | $1.20 |
+| cache read | 6,266,613 | $3.13 |
+| cache write 1h | 108,670 | $1.09 |
+| **Subtotal** | **6,423,241** | **$5.42** |
+
+The first session to write its spec and then implement it, and the most requests
+of any session in the project. The spec is 150 of the 540 lines the session
+produced; the code is 113 lines of `Demo.java` over the pipeline that already
+existed, plus the fixture rows every outcome needs.
+
+Against 06's $10.52 across two sessions this is the cheaper half of the same
+trade, at a smaller diff. The request count is where the merge shows: 73 against
+61, one session doing both jobs rather than two sessions each paying to orient.
 
 ## What the number includes
 
