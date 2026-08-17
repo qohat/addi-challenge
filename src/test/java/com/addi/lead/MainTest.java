@@ -13,7 +13,9 @@ import com.addi.lead.domain.Prospect;
 import com.addi.lead.domain.RejectionCause;
 import com.addi.lead.domain.Step;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.PrintStream;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.Duration;
 import java.util.OptionalLong;
@@ -29,7 +31,12 @@ class MainTest {
     private record Result(int code, String out, String err) {}
 
     private Result run(String... args) {
-        return run(new Config(Duration.ofSeconds(2), dir, OptionalLong.of(7)), args);
+        return run(config(dir), args);
+    }
+
+    /** Runtime state goes under the fixture directory, so a test never writes into the project. */
+    private Config config(Path fixtures) {
+        return new Config(Duration.ofSeconds(2), fixtures, OptionalLong.of(7), dir.resolve("data"), Duration.ofHours(24));
     }
 
     private static Result run(Config config, String... args) {
@@ -120,7 +127,8 @@ class MainTest {
         FixtureDir.clean(dir);
         FixtureDir.write(dir, "registry.csv", ID + ",Ana,Restrepo,1990-03-14,10000,UP");
 
-        var result = run(new Config(Duration.ofMillis(100), dir, OptionalLong.of(7)), "validate-lead", "--id", ID);
+        var config = new Config(Duration.ofMillis(100), dir, OptionalLong.of(7), dir.resolve("data"), Duration.ofHours(24));
+        var result = run(config, "validate-lead", "--id", ID);
 
         assertEquals(2, result.code());
         assertTrue(result.out().contains("pending manual review at step REGISTRY"), result.out());
@@ -128,10 +136,36 @@ class MainTest {
 
     @Test
     void theFixturesTheProjectShipsConvertEndToEnd() {
-        var result = run(Config.defaults(), "validate-lead", "--id", "1020304050");
+        var result = run(config(Config.defaults().fixtures()), "validate-lead", "--id", "1020304050");
 
         assertEquals(0, result.code(), result.err());
         assertTrue(result.out().contains("converted to prospect. Score "), result.out());
+    }
+
+    @Test
+    void aCachedBureauAnswerOutlivesTheBureauItself() throws IOException {
+        FixtureDir.clean(dir);
+        var first = run("validate-lead", "--id", ID);
+
+        Files.delete(dir.resolve("bureau.csv"));
+        var second = run("validate-lead", "--id", ID);
+
+        assertEquals(0, first.code(), first.err());
+        assertEquals(0, second.code(), second.err());
+        assertEquals(first.out(), second.out(), "the cache changed the decision it served");
+    }
+
+    @Test
+    void anEntryOlderThanTheTtlIsIgnoredAndTheRunDecidesFromTheFixture() throws IOException {
+        FixtureDir.clean(dir);
+        Files.createDirectories(dir.resolve("data"));
+        Files.writeString(
+                dir.resolve("data").resolve("bureau-cache.csv"),
+                "id,recordedAt,outcome,list\n" + ID + ",2020-01-01T00:00:00Z,SANCTIONED,OFAC\n");
+
+        var result = run("validate-lead", "--id", ID);
+
+        assertEquals(0, result.code(), result.out());
     }
 
     @Test

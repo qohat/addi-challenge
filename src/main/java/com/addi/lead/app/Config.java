@@ -10,9 +10,11 @@ import java.util.OptionalLong;
  *
  * <p>An empty seed is a fresh one per process, which is what "random" means.
  */
-public record Config(Duration parallelTimeout, Path fixtures, OptionalLong seed) {
+public record Config(
+        Duration parallelTimeout, Path fixtures, OptionalLong seed, Path data, Duration bureauCacheTtl) {
 
     public static Config defaults() {
-        return new Config(Duration.ofSeconds(2), Path.of("fixtures"), OptionalLong.empty());
+        return new Config(
+                Duration.ofSeconds(2), Path.of("fixtures"), OptionalLong.empty(), Path.of("data"), Duration.ofHours(24));
     }
 }

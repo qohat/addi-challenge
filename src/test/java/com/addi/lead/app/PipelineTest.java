@@ -88,7 +88,7 @@ class PipelineTest {
     private Pipeline pipeline(
             RegistryOutcome registry, JudicialOutcome judicial, BureauOutcome bureau, ScoreOutcome score) {
         return new Pipeline(
-                new Config(Duration.ofSeconds(30), Path.of("unused"), OptionalLong.of(7)),
+                new Config(Duration.ofSeconds(30), Path.of("unused"), OptionalLong.of(7), Path.of("unused"), Duration.ofHours(24)),
                 new FakeRepository(Map.of(LEAD.id(), LEAD)),
                 new FakeRegistry(calls, registry),
                 new FakeJudicial(calls, judicial),
