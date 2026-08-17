@@ -1,0 +1,969 @@
+ ▐▛███▜▌   Claude Code v2.1.233
+▝▜█████▛▘  Opus 5 · Claude Team
+  ▘▘ ▝▝    ~/…/addi-challenge/.trees/03-simulated-adapters-and-concurrency
+
+
+❯ Merged @specs/02-cli-validate-lead.md lets do                                 
+  @specs/03-simulated-adapters-and-concurrency.md                               
+  ⎿  Read specs/02-cli-validate-lead.md (106 lines)
+  ⎿  Read specs/03-simulated-adapters-and-concurrency.md (139 lines)
+
+⏺ Skill(run-spec)
+  ⎿  Successfully loaded skill
+
+⏺ I'll start with the closeout for spec 02.
+
+  Read 1 file, listed 1 directory, ran 3 shell commands (ctrl+o to expand)
+
+⏺ Update(~/Projects/work/addi/addi-challenge/docs/ai/cost.md)
+  ⎿  Added 3 lines, removed 2 lines
+      39  |---|---|---|---:|---:|---:|
+      40  | 00 | `d617a871` | claude-opus-5 | 59 | 4,088,542 | $3.41 |
+      41  | 01 | `e76bafcf` | claude-opus-5 | 35 | 2,470,033 | $2.56 |
+      42 -| **Subtotal** | | | **94** | **6,558,575** | **$5.97** |      
+      42 +| 02 | `9f3baa51` | claude-opus-5 | 33 | 2,160,355 | $2.20 |   
+      43 +| **Subtotal** | | | **127** | **8,718,930** | **$8.17** |     
+      44  
+      44 -**Project total: $15.90** — $9.93 planning plus $5.97 specs. Bo
+         -th tables, or the                                              
+      45 +**Project total: $18.10** — $9.93 planning plus $8.17 specs. Bo
+         +th tables, or the                                              
+      46  number understates the project by everything spent before the f
+          irst line of Java.
+      47  
+      48  ## Breakdown
+
+⏺ Update(~/Projects/work/addi/addi-challenge/docs/ai/cost.md)
+  ⎿  Added 18 lines
+       82  shapes, so the session spent its tokens transcribing rather th
+           an deciding — which
+       83  is the argument for writing the shapes down before the session
+            that needs them.
+       84  
+       85 +### 02. CLI `validate-lead` and composition root              
+       86 +                                                              
+       87 +claude-opus-5 — 33 requests                                   
+       88 +                                                              
+       89 +| | Tokens | Cost |                                           
+       90 +|---|---:|---:|                                               
+       91 +| input | 66 | $0.00 |                                        
+       92 +| output | 21,778 | $0.54 |                                   
+       93 +| cache read | 2,077,012 | $1.04 |                            
+       94 +| cache write 1h | 61,499 | $0.61 |                           
+       95 +| **Subtotal** | **2,160,355** | **$2.20** |                  
+       96 +                                                              
+       97 +The cheapest spec so far and the first one a reviewer can run.
+          + Three commits, a                                             
+       98 +parser, a renderer and twenty lines of wiring: the spec had al
+          +ready fixed the                                               
+       99 +`Invocation` shape, the exit code map and the four prose lines
+          +, so there was                                                
+      100 +nothing left to decide. The trend across 00, 01 and 02 is the 
+          +specification                                                 
+      101 +getting more precise, not the work getting smaller.           
+      102 +                                                              
+      103  ## What the number includes
+      104  
+      105  With one session per spec, each figure measures session overhe
+           ad — orientation,
+
+⏺ Update(~/Projects/work/addi/addi-challenge/specs/README.md)
+  ⎿  Added 1 line, removed 1 line
+      11  |---|---|---|---|---|
+      12  | 00 | Build, checks and CI | — | medium | merged |
+      13  | 01 | Domain types, pipeline, four stubbed ports | 00 | medium
+           | merged |
+      14 -| 02 | CLI `validate-lead` and composition root | 01 | medium |
+         - specced |                                                     
+      14 +| 02 | CLI `validate-lead` and composition root | 01 | medium |
+         + merged |                                                      
+      15  | 03 | Simulated adapters and structured concurrency | 02 | hig
+          h | specced |
+      16  | 04 | Bureau cache | 03 | medium | not started |
+      17  | 05 | Qualification score and conversion | 04 | low | not star
+          ted |
+
+  Read 4 files, listed 2 directories, ran 10 shell commands (ctrl+o to expand)
+
+⏺ Now I'll write the tests, from the acceptance criteria.
+
+⏺ Write(src/test/java/com/addi/lead/FixtureDir.java)
+  ⎿  Wrote 55 lines to src/test/java/com/addi/lead/FixtureDir.java
+       1 package com.addi.lead;
+       2 
+       3 import com.addi.lead.domain.Email;
+       4 import com.addi.lead.domain.Lead;
+       5 import com.addi.lead.domain.NationalId;
+       6 import java.io.IOException;
+       7 import java.io.UncheckedIOException;
+       8 import java.nio.file.Files;
+       9 import java.nio.file.Path;
+      10 import java.time.LocalDate;
+     … +54 lines (ctrl+o to expand)
+
+⏺ Write(src/test/java/com/addi/lead/domain/RegistryRecordTest.java)
+  ⎿  Wrote 53 lines to
+     src/test/java/com/addi/lead/domain/RegistryRecordTest.java
+       1 package com.addi.lead.domain;
+       2 
+       3 import static org.junit.jupiter.api.Assertions.assertEquals;
+       4 
+       5 import java.time.LocalDate;
+       7 import org.junit.jupiter.api.Test;
+       8 
+       9 /** The interesting rule in spec 03, and it never touches a file
+         . */
+      10 class RegistryRecordTest {
+     … +52 lines (ctrl+o to expand)
+
+⏺ Write(src/test/java/com/addi/lead/adapter/FixtureAdaptersTest.java)
+  ⎿  Wrote 218 lines to
+     src/test/java/com/addi/lead/adapter/FixtureAdaptersTest.java
+       1 package com.addi.lead.adapter;
+       2 
+       3 import static com.addi.lead.FixtureDir.ID;
+       4 import static com.addi.lead.FixtureDir.LEAD;
+       5 import static org.junit.jupiter.api.Assertions.assertEquals;
+       6 import static org.junit.jupiter.api.Assertions.assertInstanceOf;
+       7 import static org.junit.jupiter.api.Assertions.assertTrue;
+       8 
+       9 import com.addi.lead.FixtureDir;
+      10 import com.addi.lead.domain.BureauOutcome;
+     … +252 lines (ctrl+o to expand)
+
+⏺ Write(src/test/java/com/addi/lead/app/PipelineConcurrencyTest.java)
+  ⎿  Wrote 107 lines to
+     src/test/java/com/addi/lead/app/PipelineConcurrencyTest.java
+       1 package com.addi.lead.app;
+       2 
+       3 import static com.addi.lead.FixtureDir.ID;
+       4 import static com.addi.lead.FixtureDir.LEAD;
+       5 import static org.junit.jupiter.api.Assertions.assertEquals;
+       6 import static org.junit.jupiter.api.Assertions.assertInstanceOf;
+       7 
+       8 import com.addi.lead.FixtureDir;
+       9 import com.addi.lead.adapter.FixtureComplianceBureau;
+      10 import com.addi.lead.adapter.FixtureJudicialRecords;
+     … +111 lines (ctrl+o to expand)
+
+⏺ Write(src/test/java/com/addi/lead/MainTest.java)  ⎿  Added 101 lines, removed 19 lines
+       1  package com.addi.lead;
+       2  
+       3 +import static com.addi.lead.FixtureDir.ID;                     
+       4  import static java.nio.charset.StandardCharsets.UTF_8;
+       5  import static org.junit.jupiter.api.Assertions.assertEquals;
+       6  import static org.junit.jupiter.api.Assertions.assertFalse;
+       7  import static org.junit.jupiter.api.Assertions.assertTrue;
+       8  
+       9 +import com.addi.lead.app.Config;                               
+      10  import com.addi.lead.domain.Checkpoint;
+      11  import com.addi.lead.domain.Decision;
+      10 -import com.addi.lead.domain.Email;                             
+      11 -import com.addi.lead.domain.Lead;                              
+      12 -import com.addi.lead.domain.NationalId;                        
+      12  import com.addi.lead.domain.Prospect;
+      13  import com.addi.lead.domain.RejectionCause;
+      14  import com.addi.lead.domain.Step;
+      15  import java.io.ByteArrayOutputStream;
+      16  import java.io.PrintStream;
+      18 -import java.time.LocalDate;                                    
+      17 +import java.nio.file.Path;                                     
+      18 +import java.time.Duration;                                     
+      19 +import java.util.OptionalLong;                                 
+      20  import org.junit.jupiter.api.Test;
+      21 +import org.junit.jupiter.api.io.TempDir;                       
+      22  
+      23  /** The wired application, run in process against captured stre
+          ams. No JVM is spawned. */
+      24  class MainTest {
+      25  
+      24 -    private static final Lead LEAD = new Lead(                 
+      25 -            new NationalId("1020304050"),                      
+      26 -            "Ana",                                             
+      27 -            "Restrepo",                                        
+      28 -            LocalDate.of(1990, 3, 14),                         
+      29 -            new Email("ana.restrepo@example.com"));            
+      26 +    @TempDir                                                   
+      27 +    Path dir;                                                  
+      28  
+      29      private record Result(int code, String out, String err) {}
+      30  
+      33 -    private static Result run(String... args) {                
+      31 +    private Result run(String... args) {                       
+      32 +        return run(new Config(Duration.ofSeconds(2), dir, Optio
+         +nalLong.of(7)), args);                                         
+      33 +    }                                                          
+      34 +                                                               
+      35 +    private static Result run(Config config, String... args) { 
+      36          var out = new ByteArrayOutputStream();
+      37          var err = new ByteArrayOutputStream();
+      36 -        var code = Main.run(args, new PrintStream(out, true, UT
+         -F_8), new PrintStream(err, true, UTF_8));                      
+      38 +        var code = Main.run(args, config, new PrintStream(out, 
+         +true, UTF_8), new PrintStream(err, true, UTF_8));              
+      39          return new Result(code, out.toString(UTF_8), err.toStri
+          ng(UTF_8));
+      40      }
+      41  
+      42      @Test
+      41 -    void aSeededLeadConvertsAndExitsZero() {                   
+      42 -        var result = run("validate-lead", "--id", "1020304050")
+         -;                                                              
+      43 +    void aCleanLeadConvertsAndExitsZero() {                    
+      44 +        FixtureDir.clean(dir);                                 
+      45  
+      44 -        assertEquals(0, result.code());                        
+      45 -        assertEquals("Lead 1020304050 converted to prospect. Sc
+         -ore 75." + System.lineSeparator(), result.out());              
+      46 +        var result = run("validate-lead", "--id", ID);         
+      47 +                                                               
+      48 +        assertEquals(0, result.code(), result.err());          
+      49 +        assertTrue(result.out().startsWith("Lead " + ID + " con
+         +verted to prospect. Score "), result.out());                   
+      50          assertTrue(result.err().isEmpty(), result.err());
+      51      }
+      52  
+      53      @Test
+      54      void anUnseededLeadIsRejectedAndExitsOne() {
+      55 +        FixtureDir.clean(dir);                                 
+      56 +                                                               
+      57          var result = run("validate-lead", "--id", "9999999999")
+          ;
+      58  
+      59          assertEquals(1, result.code());
+     ...
+       61      }
+       62  
+       63      @Test
+       64 +    void anIdWithNoRegistryRowExitsOne() {                    
+       65 +        FixtureDir.clean(dir);                                
+       66 +        FixtureDir.write(dir, "registry.csv");                
+       67 +                                                              
+       68 +        var result = run("validate-lead", "--id", ID);        
+       69 +                                                              
+       70 +        assertEquals(1, result.code());                       
+       71 +        assertTrue(result.out().contains("not found in the nat
+          +ional registry"), result.out());                              
+       72 +    }                                                         
+       73 +                                                              
+       74 +    @Test                                                     
+       75 +    void aJudicialRecordExitsOne() {                          
+       76 +        FixtureDir.clean(dir);                                
+       77 +        FixtureDir.write(dir, "judicial.csv", ID + ",1,0,UP");
+       78 +                                                              
+       79 +        var result = run("validate-lead", "--id", ID);        
+       80 +                                                              
+       81 +        assertEquals(1, result.code());                       
+       82 +        assertTrue(result.out().contains("1 judicial records f
+          +ound"), result.out());                                        
+       83 +    }                                                         
+       84 +                                                              
+       85 +    @Test                                                     
+       86 +    void aSanctionsHitExitsOne() {                            
+       87 +        FixtureDir.clean(dir);                                
+       88 +        FixtureDir.write(dir, "bureau.csv", ID + ",OFAC,0,UP")
+          +;                                                             
+       89 +                                                              
+       90 +        var result = run("validate-lead", "--id", ID);        
+       91 +                                                              
+       92 +        assertEquals(1, result.code());                       
+       93 +        assertTrue(result.out().contains("sanctioned on the OF
+          +AC list"), result.out());                                     
+       94 +    }                                                         
+       95 +                                                              
+       96 +    @Test                                                     
+       97 +    void aDownBureauIsPendingAtTheBureauAndExitsTwo() {       
+       98 +        FixtureDir.clean(dir);                                
+       99 +        FixtureDir.write(dir, "bureau.csv", ID + ",,0,DOWN"); 
+      100 +                                                              
+      101 +        var result = run("validate-lead", "--id", ID);        
+      102 +                                                              
+      103 +        assertEquals(2, result.code());                       
+      104 +        assertTrue(result.out().contains("pending manual revie
+          +w at step BUREAU"), result.out());                            
+      105 +    }                                                         
+      106 +                                                              
+      107 +    @Test                                                     
+      108 +    void aDownScoreIsPendingAtTheScoreAndExitsTwo() {         
+      109 +        FixtureDir.clean(dir);                                
+      110 +        FixtureDir.write(dir, "score.csv", ID + ",0,DOWN");   
+      111 +                                                              
+      112 +        var result = run("validate-lead", "--id", ID);        
+      113 +                                                              
+      114 +        assertEquals(2, result.code());                       
+      115 +        assertTrue(result.out().contains("pending manual revie
+          +w at step SCORE"), result.out());                             
+      116 +    }                                                         
+      117 +                                                              
+      118 +    @Test                                                     
+      119 +    void aRegistrySlowerThanTheTimeoutExitsTwo() {            
+      120 +        FixtureDir.clean(dir);                                
+      121 +        FixtureDir.write(dir, "registry.csv", ID + ",Ana,Restr
+          +epo,1990-03-14,10000,UP");                                    
+      122 +                                                              
+      123 +        var result = run(new Config(Duration.ofMillis(100), di
+          +r, OptionalLong.of(7)), "validate-lead", "--id", ID);         
+      124 +                                                              
+      125 +        assertEquals(2, result.code());                       
+      126 +        assertTrue(result.out().contains("pending manual revie
+          +w at step REGISTRY"), result.out());                          
+      127 +    }                                                         
+      128 +                                                              
+      129 +    @Test                                                     
+      130 +    void theFixturesTheProjectShipsConvertEndToEnd() {        
+      131 +        var result = run(Config.defaults(), "validate-lead", "
+          +--id", "1020304050");                                         
+      132 +                                                              
+      133 +        assertEquals(0, result.code(), result.err());         
+      134 +        assertTrue(result.out().contains("converted to prospec
+          +t. Score "), result.out());                                   
+      135 +    }                                                         
+      136 +                                                              
+      137 +    @Test                                                     
+      138      void pendingManualReviewExitsTwo() {
+      139          assertEquals(
+       60 -                2, Main.exitCode(new Decision.PendingManualRev
+          -iew(new Checkpoint(LEAD, Step.BUREAU, "unavailable"))));      
+      140 +                2,                                            
+      141 +                Main.exitCode(new Decision.PendingManualReview
+          +(                                                             
+      142 +                        new Checkpoint(FixtureDir.LEAD, Step.B
+          +UREAU, "unavailable"))));                                     
+      143      }
+      144  
+      145      @Test
+      146      void theOtherTwoDecisionsExitZeroAndOne() {
+       65 -        assertEquals(0, Main.exitCode(new Decision.Converted(n
+          -ew Prospect(LEAD, 75))));                                     
+      147 +        assertEquals(0, Main.exitCode(new Decision.Converted(n
+          +ew Prospect(FixtureDir.LEAD, 75))));                          
+      148          assertEquals(1, Main.exitCode(new Decision.Rejected(ne
+           w RejectionCause.RegistryNotFound())));
+      149      }
+      150  
+     ...
+      170  
+      171      @Test
+      172      void anUnknownCommandExitsThreeWithUsageOnStderr() {
+       91 -        var result = run("qualify-lead", "--id", "1020304050")
+          -;                                                             
+      173 +        var result = run("qualify-lead", "--id", ID);         
+      174  
+      175          assertEquals(3, result.code());
+      176          assertTrue(result.out().isEmpty(), result.out());
+
+⏺ Now the pipeline test updated for the fan-out, and the stub wiring test
+  removed.
+
+  Ran 2 shell commands (ctrl+o to expand)
+
+⏺ Update(src/test/java/com/addi/lead/app/PipelineTest.java)
+  ⎿  Removed 1 line
+      22  import java.nio.file.Path;
+      23  import java.time.Duration;
+      24  import java.time.LocalDate;
+      25 -import java.util.Collections;                                  
+      25  import java.util.List;
+      26  import java.util.Map;
+      27  import java.util.Optional;
+
+  Ran 1 shell command (ctrl+o to expand)
+
+⏺ Write(src/main/java/com/addi/lead/port/Latency.java)
+  ⎿  Wrote 11 lines to src/main/java/com/addi/lead/port/Latency.java
+       1 package com.addi.lead.port;
+       2 
+       3 import java.time.Duration;
+       5 /**
+       6  * Simulated latency is an effect, so it enters here. Every adap
+         ter asks for exactly what its fixture
+       7  * row states and a test asserts that without waiting for it (AD
+       8  */
+       9 public interface Latency {
+      10     void pause(Duration duration);
+     … +3 lines (ctrl+o to expand)
+
+⏺ Write(src/main/java/com/addi/lead/port/Randomness.java)
+  ⎿  Wrote 9 lines to src/main/java/com/addi/lead/port/Randomness.java
+      1 package com.addi.lead.port;
+      2 
+      3 /**
+      4  * The score stays genuinely random in production; determinism is
+         obtained by injecting a seed here,
+      5  * never by removing the variance the brief asked for (ADR 0006).
+      6  */
+      7 public interface Randomness {
+      8     int nextInt(int bound);
+      9 }
+
+⏺ Write(src/main/java/com/addi/lead/app/Config.java)
+  ⎿  Wrote 18 lines to src/main/java/com/addi/lead/app/Config.java
+       1 package com.addi.lead.app;
+       2 
+       3 import java.nio.file.Path;
+       5 import java.util.OptionalLong;
+       6 
+       7 /**
+       8  * Configurable means injectable. None of these is a CLI flag: t
+       9  * callers that need to change them, and a flag with no user is 
+         a flag to maintain for nobody.
+      10  *
+     … +13 lines (ctrl+o to expand)
+
+⏺ Write(src/main/java/com/addi/lead/domain/RegistryRecord.java)
+  ⎿  Wrote 34 lines to
+     src/main/java/com/addi/lead/domain/RegistryRecord.java
+       1 package com.addi.lead.domain;
+       2 
+       3 import java.time.LocalDate;
+       5 import java.util.List;
+       6 
+       7 /**
+       8  * What the external registry holds on a person. The adapter rea
+       9  * rule, and it is pure, so the interesting part of spec 03 is t
+         ested without touching a file.
+      10  *
+     … +31 lines (ctrl+o to expand)
+
+⏺ Now the fixture reader and the four adapters.
+
+⏺ Write(src/main/java/com/addi/lead/adapter/Fixtures.java)
+  ⎿  Wrote 52 lines to src/main/java/com/addi/lead/adapter/Fixtures.java
+       1 package com.addi.lead.adapter;
+       2 
+       3 import com.addi.lead.domain.NationalId;
+       4 import java.io.IOException;
+       5 import java.nio.file.Files;
+       6 import java.nio.file.Path;
+       7 import java.util.List;
+       8 import java.util.Optional;
+       9 
+      10 /**
+     … +53 lines (ctrl+o to expand)
+
+⏺ Write(src/main/java/com/addi/lead/adapter/FixtureNationalRegistry.java)
+  ⎿  Wrote 38 lines to
+     src/main/java/com/addi/lead/adapter/FixtureNationalRegistry.java
+       1 package com.addi.lead.adapter;
+       2 
+       3 import com.addi.lead.domain.Lead;
+       4 import com.addi.lead.domain.NationalId;
+       5 import com.addi.lead.domain.RegistryOutcome;
+       6 import com.addi.lead.domain.RegistryRecord;
+       7 import com.addi.lead.port.Latency;
+       8 import com.addi.lead.port.NationalRegistry;
+       9 import java.nio.file.Path;
+      10 import java.time.Duration;
+     … +36 lines (ctrl+o to expand)
+
+⏺ Write(src/main/java/com/addi/lead/adapter/FixtureJudicialRecords.java)
+  ⎿  Wrote 31 lines to
+     src/main/java/com/addi/lead/adapter/FixtureJudicialRecords.java
+       1 package com.addi.lead.adapter;
+       2 
+       3 import com.addi.lead.domain.JudicialOutcome;
+       4 import com.addi.lead.domain.Lead;
+       5 import com.addi.lead.port.JudicialRecords;
+       7 import java.nio.file.Path;
+       8 import java.time.Duration;
+       9 
+      10 /** Reads {@code judicial.csv}. No row means the archives hold n
+         othing on this person. */
+     … +28 lines (ctrl+o to expand)
+
+⏺ Write(src/main/java/com/addi/lead/adapter/FixtureComplianceBureau.java)
+  ⎿  Wrote 31 lines to
+     src/main/java/com/addi/lead/adapter/FixtureComplianceBureau.java
+       1 package com.addi.lead.adapter;
+       2 
+       3 import com.addi.lead.domain.BureauOutcome;
+       4 import com.addi.lead.domain.Lead;
+       5 import com.addi.lead.port.ComplianceBureau;
+       7 import java.nio.file.Path;
+       8 import java.time.Duration;
+       9 
+      10 /** Reads {@code bureau.csv} on every call. The cache in front o
+         f it is spec 04. */
+     … +28 lines (ctrl+o to expand)
+
+⏺ Write(src/main/java/com/addi/lead/adapter/FixtureQualificationScore.java)
+  ⎿  Wrote 34 lines to
+     src/main/java/com/addi/lead/adapter/FixtureQualificationScore.java
+      1 package com.addi.lead.adapter;
+      2 
+      3 import com.addi.lead.domain.Lead;
+      4 import com.addi.lead.domain.ScoreOutcome;
+      5 import com.addi.lead.port.Latency;
+      6 import com.addi.lead.port.QualificationScore;
+      7 import com.addi.lead.port.Randomness;
+      8 import java.nio.file.Path;
+      9 import java.time.Duration;
+     … +30 lines (ctrl+o to expand)
+
+⏺ Write(src/main/java/com/addi/lead/adapter/RandomNumbers.java)
+  ⎿  Wrote 18 lines to
+     src/main/java/com/addi/lead/adapter/RandomNumbers.java
+       1 package com.addi.lead.adapter;
+       2 
+       3 import com.addi.lead.port.Randomness;
+       5 import java.util.Random;
+       6 
+       7 /** The only place a seed is read. A run with no seed is a diffe
+         rent run, which is the point. */
+          {
+       9 
+      10     public static RandomNumbers from(OptionalLong seed) {
+     … +10 lines (ctrl+o to expand)
+
+⏺ Write(src/main/java/com/addi/lead/adapter/SleepingLatency.java)
+  ⎿  Wrote 21 lines to
+     src/main/java/com/addi/lead/adapter/SleepingLatency.java
+       1 package com.addi.lead.adapter;
+       2 
+       3 import com.addi.lead.port.Latency;
+       5 
+       6 /**
+       7  * The simulated wait, and the only reason the scope timeout has
+          anything to fire on. Interruption is
+         the call returns: the orchestrator has
+       9  * already stopped reading this branch's result.
+      10  */
+     … +13 lines (ctrl+o to expand)
+
+⏺ Write(src/main/java/com/addi/lead/adapter/InMemoryLeadRepository.java)
+  ⎿  Added 20 lines, removed 24 lines
+       4  import com.addi.lead.domain.Lead;
+       5  import com.addi.lead.domain.NationalId;
+       6  import com.addi.lead.port.LeadRepository;
+       7 +import java.nio.file.Path;                                     
+       8  import java.time.LocalDate;
+       9 +import java.util.HashMap;                                      
+      10  import java.util.Map;
+      11  import java.util.Optional;
+      12  
+     ...
+      17          leads = Map.copyOf(leads);
+      18      }
+      19  
+      18 -    /** Three hand-written leads. Spec 03 replaces the seed wit
+         -h fixtures keyed by national id. */                            
+      19 -    public static InMemoryLeadRepository seeded() {            
+      20 -        return new InMemoryLeadRepository(Map.of(              
+      21 -                new NationalId("1020304050"),                  
+      22 -                        new Lead(                              
+      23 -                                new NationalId("1020304050"),  
+      24 -                                "Ana",                         
+      25 -                                "Restrepo",                    
+      26 -                                LocalDate.of(1990, 3, 14),     
+      27 -                                new Email("ana.restrepo@example
+         -.com")),                                                       
+      28 -                new NationalId("1030405060"),                  
+      29 -                        new Lead(                              
+      30 -                                new NationalId("1030405060"),  
+      31 -                                "Carlos",                      
+      32 -                                "Mejia",                       
+      33 -                                LocalDate.of(1985, 11, 2),     
+      34 -                                new Email("carlos.mejia@example
+         -.com")),                                                       
+      35 -                new NationalId("1040506070"),                  
+      36 -                        new Lead(                              
+      37 -                                new NationalId("1040506070"),  
+      38 -                                "Lucia",                       
+      39 -                                "Gomez",                       
+      40 -                                LocalDate.of(1997, 6, 25),     
+      41 -                                new Email("lucia.gomez@example.
+         -com"))));                                                      
+      20 +    /**                                                        
+      21 +     * Seeded from {@code leads.csv}, once, at wiring time. An 
+         +unreadable seed leaves the database                            
+      22 +     * empty rather than throwing: {@link LeadRepository} has n
+         +o unavailable case, and a lead that is                         
+      23 +     * not in the database is already a decision the CLI can pr
+         +int.                                                           
+      24 +     */                                                        
+      25 +    public static InMemoryLeadRepository fromFixtures(Path fixt
+         +ures) {                                                        
+      26 +        var leads = new HashMap<NationalId, Lead>();           
+      27 +        try {                                                  
+      28 +            for (var cells : Fixtures.rows(fixtures, "leads.csv
+         +")) {                                                          
+      29 +                var id = new NationalId(cells[0].trim());      
+      30 +                leads.put(                                     
+      31 +                        id,                                    
+      32 +                        new Lead(id, cells[1], cells[2], LocalD
+         +ate.parse(cells[3].trim()), new Email(cells[4].trim())));      
+      33 +            }                                                  
+      34 +        } catch (Exception e) {                                
+      35 +            return new InMemoryLeadRepository(Map.of());       
+      36 +        }                                                      
+      37 +        return new InMemoryLeadRepository(leads);              
+      38      }
+      39  
+      40      @Override
+
+⏺ Now the parallel stage and the composition root.
+
+⏺ Write(src/main/java/com/addi/lead/app/Pipeline.java)
+  ⎿  Added 62 lines, removed 3 lines
+       2  
+       3  import com.addi.lead.domain.Decision;
+       4  import com.addi.lead.domain.Decisions;
+       5 +import com.addi.lead.domain.JudicialOutcome;                   
+       6  import com.addi.lead.domain.Lead;
+       7  import com.addi.lead.domain.NationalId;
+       8 +import com.addi.lead.domain.RegistryOutcome;                   
+       9  import com.addi.lead.domain.RejectionCause;
+      10  import com.addi.lead.domain.Step;
+      11  import com.addi.lead.domain.StepOutcome;
+     ...
+      14  import com.addi.lead.port.LeadRepository;
+      15  import com.addi.lead.port.NationalRegistry;
+      16  import com.addi.lead.port.QualificationScore;
+      17 +import java.util.List;                                         
+      18 +import java.util.Optional;                                     
+      19 +import java.util.concurrent.StructuredTaskScope;               
+      20 +import java.util.concurrent.StructuredTaskScope.Joiner;        
+      21 +import java.util.concurrent.StructuredTaskScope.Subtask;       
+      22  
+      23  /**
+      17 - * Sequences the four validations and stops at the first outcom
+         -e that decides anything. Spec 03                               
+      18 - * forks registry and judicial inside {@link #run}; the decisio
+         -ns do not change, because their                                
+      19 - * outcomes are consumed in canonical order either way.        
+      24 + * Sequences the four validations and stops at the first outcom
+         +e that decides anything. Registry and                          
+      25 + * judicial are forked together; every other step waits for the
+         + one before it, because the brief says                         
+      26 + * so. Concurrency lives here and never in the domain.         
+      27   */
+      28  public final class Pipeline {
+      29  
+      30 +    private final Config config;                               
+      31      private final LeadRepository leads;
+      32      private final NationalRegistry registry;
+      33      private final JudicialRecords judicial;
+     ...
+      35      private final QualificationScore score;
+      36  
+      37      public Pipeline(
+      38 +            Config config,                                     
+      39              LeadRepository leads,
+      40              NationalRegistry registry,
+      41              JudicialRecords judicial,
+      42              ComplianceBureau bureau,
+      43              QualificationScore score) {
+      44 +        this.config = config;                                  
+      45          this.leads = leads;
+      46          this.registry = registry;
+      47          this.judicial = judicial;
+     ...
+       58  
+       59      /** A fresh run passes {@code REGISTRY}; a resume passes t
+           he checkpoint's pending step. */
+       60      public Decision run(Lead lead, Step from) {
+       61 +        if (from != Step.REGISTRY) {                          
+       62 +            return sequential(lead, from);                    
+       63 +        }                                                     
+       64 +        return firstDecision(lead, fanOut(lead)).orElseGet(() 
+          +-> sequential(lead, Step.BUREAU));                            
+       65 +    }                                                         
+       66 +                                                              
+       67 +    /**                                                       
+       68 +     * The one fork-join point in the system. {@code awaitAll}
+          + is the joiner because the adapters                           
+       69 +     * return values and never throw, so a joiner that unwraps
+          + exceptions would describe a failure                          
+       70 +     * mode this design has removed.                          
+       71 +     */                                                       
+       72 +    private List<StepOutcome> fanOut(Lead lead) {             
+       73 +        try (var scope = StructuredTaskScope.<StepOutcome, Voi
+          +d>open(                                                       
+       74 +                Joiner.awaitAll(), configuration -> configurat
+          +ion.withTimeout(config.parallelTimeout()))) {                 
+       75 +            var registryTask = scope.fork(() -> registry.check
+          +(lead));                                                      
+       76 +            var judicialTask = scope.fork(() -> judicial.check
+          +(lead));                                                      
+       77 +            scope.join();                                     
+       78 +            return List.of(completed(registryTask), completed(
+          +judicialTask));                                               
+       79 +        } catch (StructuredTaskScope.TimeoutException e) {    
+       80 +            // Both branches, even one that finished: the bure
+          +au needs both, so half an answer is none.                     
+       81 +            return unavailable(timedOut());                   
+       82 +        } catch (InterruptedException e) {                    
+       83 +            Thread.currentThread().interrupt();               
+       84 +            return unavailable("interrupted");                
+       85 +        }                                                     
+       86 +    }                                                         
+       87 +                                                              
+       88 +    /** A subtask that is not {@code SUCCESS} was cancelled, w
+          +hich is the timeout under another name. */                    
+       89 +    private StepOutcome completed(Subtask<? extends StepOutcom
+          +e> task) {                                                    
+       90 +        return task.state() == Subtask.State.SUCCESS ? task.ge
+          +t() : unavailable(timedOut()).getFirst();                     
+       91 +    }                                                         
+       92 +                                                              
+       93 +    private List<StepOutcome> unavailable(String reason) {    
+       94 +        return List.of(new RegistryOutcome.Unavailable(reason)
+          +, new JudicialOutcome.Unavailable(reason));                   
+       95 +    }                                                         
+       96 +                                                              
+       97 +    private String timedOut() {                               
+       98 +        return "timeout after " + config.parallelTimeout().toM
+          +illis() + "ms";                                               
+       99 +    }                                                         
+      100 +                                                              
+      101 +    /** Canonical order, so which branch finished first cannot
+          + change the decision (ADR 0002). */                           
+      102 +    private static Optional<Decision> firstDecision(Lead lead,
+          + List<StepOutcome> outcomes) {                                
+      103 +        return outcomes.stream()                              
+      104 +                .map(outcome -> Decisions.terminal(lead, outco
+          +me))                                                          
+      105 +                .flatMap(Optional::stream)                    
+      106 +                .findFirst();                                 
+      107 +    }                                                         
+      108 +                                                              
+      109 +    private Decision sequential(Lead lead, Step from) {       
+      110          for (var step : Step.values()) {
+      111              if (step.ordinal() < from.ordinal()) {
+      112                  continue;
+
+⏺ Update(src/main/java/com/addi/lead/app/Pipeline.java)
+  ⎿  Added 3 lines, removed 1 line
+      75              var registryTask = scope.fork(() -> registry.check(
+          lead));
+      76              var judicialTask = scope.fork(() -> judicial.check(
+          lead));
+      77              scope.join();
+      78 -            return List.of(completed(registryTask), completed(j
+         -udicialTask));                                                 
+      78 +            return List.of(                                    
+      79 +                    completed(registryTask, new RegistryOutcome
+         +.Unavailable(timedOut())),                                     
+      80 +                    completed(judicialTask, new JudicialOutcome
+         +.Unavailable(timedOut())));                                    
+      81          } catch (StructuredTaskScope.TimeoutException e) {
+      82              // Both branches, even one that finished: the burea
+          u needs both, so half an answer is none.
+      83              return unavailable(timedOut());
+
+⏺ Update(src/main/java/com/addi/lead/app/Pipeline.java)  ⎿  Added 2 lines, removed 2 lines
+      88      }
+      89  
+      90      /** A subtask that is not {@code SUCCESS} was cancelled, wh
+          ich is the timeout under another name. */
+      91 -    private StepOutcome completed(Subtask<? extends StepOutcome
+         -> task) {                                                      
+      92 -        return task.state() == Subtask.State.SUCCESS ? task.get
+         -() : unavailable(timedOut()).getFirst();                       
+      91 +    private static StepOutcome completed(Subtask<? extends Step
+         +Outcome> task, StepOutcome cancelled) {                        
+      92 +        return task.state() == Subtask.State.SUCCESS ? task.get
+         +() : cancelled;                                                
+      93      }
+      94  
+      95      private List<StepOutcome> unavailable(String reason) {
+
+⏺ Write(src/main/java/com/addi/lead/Main.java)
+  ⎿  Added 22 lines, removed 16 lines
+       1  package com.addi.lead;
+       2  
+       3 +import com.addi.lead.adapter.FixtureComplianceBureau;          
+       4 +import com.addi.lead.adapter.FixtureJudicialRecords;           
+       5 +import com.addi.lead.adapter.FixtureNationalRegistry;          
+       6 +import com.addi.lead.adapter.FixtureQualificationScore;        
+       7  import com.addi.lead.adapter.InMemoryLeadRepository;
+       4 -import com.addi.lead.adapter.StubComplianceBureau;             
+       5 -import com.addi.lead.adapter.StubJudicialRecords;              
+       6 -import com.addi.lead.adapter.StubNationalRegistry;             
+       7 -import com.addi.lead.adapter.StubQualificationScore;           
+       8 +import com.addi.lead.adapter.RandomNumbers;                    
+       9 +import com.addi.lead.adapter.SleepingLatency;                  
+      10 +import com.addi.lead.app.Config;                               
+      11  import com.addi.lead.app.Pipeline;
+      12  import com.addi.lead.cli.Cli;
+      13  import com.addi.lead.domain.Decision;
+     ...
+      21  public final class Main {
+      22  
+      23      public static void main(String[] args) {
+      21 -        System.exit(run(args, System.out, System.err));        
+      24 +        System.exit(run(args, Config.defaults(), System.out, Sy
+         +stem.err));                                                    
+      25      }
+      26  
+      24 -    /** Streams are arguments so the wired application can be r
+         -un in process against captured ones. */                        
+      25 -    static int run(String[] args, PrintStream out, PrintStream 
+         -err) {                                                         
+      27 +    /** Config and streams are arguments so the wired applicati
+         +on runs in process against fixtures a test wrote. */           
+      28 +    static int run(String[] args, Config config, PrintStream ou
+         +t, PrintStream err) {                                          
+      29          return switch (Cli.parse(args)) {
+      30              case Cli.Invocation.InputError(var message) -> {
+      31                  err.println(message);
+     ...
+      33                  yield 3;
+      34              }
+      35              case Cli.Invocation.ValidateLead(var id) -> {
+      33 -                var decision = pipeline().validate(id);        
+      36 +                var decision = pipeline(config).validate(id);  
+      37                  out.println(Cli.render(id, decision));
+      38                  yield exitCode(decision);
+      39              }
+      40          };
+      41      }
+      42  
+      40 -    /** The whole object graph, in one method, top to bottom (A
+         -DR 0001). The stubs go in spec 03. */                          
+      41 -    private static Pipeline pipeline() {                       
+      42 -        var leads = InMemoryLeadRepository.seeded();           
+      43 -        var registry = new StubNationalRegistry();             
+      44 -        var judicial = new StubJudicialRecords();              
+      45 -        var bureau = new StubComplianceBureau();               
+      46 -        var score = new StubQualificationScore();              
+      47 -        return new Pipeline(leads, registry, judicial, bureau, 
+         -score);                                                        
+      43 +    /** The whole object graph, in one method, top to bottom (A
+         +DR 0001). */                                                   
+      44 +    private static Pipeline pipeline(Config config) {          
+      45 +        var fixtures = config.fixtures();                      
+      46 +        var latency = new SleepingLatency();                   
+      47 +        var randomness = RandomNumbers.from(config.seed());    
+      48 +        var leads = InMemoryLeadRepository.fromFixtures(fixture
+         +s);                                                            
+      49 +        var registry = new FixtureNationalRegistry(fixtures, la
+         +tency);                                                        
+      50 +        var judicial = new FixtureJudicialRecords(fixtures, lat
+         +ency);                                                         
+      51 +        var bureau = new FixtureComplianceBureau(fixtures, late
+         +ncy);                                                          
+      52 +        var score = new FixtureQualificationScore(fixtures, lat
+         +ency, randomness);                                             
+      53 +        return new Pipeline(config, leads, registry, judicial, 
+         +bureau, score);                                                
+      54      }
+      55  
+      56      static int exitCode(Decision decision) {
+
+⏺ Now the shipped fixture files.
+
+  Searched for 1 pattern, ran 2 shell commands (ctrl+o to expand)
+
+⏺ All green on the first run — let me verify the concurrency test isn't vacuous
+  by making the fan-out sequential.
+
+  Ran 2 shell commands (ctrl+o to expand)
+  ⎿  Loaded CLAUDE.md
+
+⏺ Now the Dockerfile and the docs, then the full gate.
+
+⏺ Update(Dockerfile)
+  ⎿  Added 2 lines
+      13  FROM eclipse-temurin:25-jdk
+      14  WORKDIR /app
+      15  COPY --from=build /app/build/install/lead-validation ./
+      16 +# The simulated external systems read these from the working di
+         +rectory, which is /app.                                        
+      17 +COPY fixtures fixtures                                         
+      18  # The start script carries --enable-preview from applicationDef
+          aultJvmArgs.
+      19  ENTRYPOINT ["./bin/lead-validation"]
+
+⏺ Update(docs/assumptions.md)
+  ⎿  Added 15 lines
+      49    in its message, and `build/install/lead-validation/bin/lead-v
+          alidation` and the
+      50    Docker image return it directly. `[02]`
+      51  
+      52 +## The simulated adapters                                      
+      53 +                                                               
+      54 +- **A missing fixture row means the system has nothing on that 
+         +person**, not that                                             
+      55 +  it failed: registry `NotFound`, judicial and bureau `Clear`, 
+         +score up with no                                               
+      56 +  latency. A missing file is a different thing and is that step
+         +'s                                                             
+      57 +  `Unavailable`. `[03]`                                        
+      58 +- **The registry adapter supplies a record and the comparison i
+         +s a pure domain                                                
+      59 +  function.** The rule is the interesting part of the step, so 
+         +it is testable                                                 
+      60 +  without touching a file. `[03]`                              
+      61 +- **The score value is never fixtured.** `score.csv` carries on
+         +ly latency and                                                 
+      62 +  status; the number comes from the randomness port on every ca
+         +ll. `[03]`                                                     
+      63 +- **The fixture directory is `./fixtures` in the working direct
+         +ory, not                                                       
+      64 +  `src/main/resources`.** Resources live inside the jar, where 
+         +nothing can point                                              
+      65 +  a test or the demo at a different directory. `[03]`          
+      66 +                                                               
+      67  ## Bootstrap session
+      68  
+      69  - **`validate-lead` takes the national ID and nothing else.** T
+          he lead already
+
+  Searched for 1 pattern, ran 1 shell command (ctrl+o to expand)
+
+⏺ 64 tests, all green. Let me confirm the CLI actually runs against the shipped
+  fixtures.
+
+  Ran 2 shell commands (ctrl+o to expand)
+
+⏺ Four reviewable commits.
+
+  Ran 3 shell commands (ctrl+o to expand)
+
+⏺ Stubs are gone. Now the parallel stage and the wiring.
+
+  Created PR #4, ran 3 shell commands (ctrl+o to expand)
+
+⏺ PR open: https://github.com/qohat/addi-challenge/pull/4
+
+  Closeout (spec 02) — 9f3baa51, $2.20 / 2,160,355 tokens added to
+  docs/ai/cost.md with its breakdown section; project total now $18.10.
+  specs/README.md row set to merged. Export 04-spec-02-cli-validate-lead.txt
+  confirmed present. Pushed to main as 1f88bf0.
+
+  Spec 03 — four commits on 03-simulated-adapters-and-concurrency, ./gradlew 
+  check green, 64 tests.
+
+  - Ports Latency / Randomness, Config(parallelTimeout, fixtures, seed) built in
+  Main.
+  - RegistryRecord.compare in the domain — case-insensitive after trim, email
+  excluded, fields in declaration order.
+  - Five CSVs, one reader, four adapters, the lead seed. Stubs deleted.
+  - StructuredTaskScope.open(Joiner.awaitAll(), cf -> cf.withTimeout(...)) in
+  Pipeline; on timeout both branches go Unavailable even when judicial already
+  returned.
+
+  All twelve acceptance criteria covered. The latch test was watched to fail: I
+  made the fan-out sequential on purpose and it went red before it went green.
+
+  One deviation, flagged in the PR: fixtures live in ./fixtures, not
+  src/main/resources/fixtures/. Resources are inside the jar, so a Path cannot
+  reach them and neither a test nor spec 07's demo could point at its own
+  directory. Recorded as a [03] line in docs/assumptions.md; the Dockerfile
+  copies the directory. If you'd rather the spec said that, it's a one-line
+  amendment on main.
+
+  Two things left for you:
+
+  1. Read and merge the PR — nothing advances without that.
+  2. Export this session to docs/ai/sessions/05-spec-03-simulated-adapters.txt
+  before closing it (/export); I can't write the transcript from inside the
+  session.
+
+  Also noticed while pricing: session 0dd4af1c (7 requests, $1.02, 19:34) is in
+  the logs but appears in no table in docs/ai/cost.md, so the project total is
+  short by that much. Left it alone — say the word and I'll add it to the
+  planning table.
+
+✻ Brewed for 15m 24s
