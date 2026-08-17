@@ -11,6 +11,8 @@ import java.util.Optional;
  */
 public final class Decisions {
 
+    public static final int MINIMUM_SCORE = 60;
+
     public static Optional<Decision> terminal(Lead lead, StepOutcome outcome) {
         return switch (outcome) {
             case RegistryOutcome.Matched ignored -> Optional.empty();
@@ -26,8 +28,8 @@ public final class Decisions {
             case BureauOutcome.Sanctioned(var list) -> rejected(new RejectionCause.Sanctioned(list));
             case BureauOutcome.Unavailable(var why) -> review(lead, Step.BUREAU, why);
 
-            // Spec 05 splits this arm on the threshold. Until then any score converts.
-            case ScoreOutcome.Scored(var value) -> converted(lead, value);
+            case ScoreOutcome.Scored(var value) ->
+                    value > MINIMUM_SCORE ? converted(lead, value) : rejected(new RejectionCause.ScoreTooLow(value));
             case ScoreOutcome.Unavailable(var why) -> review(lead, Step.SCORE, why);
         };
     }

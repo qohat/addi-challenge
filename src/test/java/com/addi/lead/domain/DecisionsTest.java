@@ -72,9 +72,26 @@ class DecisionsTest {
     }
 
     @Test
-    void aScoreConverts() {
-        assertEquals(
-                Optional.of(new Decision.Converted(new Prospect(LEAD, 75))), terminal(new ScoreOutcome.Scored(75)));
+    void aScoreAboveTheMinimumConverts() {
+        for (var value : List.of(61, 75)) {
+            assertEquals(
+                    Optional.of(new Decision.Converted(new Prospect(LEAD, value))),
+                    terminal(new ScoreOutcome.Scored(value)),
+                    String.valueOf(value));
+        }
+    }
+
+    @Test
+    void exactlySixtyRejects() {
+        assertEquals(rejected(new RejectionCause.ScoreTooLow(60)), terminal(new ScoreOutcome.Scored(60)));
+    }
+
+    @Test
+    void aLowScoreRejectsWithItsValue() {
+        var decision = terminal(new ScoreOutcome.Scored(0));
+
+        assertEquals(rejected(new RejectionCause.ScoreTooLow(0)), decision);
+        assertNotEquals(decision, terminal(new ScoreOutcome.Scored(60)));
     }
 
     /** Four arms, one per step, and nowhere else in the system. */
