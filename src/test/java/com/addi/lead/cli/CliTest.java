@@ -3,6 +3,7 @@ package com.addi.lead.cli;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertInstanceOf;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.addi.lead.domain.CaseId;
 import com.addi.lead.domain.CaseStatus;
@@ -64,6 +65,21 @@ class CliTest {
                 new String[] {"review", "list"});
         for (var shape : shapes) {
             assertInstanceOf(Cli.Invocation.InputError.class, Cli.parse(shape), String.join(" ", shape));
+        }
+    }
+
+    @Test
+    void parsesTheDemoAndNothingAfterIt() {
+        assertEquals(new Cli.Invocation.Demo(), Cli.parse(new String[] {"demo"}));
+        for (var shape : List.of(new String[] {"demo", "--all"}, new String[] {"demo", "x"})) {
+            assertInstanceOf(Cli.Invocation.InputError.class, Cli.parse(shape), String.join(" ", shape));
+        }
+    }
+
+    @Test
+    void namesEveryCommandInTheUsage() {
+        for (var command : List.of("validate-lead", "review resolve", "demo")) {
+            assertTrue(Cli.USAGE.contains(command), Cli.USAGE);
         }
     }
 

@@ -91,6 +91,13 @@ reading the brief, before any code existed.
   describe the command rather than the lead, and exiting 2 would name a case a
   reviewer will not find. `[06]`
 
+## The demo
+
+- **The demo runs in a temp directory, not `./data`.** It must neither depend on
+  nor overwrite the cache and queue a reviewer already has. `[07]`
+- **Each demo scenario carries its own seed and its own directory.** Otherwise an
+  outcome depends on the order the scenarios happen to run in. `[07]`
+
 ## Bootstrap session
 
 - **`validate-lead` takes the national ID and nothing else.** The lead already

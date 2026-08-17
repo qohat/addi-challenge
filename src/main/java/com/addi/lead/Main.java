@@ -46,6 +46,7 @@ public final class Main {
             }
             case Cli.Invocation.ResolveReview(var caseId, var resolution) ->
                 resolve(caseId, resolution, config, out, err);
+            case Cli.Invocation.Demo ignored -> Demo.run(config, out, err);
         };
     }
 

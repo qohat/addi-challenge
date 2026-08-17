@@ -2,3 +2,9 @@ id,firstName,lastName,birthDate,email
 1020304050,Ana,Restrepo,1990-03-14,ana.restrepo@example.com
 1030405060,Carlos,Mejia,1985-11-02,carlos.mejia@example.com
 1040506070,Lucia,Gomez,1997-06-25,lucia.gomez@example.com
+1050607080,Diego,Torres,1988-09-12,diego.torres@example.com
+1060708090,Marta,Silva,1993-01-30,marta.silva@example.com
+1070809000,Julian,Rojas,1979-07-08,julian.rojas@example.com
+1080900010,Paula,Duarte,1991-12-19,paula.duarte@example.com
+1090001020,Andres,Vela,1986-04-03,andres.vela@example.com
+1100102030,Sofia,Lara,1995-10-27,sofia.lara@example.com
