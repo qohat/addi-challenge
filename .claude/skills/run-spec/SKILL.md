@@ -28,13 +28,35 @@ Then:
 
 Skip this section only when there is no previous spec.
 
-## 2. Set up
+## 2. Pick the spec to run
+
+This skill always ends with a spec implemented. Two paths get there:
+
+- **The user named a spec and `specs/NN-slug.md` exists.** Run it. Nothing to
+  decide.
+- **No spec named, and the next queue row is `not started`.** Ask whether to
+  write it. On yes, `/create-spec` writes it and commits to `main`, then run it
+  in the same session. On no, stop and say which spec was expected.
+
+A spec is written from the code as it now is rather than as it was planned — a
+shape that came out different, a type that gained a case, a helper that already
+exists. That is why it is written here, after the previous spec has merged, and
+not at the end of the session that built it.
+
+Except on a cheaper model. A `low` spec runs on Sonnet, and Sonnet does not
+write specs: if the spec does not exist, stop and let Opus write it in its own
+session. Two reasons: the session would mix models against the one-model-per-session
+rule, and its cost row would stop being the Sonnet-versus-Opus comparison that
+running the spec on Sonnet existed to produce — a planning-shaped Opus spec
+priced into a Sonnet implementation measures neither.
+
+## 3. Set up
 
     git worktree add .trees/NN-slug -b NN-slug
 
 Read the spec. Read `CONTRIBUTING.md` now — not earlier, and not again.
 
-## 3. Build it
+## 4. Build it
 
 Tests first, always. Written from the spec's acceptance criteria, run, watched
 to fail, then the code that makes them pass. A test that has never failed has
@@ -48,38 +70,18 @@ tagged with this spec.
 `./gradlew check` must pass — format, build, unit tests, integration tests and
 the context budget. That task is the gate.
 
-## 4. Document only what the spec says to
+## 5. Document only what the spec says to
 
 The spec's Docs section decides. If it says nothing is needed, write nothing.
 Otherwise: a decision with reasoning becomes an ADR from `docs/adr/0000-template.md`;
 a one-line call where the brief was silent becomes a line in
 `docs/assumptions.md` tagged with this spec.
 
-## 5. Hand it over
+## 6. Hand it over
 
 Split the work into reviewable commits — the domain types, the adapter, the
 wiring, the docs. Not one commit, and not one per file. Open the PR and stop.
 The author reads and merges it; nothing advances without that.
-
-## 6. Write the next spec
-
-Once the author has merged the PR, write the next `not started` row in the queue
-with `/create-spec`, committed straight to `main` — no worktree, no code. This
-step is not optional and it is what ends the session: a session that implements a
-spec and leaves the queue unwritten hands the next one an empty desk.
-
-It happens here, after the merge, because the next spec is written from the code
-as it now is rather than as it was planned. A shape that came out different, a
-type that gained a case, a helper that already exists — the spec written before
-the merge would have missed all of it.
-
-Except on a cheaper model. A `low` spec runs on Sonnet; that session stops after
-the export and writes no spec. Specs are written by the planning model, and Opus
-writes the next one in its own session. Two reasons: the session would mix models
-against the one-model-per-session rule, and its cost row would stop being the
-Sonnet-versus-Opus comparison that running the spec on Sonnet existed to produce
-— a planning-shaped Opus spec priced into a Sonnet implementation measures
-neither.
 
 ## 7. Export
 
@@ -90,9 +92,8 @@ way it is submitted are the same thing.
 ## Stop conditions
 
 - Past roughly forty requests, or about to *implement* a second spec: stop and
-  open a new session. Writing the next spec in step 6 is not that — one spec
-  built, the next one specified, is exactly how a session is supposed to end,
-  unless this is a cheaper-model session, which ends one step earlier.
+  open a new session. Writing this session's spec in step 2 is not that — one
+  spec specified, then built, is exactly how a session is supposed to run.
 - The spec turns out to be wrong: stop, say so, and fix the spec on `main`
   rather than improvising in the worktree.
 - A new dependency looks necessary: ask first. That is an architecture decision.

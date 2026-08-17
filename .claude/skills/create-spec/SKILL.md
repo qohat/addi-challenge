@@ -1,13 +1,13 @@
 ---
 name: create-spec
-description: Write the next spec in specs/README.md and commit it to main on its own. Use at the end of a session that implemented the previous spec, or when the user asks to write, draft or plan a spec.
+description: Write the next spec in specs/README.md and commit it to main on its own. Use once the previous spec has merged and before implementing the next one, or when the user asks to write, draft or plan a spec.
 ---
 
 # Write a spec
 
 A spec is a version of the code that could be deployed the day it merges. Write
-it at the end of the session that implemented the previous one, when the shape
-of the code is actually known.
+it once the previous spec has merged, when the shape of the code is actually
+known, and before implementing it.
 
 ## Read, in this order, and nothing else
 
