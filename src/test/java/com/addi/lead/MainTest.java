@@ -2,6 +2,7 @@ package com.addi.lead;
 
 import static com.addi.lead.FixtureDir.ID;
 import static java.nio.charset.StandardCharsets.UTF_8;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -18,6 +19,7 @@ import java.io.PrintStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.Duration;
+import java.util.List;
 import java.util.OptionalLong;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
@@ -131,6 +133,119 @@ class MainTest {
 
         assertEquals(2, result.code());
         assertTrue(result.out().contains("pending manual review at step SCORE"), result.out());
+    }
+
+    @Test
+    void aDownBureauOpensACaseAndNamesItBelowTheDecisionLine() throws IOException {
+        downBureau();
+
+        var result = run("validate-lead", "--id", ID);
+
+        var lines = result.out().strip().lines().toList();
+        assertEquals(2, result.code());
+        assertEquals(2, lines.size(), result.out());
+        assertTrue(lines.getFirst().contains("pending manual review at step BUREAU"), result.out());
+        assertEquals("Case " + onlyCase().getFileName() + " opened.", lines.get(1));
+        assertTrue(Files.readAllLines(onlyCase()).containsAll(List.of("status=OPEN", "pending=BUREAU")), "the case");
+    }
+
+    @Test
+    void approvingResumesPastTheDownBureauAndConverts() throws IOException {
+        downBureau();
+        run("validate-lead", "--id", ID);
+        var caseFile = onlyCase();
+
+        var result = run("review", "resolve", caseFile.getFileName().toString(), "--approve");
+
+        assertEquals(0, result.code(), result.err());
+        assertEquals("Lead " + ID + " converted to prospect. Score 67.", result.out().strip());
+        assertTrue(Files.readAllLines(caseFile).contains("status=APPROVED"), "the case");
+        assertFalse(Files.exists(dir.resolve("data").resolve("bureau-cache.csv")), "an approval is not a bureau answer");
+    }
+
+    @Test
+    void rejectingClosesTheCaseAndNamesItOnTheDecisionLine() throws IOException {
+        downBureau();
+        run("validate-lead", "--id", ID);
+        var caseFile = onlyCase();
+        var name = caseFile.getFileName().toString();
+
+        var result = run("review", "resolve", name, "--reject");
+
+        assertEquals(1, result.code());
+        assertEquals(
+                "Lead " + ID + " rejected: manual review case " + name + " was rejected by an analyst.",
+                result.out().strip());
+        assertTrue(Files.readAllLines(caseFile).contains("status=REJECTED"), "the case");
+    }
+
+    @Test
+    void aResolvedCaseAndAnUnknownCaseAreBothInputErrors() throws IOException {
+        downBureau();
+        run("validate-lead", "--id", ID);
+        var caseFile = onlyCase();
+        run("review", "resolve", caseFile.getFileName().toString(), "--reject");
+        var resolved = Files.readAllBytes(caseFile);
+
+        var again = run("review", "resolve", caseFile.getFileName().toString(), "--approve");
+        var unknown = run("review", "resolve", "no-such-case", "--approve");
+
+        assertEquals(3, again.code());
+        assertEquals(3, unknown.code());
+        assertTrue(again.out().isEmpty(), again.out());
+        assertArrayEquals(resolved, Files.readAllBytes(caseFile), "a resolved case was rewritten");
+        assertFalse(Files.exists(reviewDir().resolve("no-such-case")), "an unknown case was written");
+    }
+
+    @Test
+    void approvingIntoADownScoreOpensASecondCase() throws IOException {
+        downBureau();
+        FixtureDir.write(dir, "score.csv", ID + ",0,DOWN");
+        run("validate-lead", "--id", ID);
+        var first = onlyCase();
+
+        var result = run("review", "resolve", first.getFileName().toString(), "--approve");
+
+        assertEquals(2, result.code());
+        var cases = cases();
+        assertEquals(2, cases.size(), cases.toString());
+        assertTrue(Files.readAllLines(first).contains("status=APPROVED"), "the first case");
+        var second = cases.stream().filter(file -> !file.equals(first)).findFirst().orElseThrow();
+        assertTrue(Files.readAllLines(second).containsAll(List.of("status=OPEN", "pending=SCORE")), "the second case");
+    }
+
+    @Test
+    void aCaseThatCannotBeWrittenExitsFourOnStderr() throws IOException {
+        downBureau();
+        Files.createDirectories(dir.resolve("data"));
+        Files.writeString(reviewDir(), "a regular file where the queue goes");
+
+        var result = run("validate-lead", "--id", ID);
+
+        assertEquals(4, result.code());
+        assertFalse(result.err().isBlank());
+        assertTrue(result.out().contains("pending manual review"), result.out());
+    }
+
+    private void downBureau() {
+        FixtureDir.clean(dir);
+        FixtureDir.write(dir, "bureau.csv", ID + ",,0,DOWN");
+    }
+
+    private Path reviewDir() {
+        return dir.resolve("data").resolve("review");
+    }
+
+    private Path onlyCase() throws IOException {
+        var cases = cases();
+        assertEquals(1, cases.size(), cases.toString());
+        return cases.getFirst();
+    }
+
+    private List<Path> cases() throws IOException {
+        try (var files = Files.list(reviewDir())) {
+            return files.sorted().toList();
+        }
     }
 
     @Test

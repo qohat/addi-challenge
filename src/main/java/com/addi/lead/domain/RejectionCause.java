@@ -25,4 +25,7 @@ public sealed interface RejectionCause {
     record Sanctioned(String list) implements RejectionCause {}
 
     record ScoreTooLow(int value) implements RejectionCause {}
+
+    /** The only cause no step outcome produces: an analyst decided it, so {@link Decisions} never builds it. */
+    record ReviewRejected(CaseId caseId) implements RejectionCause {}
 }
