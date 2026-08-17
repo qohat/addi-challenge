@@ -73,6 +73,12 @@ reading the brief, before any code existed.
   repaired.** It already reads as a miss, and the write rewrites the file whole,
   so keeping it costs a line of code and buys nothing. `[04]`
 
+## Qualification score
+
+- **The minimum score is a constant on `Decisions`, not a `Config` field.** The
+  brief fixes it at 60 and no caller — test, demo or CLI flag — ever varies it.
+  `[05]`
+
 ## Bootstrap session
 
 - **`validate-lead` takes the national ID and nothing else.** The lead already
