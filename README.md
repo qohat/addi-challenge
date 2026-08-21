@@ -17,6 +17,64 @@ Java 25 with preview features, Gradle, a single module, no framework and no
 infrastructure. The external systems are simulated from CSV fixtures carrying
 their own latency, so every outcome below is reproducible.
 
+## How to review this
+
+`docs/COMPLIANCE.md` is the entry point. It walks `docs/brief.md` clause by
+clause and, for each one, names the file that answers it and the approach taken.
+Thirteen rows are marked partial — met by interpretation, met narrowly, or met
+in a way the brief may not have imagined — and every one of them is spelled out
+in its *Declared gaps* section, G1 to G13. Reading those gaps first is the
+fastest way into the exercise: they are the calls a reviewer is most likely to
+want to argue with, stated before being asked. Nothing in that file repeats this
+README; where the answer is already here or in an ADR, the row links instead of
+re-explaining.
+
+Then the rest, in the order that reaches a judgement fastest:
+
+| | What to open | What it settles |
+|---|---|---|
+| 1 | `docs/COMPLIANCE.md`, gaps first | Whether the code does what the brief asked, and where to look for each clause |
+| 2 | *Run it* below: `installDist`, then `demo` and `./gradlew check` | Eleven scenarios end to end, then the build, 109 tests and the context budgets |
+| 3 | `src/main/java/com/addi/lead/Main.java`, then `app/Pipeline.java` and `domain/Decisions.java` | The whole object graph in one method, the fork-join stage, and the single point where any outcome becomes a decision |
+| 4 | `docs/adr/`, then `docs/assumptions.md` | Why each decision was made, and every ambiguity that was closed rather than guessed |
+| 5 | `specs/README.md` and the merged pull requests | What was built, in what order, and against what written up front |
+
+### Reviewing the pull requests
+
+Eleven merged PRs: one per spec, 00 through 08, plus two closeouts.
+
+    $ gh pr list --state merged
+    $ gh pr view 4          # spec 03, structured concurrency, the densest one
+    $ gh pr diff 4
+
+Each body says what is in the branch, which of the spec's acceptance criteria it
+met, and where the implementation deviated from the spec and why — PR #4 moved
+the fixtures out of the jar's resources and into `fixtures/`, and says so under
+its own heading. The commits inside a PR are sliced by behaviour rather than by
+layer, so each one is a change a reviewer can read on its own.
+
+The ordering is the part the brief asks to be verifiable, and it is in the
+history rather than in a claim: the spec is committed to `main` on its own,
+before the branch that implements it exists.
+
+    $ git log --oneline --graph -40
+
+`988b557` *Specify the demo command...* lands before `77148f2`, the merge of the
+PR that built it, and the same holds for specs 04, 05, 06 and 08.
+`specs/README.md` is the queue those commits work through, and G9 in
+`docs/COMPLIANCE.md` states the limit of the claim: only specs 00 to 03 were
+written up front.
+
+### Reviewing the AI record
+
+`prompts/` holds the prompt that opened each session that had one,
+`docs/ai/sessions/` holds a transcript per session, and `docs/ai/cost.md` prices
+them from the logs with `scripts/cost.py`. What those artifacts are and are not
+— terminal captures rather than raw API logs, and fewer prompt files than
+sessions, because a session opened with a checked-in skill has no prose prompt —
+is G10. What was learned from them is *Working with AI* below, and what the
+whole thing cost is *What it cost*.
+
 ## Run it
 
 JDK 25 is the only requirement to run it, or Docker if you would rather not
@@ -308,6 +366,7 @@ Real gaps, in the order I would fix them:
 | | |
 |---|---|
 | The requirements | `docs/brief.md`, transcribed from `docs/brief.pdf` |
+| The brief, clause by clause, and the declared gaps | `docs/COMPLIANCE.md` |
 | The problem and what is decided about it | `docs/PROJECT_CONTEXT.md` |
 | Why each decision was made | `docs/adr/` |
 | Ambiguities closed, and by whom | `docs/assumptions.md` |
