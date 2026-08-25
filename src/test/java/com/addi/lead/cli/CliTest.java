@@ -127,6 +127,13 @@ class CliTest {
     }
 
     @Test
+    void namesTheFraudCheckOnItsRejectionLine() {
+        assertEquals(
+                "Lead 1040506070 rejected: flagged by the fraud check.",
+                Cli.render(new NationalId("1040506070"), new Decision.Rejected(new RejectionCause.FraudDetected())));
+    }
+
+    @Test
     void namesTheCaseOnTheAnalystRejectionLine() {
         assertEquals(
                 "Lead 1020304050 rejected: manual review case 1020304050-17553 was rejected by an analyst.",
@@ -156,6 +163,7 @@ class CliTest {
                 new Decision.Rejected(new RejectionCause.RegistryMismatch(List.of("firstName"))),
                 new Decision.Rejected(new RejectionCause.JudicialRecords(2)),
                 new Decision.Rejected(new RejectionCause.Sanctioned("OFAC")),
+                new Decision.Rejected(new RejectionCause.FraudDetected()),
                 new Decision.Rejected(new RejectionCause.ScoreTooLow(12)),
                 new Decision.Rejected(new RejectionCause.ReviewRejected(new CaseId("1020304050-17553"))));
 

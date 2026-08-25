@@ -104,6 +104,15 @@ reading the brief, before any code existed.
   limit because a model re-reads it; the README is read once, by a person, and
   the brief asks for comprehensive. `[08]`
 
+## The fraud check
+
+- **`fraudulent=true` means fraud was detected, and rejects.** The default of
+  `false` is what the service has to say about a lead it holds nothing on.
+  `[09]`
+- **The response is modified through the fixture row, not a CLI flag.**
+  Configurable means injectable here, and nothing outside a test varies it.
+  `[09]`
+
 ## Bootstrap session
 
 - **`validate-lead` takes the national ID and nothing else.** The lead already

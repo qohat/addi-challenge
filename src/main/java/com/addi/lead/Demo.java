@@ -32,6 +32,7 @@ final class Demo {
             new Scenario("The registry data does not match", CONVERTS, List.of(validate("1060708090"))),
             new Scenario("Judicial records are found", CONVERTS, List.of(validate("1070809000"))),
             new Scenario("The lead is on a sanctions list", CONVERTS, List.of(validate("1080900010"))),
+            new Scenario("The lead is flagged by the fraud check", CONVERTS, List.of(validate("1040506070"))),
             new Scenario("The qualification score is too low", TOO_LOW, List.of(validate("1030405060"))),
             new Scenario(
                     "The bureau is down, an analyst approves, the lead converts",

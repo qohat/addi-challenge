@@ -3,6 +3,7 @@ package com.addi.lead;
 import com.addi.lead.adapter.CachingComplianceBureau;
 import com.addi.lead.adapter.FileReviewQueue;
 import com.addi.lead.adapter.FixtureComplianceBureau;
+import com.addi.lead.adapter.FixtureFraudCheck;
 import com.addi.lead.adapter.FixtureJudicialRecords;
 import com.addi.lead.adapter.FixtureNationalRegistry;
 import com.addi.lead.adapter.FixtureQualificationScore;
@@ -118,8 +119,9 @@ public final class Main {
                 config.data().resolve("bureau-cache.csv"),
                 config.bureauCacheTtl(),
                 Clock.systemUTC());
+        var fraud = new FixtureFraudCheck(fixtures, latency);
         var score = new FixtureQualificationScore(fixtures, latency, randomness);
-        return new Pipeline(config, leads, registry, judicial, bureau, score);
+        return new Pipeline(config, leads, registry, judicial, bureau, fraud, score);
     }
 
     static int exitCode(Decision decision) {

@@ -2,15 +2,15 @@
 
 ## What it is
 
-A command-line application that qualifies a sales lead into a prospect. Four
+A command-line application that qualifies a sales lead into a prospect. Five
 validations run in the order the brief fixes: the national registry and the
 judicial archives in parallel, then the compliance bureau behind a durable
-cache, then a qualification score that converts only above 60. A step whose
-dependency is down is not a rejection — it stops the pipeline at a checkpoint,
-opens a manual review case and waits for an analyst.
+cache, then a fraud check, then a qualification score that converts only above
+60. A step whose dependency is down is not a rejection — it stops the pipeline
+at a checkpoint, opens a manual review case and waits for an analyst.
 
     registry --+
-               +--> bureau --> score --> converted
+               +--> bureau --> fraud --> score --> converted
     judicial --+
 
 Java 25 with preview features, Gradle, a single module, no framework and no
@@ -168,7 +168,7 @@ Without a JDK:
 
 ## How it works
 
-Hexagonal, hand-wired. Seven ports name the effects — the four external systems,
+Hexagonal, hand-wired. Eight ports name the effects — the five external systems,
 the lead repository, randomness and the simulated latency — and the whole object
 graph is one readable method in `src/main/java/com/addi/lead/Main.java`. The
 domain is pure, so every test is deterministic by construction rather than by
@@ -218,7 +218,9 @@ The reasoning is in `docs/adr/`, one file each:
 ## Decisions and assumptions
 
 The brief says "three distinct validations" and then lists four. Four was the
-reading, and the qualification score is the fourth.
+reading, and the qualification score is the fourth. The fraud check is a fifth,
+asked for after the submission closed; it is the one validation the brief never
+mentions, and `specs/09-fraud-check.md` is where it was specified.
 
 The calls most worth challenging, all of them one-liners in
 `docs/assumptions.md`, tagged with the spec that hit them:
@@ -311,11 +313,11 @@ prices every one of them.
 
 ## What it cost
 
-$61.01 for the whole thing, and that figure covers every session that ran against
+$62.10 for the whole thing, and that figure covers every session that ran against
 this repository: $38.17 across nine specs, cheapest $2.20 and dearest $6.22, plus
-$22.84 across seven sessions that implemented no spec — the false start before the
+$23.93 across eight sessions that implemented no spec — the false start before the
 first commit, the planning sessions, the closeouts, and the final documentation.
-Quoting $38.17 would be flattering and wrong; 37% of the bill was spent outside a
+Quoting $38.17 would be flattering and wrong; 39% of the bill was spent outside a
 spec, and no projection made during the project had a line for it, which is the
 single biggest thing this measurement changed.
 

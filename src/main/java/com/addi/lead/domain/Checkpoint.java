@@ -14,7 +14,8 @@ public record Checkpoint(Lead lead, Step pending, String reason) {
         return switch (pending) {
             case REGISTRY -> Step.JUDICIAL;
             case JUDICIAL -> Step.BUREAU;
-            case BUREAU -> Step.SCORE;
+            case BUREAU -> Step.FRAUD;
+            case FRAUD -> Step.SCORE;
             case SCORE -> Step.SCORE;
         };
     }

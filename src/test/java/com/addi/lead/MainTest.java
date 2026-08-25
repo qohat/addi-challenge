@@ -115,6 +115,14 @@ class MainTest {
     }
 
     @Test
+    void aFlaggedLeadIsRejectedAndExitsOne() {
+        var result = run(config(Config.defaults().fixtures()), "validate-lead", "--id", "1040506070");
+
+        assertEquals(1, result.code(), result.err());
+        assertEquals("Lead 1040506070 rejected: flagged by the fraud check.", result.out().strip());
+    }
+
+    @Test
     void aDownBureauIsPendingAtTheBureauAndExitsTwo() {
         FixtureDir.clean(dir);
         FixtureDir.write(dir, "bureau.csv", ID + ",,0,DOWN");
@@ -162,6 +170,21 @@ class MainTest {
         assertEquals("Lead " + ID + " converted to prospect. Score 67.", result.out().strip());
         assertTrue(Files.readAllLines(caseFile).contains("status=APPROVED"), "the case");
         assertFalse(Files.exists(dir.resolve("data").resolve("bureau-cache.csv")), "an approval is not a bureau answer");
+    }
+
+    @Test
+    void anApprovedFraudCaseResumesIntoTheScore() throws IOException {
+        FixtureDir.clean(dir);
+        FixtureDir.write(dir, "fraud.csv", ID + ",false,0,DOWN");
+        var pending = run("validate-lead", "--id", ID);
+        var caseFile = onlyCase();
+
+        var result = run("review", "resolve", caseFile.getFileName().toString(), "--approve");
+
+        assertEquals(2, pending.code(), pending.err());
+        assertTrue(pending.out().contains("pending manual review at step FRAUD"), pending.out());
+        assertEquals(0, result.code(), result.err());
+        assertEquals("Lead " + ID + " converted to prospect. Score 67.", result.out().strip());
     }
 
     @Test
@@ -277,6 +300,7 @@ class MainTest {
                 "1060708090", "national registry data does not match on birthDate",
                 "1070809000", "2 judicial records found",
                 "1080900010", "sanctioned on the OFAC list",
+                "1040506070", "flagged by the fraud check",
                 "1090001020", "pending manual review at step BUREAU",
                 "1100102030", "pending manual review at step REGISTRY");
 

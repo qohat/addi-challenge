@@ -8,6 +8,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.addi.lead.FixtureDir;
 import com.addi.lead.domain.BureauOutcome;
+import com.addi.lead.domain.FraudOutcome;
 import com.addi.lead.domain.JudicialOutcome;
 import com.addi.lead.domain.RegistryOutcome;
 import com.addi.lead.domain.ScoreOutcome;
@@ -58,6 +59,10 @@ class FixtureAdaptersTest {
         return new FixtureComplianceBureau(dir, new RecordingLatency(pauses));
     }
 
+    private FixtureFraudCheck fraud() {
+        return new FixtureFraudCheck(dir, new RecordingLatency(pauses));
+    }
+
     private FixtureQualificationScore score(Randomness randomness) {
         return new FixtureQualificationScore(dir, new RecordingLatency(pauses), randomness);
     }
@@ -102,15 +107,31 @@ class FixtureAdaptersTest {
     }
 
     @Test
+    void theFraudCheckAnswersItsRowAndDefaultsToFalse() {
+        FixtureDir.clean(dir);
+        FixtureDir.write(dir, "fraud.csv", ID + ",true,40,UP");
+        assertEquals(new FraudOutcome.Assessed(true), fraud().check(LEAD));
+
+        FixtureDir.write(dir, "fraud.csv", ID + ",false,40,UP");
+        assertEquals(new FraudOutcome.Assessed(false), fraud().check(LEAD));
+
+        FixtureDir.write(dir, "fraud.csv", "9999999999,true,40,UP");
+        assertEquals(new FraudOutcome.Assessed(false), fraud().check(LEAD));
+        assertEquals(List.of(millis(40), millis(40)), pauses, "a row that does not exist states no latency");
+    }
+
+    @Test
     void aDownSystemIsUnavailableAtEveryStep() {
         FixtureDir.write(dir, "registry.csv", ID + ",Ana,Restrepo,1990-03-14,0,DOWN");
         FixtureDir.write(dir, "judicial.csv", ID + ",0,0,DOWN");
         FixtureDir.write(dir, "bureau.csv", ID + ",,0,DOWN");
+        FixtureDir.write(dir, "fraud.csv", ID + ",false,0,DOWN");
         FixtureDir.write(dir, "score.csv", ID + ",0,DOWN");
 
         assertInstanceOf(RegistryOutcome.Unavailable.class, registry().check(LEAD));
         assertInstanceOf(JudicialOutcome.Unavailable.class, judicial().check(LEAD));
         assertInstanceOf(BureauOutcome.Unavailable.class, bureau().screen(LEAD));
+        assertInstanceOf(FraudOutcome.Unavailable.class, fraud().check(LEAD));
         assertInstanceOf(ScoreOutcome.Unavailable.class, score(new RecordingRandomness(bounds, 75)).score(LEAD));
     }
 
@@ -120,11 +141,13 @@ class FixtureAdaptersTest {
         FixtureDir.write(dir, "registry.csv", "9999999999,Bob,Other,1980-01-01,0,UP");
         FixtureDir.write(dir, "judicial.csv", "9999999999,3,0,UP");
         FixtureDir.write(dir, "bureau.csv", "9999999999,OFAC,0,UP");
+        FixtureDir.write(dir, "fraud.csv", "9999999999,true,0,UP");
         FixtureDir.write(dir, "score.csv", "9999999999,0,DOWN");
 
         assertEquals(new RegistryOutcome.NotFound(), registry().check(LEAD));
         assertEquals(new JudicialOutcome.Clear(), judicial().check(LEAD));
         assertEquals(new BureauOutcome.Clear(), bureau().screen(LEAD));
+        assertEquals(new FraudOutcome.Assessed(false), fraud().check(LEAD));
         assertEquals(new ScoreOutcome.Scored(75), score(new RecordingRandomness(bounds, 75)).score(LEAD));
         assertEquals(List.of(), pauses, "a row that does not exist states no latency");
     }
@@ -135,14 +158,16 @@ class FixtureAdaptersTest {
         FixtureDir.write(dir, "registry.csv", ID + ",Ana,Restrepo,1990-03-14,120,UP");
         FixtureDir.write(dir, "judicial.csv", ID + ",0,80,UP");
         FixtureDir.write(dir, "bureau.csv", ID + ",,200,UP");
+        FixtureDir.write(dir, "fraud.csv", ID + ",false,70,UP");
         FixtureDir.write(dir, "score.csv", ID + ",60,UP");
 
         registry().check(LEAD);
         judicial().check(LEAD);
         bureau().screen(LEAD);
+        fraud().check(LEAD);
         score(new RecordingRandomness(bounds, 75)).score(LEAD);
 
-        assertEquals(List.of(millis(120), millis(80), millis(200), millis(60)), pauses);
+        assertEquals(List.of(millis(120), millis(80), millis(200), millis(70), millis(60)), pauses);
     }
 
     @Test
@@ -188,11 +213,13 @@ class FixtureAdaptersTest {
         FixtureDir.write(dir, "registry.csv", ID + ",Ana,Restrepo,1990-03-14,not-a-number,UP");
         FixtureDir.write(dir, "judicial.csv", ID + ",0,also-not,UP");
         FixtureDir.write(dir, "bureau.csv", ID + ",,0,SIDEWAYS");
+        FixtureDir.write(dir, "fraud.csv", ID + ",maybe,0,UP");
         FixtureDir.write(dir, "score.csv", ID);
 
         assertInstanceOf(RegistryOutcome.Unavailable.class, registry().check(LEAD));
         assertInstanceOf(JudicialOutcome.Unavailable.class, judicial().check(LEAD));
         assertInstanceOf(BureauOutcome.Unavailable.class, bureau().screen(LEAD));
+        assertInstanceOf(FraudOutcome.Unavailable.class, fraud().check(LEAD));
         assertInstanceOf(ScoreOutcome.Unavailable.class, score(new RecordingRandomness(bounds, 75)).score(LEAD));
     }
 
@@ -201,6 +228,7 @@ class FixtureAdaptersTest {
         assertInstanceOf(RegistryOutcome.Unavailable.class, registry().check(LEAD));
         assertInstanceOf(JudicialOutcome.Unavailable.class, judicial().check(LEAD));
         assertInstanceOf(BureauOutcome.Unavailable.class, bureau().screen(LEAD));
+        assertInstanceOf(FraudOutcome.Unavailable.class, fraud().check(LEAD));
         assertInstanceOf(ScoreOutcome.Unavailable.class, score(new RecordingRandomness(bounds, 75)).score(LEAD));
     }
 

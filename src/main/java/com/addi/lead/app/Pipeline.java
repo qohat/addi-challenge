@@ -10,6 +10,7 @@ import com.addi.lead.domain.RejectionCause;
 import com.addi.lead.domain.Step;
 import com.addi.lead.domain.StepOutcome;
 import com.addi.lead.port.ComplianceBureau;
+import com.addi.lead.port.FraudCheck;
 import com.addi.lead.port.JudicialRecords;
 import com.addi.lead.port.LeadRepository;
 import com.addi.lead.port.NationalRegistry;
@@ -21,7 +22,7 @@ import java.util.concurrent.StructuredTaskScope.Joiner;
 import java.util.concurrent.StructuredTaskScope.Subtask;
 
 /**
- * Sequences the four validations and stops at the first outcome that decides anything. Registry and
+ * Sequences the five validations and stops at the first outcome that decides anything. Registry and
  * judicial are forked together; every other step waits for the one before it, because the brief says
  * so. Concurrency lives here and never in the domain.
  */
@@ -32,6 +33,7 @@ public final class Pipeline {
     private final NationalRegistry registry;
     private final JudicialRecords judicial;
     private final ComplianceBureau bureau;
+    private final FraudCheck fraud;
     private final QualificationScore score;
 
     public Pipeline(
@@ -40,12 +42,14 @@ public final class Pipeline {
             NationalRegistry registry,
             JudicialRecords judicial,
             ComplianceBureau bureau,
+            FraudCheck fraud,
             QualificationScore score) {
         this.config = config;
         this.leads = leads;
         this.registry = registry;
         this.judicial = judicial;
         this.bureau = bureau;
+        this.fraud = fraud;
         this.score = score;
     }
 
@@ -127,6 +131,7 @@ public final class Pipeline {
             case REGISTRY -> registry.check(lead);
             case JUDICIAL -> judicial.check(lead);
             case BUREAU -> bureau.screen(lead);
+            case FRAUD -> fraud.check(lead);
             case SCORE -> score.score(lead);
         };
     }
