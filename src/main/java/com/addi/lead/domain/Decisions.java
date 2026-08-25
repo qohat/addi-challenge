@@ -28,6 +28,10 @@ public final class Decisions {
             case BureauOutcome.Sanctioned(var list) -> rejected(new RejectionCause.Sanctioned(list));
             case BureauOutcome.Unavailable(var why) -> review(lead, Step.BUREAU, why);
 
+            case FraudOutcome.Assessed(var fraudulent) ->
+                    fraudulent ? rejected(new RejectionCause.FraudDetected()) : Optional.<Decision>empty();
+            case FraudOutcome.Unavailable(var why) -> review(lead, Step.FRAUD, why);
+
             case ScoreOutcome.Scored(var value) ->
                     value > MINIMUM_SCORE ? converted(lead, value) : rejected(new RejectionCause.ScoreTooLow(value));
             case ScoreOutcome.Unavailable(var why) -> review(lead, Step.SCORE, why);

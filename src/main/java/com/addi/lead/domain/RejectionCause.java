@@ -24,6 +24,9 @@ public sealed interface RejectionCause {
 
     record Sanctioned(String list) implements RejectionCause {}
 
+    /** No component: the fraud service answers a boolean, so nothing could differ between two of these. */
+    record FraudDetected() implements RejectionCause {}
+
     record ScoreTooLow(int value) implements RejectionCause {}
 
     /** The only cause no step outcome produces: an analyst decided it, so {@link Decisions} never builds it. */

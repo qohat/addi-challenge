@@ -9,5 +9,6 @@ public enum Step {
     REGISTRY,
     JUDICIAL,
     BUREAU,
+    FRAUD,
     SCORE
 }

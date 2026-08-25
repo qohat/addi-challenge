@@ -72,6 +72,16 @@ class DecisionsTest {
     }
 
     @Test
+    void aFraudFlagRejects() {
+        assertEquals(rejected(new RejectionCause.FraudDetected()), terminal(new FraudOutcome.Assessed(true)));
+    }
+
+    @Test
+    void aCleanFraudCheckContinues() {
+        assertEquals(Optional.empty(), terminal(new FraudOutcome.Assessed(false)));
+    }
+
+    @Test
     void aScoreAboveTheMinimumConverts() {
         for (var value : List.of(61, 75)) {
             assertEquals(
@@ -94,12 +104,13 @@ class DecisionsTest {
         assertNotEquals(decision, terminal(new ScoreOutcome.Scored(60)));
     }
 
-    /** Four arms, one per step, and nowhere else in the system. */
+    /** Five arms, one per step, and nowhere else in the system. */
     @Test
     void everyUnavailableDependencyRoutesToItsOwnStep() {
         assertEquals(review(Step.REGISTRY, "registry timeout"), terminal(new RegistryOutcome.Unavailable("registry timeout")));
         assertEquals(review(Step.JUDICIAL, "judicial timeout"), terminal(new JudicialOutcome.Unavailable("judicial timeout")));
         assertEquals(review(Step.BUREAU, "bureau 503"), terminal(new BureauOutcome.Unavailable("bureau 503")));
+        assertEquals(review(Step.FRAUD, "fraud service 502"), terminal(new FraudOutcome.Unavailable("fraud service 502")));
         assertEquals(review(Step.SCORE, "scoring offline"), terminal(new ScoreOutcome.Unavailable("scoring offline")));
     }
 }

@@ -6,6 +6,7 @@ import com.addi.lead.domain.BureauOutcome;
 import com.addi.lead.domain.Checkpoint;
 import com.addi.lead.domain.Decision;
 import com.addi.lead.domain.Email;
+import com.addi.lead.domain.FraudOutcome;
 import com.addi.lead.domain.JudicialOutcome;
 import com.addi.lead.domain.Lead;
 import com.addi.lead.domain.NationalId;
@@ -15,6 +16,7 @@ import com.addi.lead.domain.RejectionCause;
 import com.addi.lead.domain.ScoreOutcome;
 import com.addi.lead.domain.Step;
 import com.addi.lead.port.ComplianceBureau;
+import com.addi.lead.port.FraudCheck;
 import com.addi.lead.port.JudicialRecords;
 import com.addi.lead.port.LeadRepository;
 import com.addi.lead.port.NationalRegistry;
@@ -77,6 +79,14 @@ class PipelineTest {
         }
     }
 
+    private record FakeFraud(List<Step> calls, FraudOutcome outcome) implements FraudCheck {
+        @Override
+        public FraudOutcome check(Lead lead) {
+            calls.add(Step.FRAUD);
+            return outcome;
+        }
+    }
+
     private record FakeScore(List<Step> calls, ScoreOutcome outcome) implements QualificationScore {
         @Override
         public ScoreOutcome score(Lead lead) {
@@ -86,13 +96,18 @@ class PipelineTest {
     }
 
     private Pipeline pipeline(
-            RegistryOutcome registry, JudicialOutcome judicial, BureauOutcome bureau, ScoreOutcome score) {
+            RegistryOutcome registry,
+            JudicialOutcome judicial,
+            BureauOutcome bureau,
+            FraudOutcome fraud,
+            ScoreOutcome score) {
         return new Pipeline(
                 new Config(Duration.ofSeconds(30), Path.of("unused"), OptionalLong.of(7), Path.of("unused"), Duration.ofHours(24)),
                 new FakeRepository(Map.of(LEAD.id(), LEAD)),
                 new FakeRegistry(calls, registry),
                 new FakeJudicial(calls, judicial),
                 new FakeBureau(calls, bureau),
+                new FakeFraud(calls, fraud),
                 new FakeScore(calls, score));
     }
 
@@ -101,6 +116,7 @@ class PipelineTest {
                 new RegistryOutcome.Matched(),
                 new JudicialOutcome.Clear(),
                 new BureauOutcome.Clear(),
+                new FraudOutcome.Assessed(false),
                 new ScoreOutcome.Scored(75));
     }
 
@@ -119,6 +135,7 @@ class PipelineTest {
                         new RegistryOutcome.Mismatch(List.of("birthDate")),
                         new JudicialOutcome.Clear(),
                         new BureauOutcome.Clear(),
+                        new FraudOutcome.Assessed(false),
                         new ScoreOutcome.Scored(75))
                 .validate(LEAD.id());
 
@@ -132,6 +149,7 @@ class PipelineTest {
                         new RegistryOutcome.NotFound(),
                         new JudicialOutcome.RecordsFound(2),
                         new BureauOutcome.Clear(),
+                        new FraudOutcome.Assessed(false),
                         new ScoreOutcome.Scored(75))
                 .validate(LEAD.id());
 
@@ -139,26 +157,27 @@ class PipelineTest {
     }
 
     @Test
-    void fourCleanOutcomesConvert() {
+    void fiveCleanOutcomesConvert() {
         var decision = cleanPipeline().validate(LEAD.id());
 
         assertEquals(new Decision.Converted(new Prospect(LEAD, 75)), decision);
         assertEquals(Set.of(Step.REGISTRY, Step.JUDICIAL), Set.copyOf(calls.subList(0, 2)));
-        assertEquals(List.of(Step.BUREAU, Step.SCORE), calls.subList(2, 4));
+        assertEquals(List.of(Step.BUREAU, Step.FRAUD, Step.SCORE), calls.subList(2, 5));
     }
 
     @Test
-    void aLowScoreRejectsAfterAllFourStepsRan() {
+    void aLowScoreRejectsAfterAllFiveStepsRan() {
         var decision = pipeline(
                         new RegistryOutcome.Matched(),
                         new JudicialOutcome.Clear(),
                         new BureauOutcome.Clear(),
+                        new FraudOutcome.Assessed(false),
                         new ScoreOutcome.Scored(60))
                 .validate(LEAD.id());
 
         assertEquals(new Decision.Rejected(new RejectionCause.ScoreTooLow(60)), decision);
         assertEquals(Set.of(Step.REGISTRY, Step.JUDICIAL), Set.copyOf(calls.subList(0, 2)));
-        assertEquals(List.of(Step.BUREAU, Step.SCORE), calls.subList(2, 4));
+        assertEquals(List.of(Step.BUREAU, Step.FRAUD, Step.SCORE), calls.subList(2, 5));
     }
 
     @Test
@@ -166,7 +185,30 @@ class PipelineTest {
         var decision = cleanPipeline().run(LEAD, Step.BUREAU);
 
         assertEquals(new Decision.Converted(new Prospect(LEAD, 75)), decision);
-        assertEquals(List.of(Step.BUREAU, Step.SCORE), calls);
+        assertEquals(List.of(Step.BUREAU, Step.FRAUD, Step.SCORE), calls);
+    }
+
+    @Test
+    void theFraudCheckRunsAfterTheBureauAndBeforeTheScore() {
+        var decision = pipeline(
+                        new RegistryOutcome.Matched(),
+                        new JudicialOutcome.Clear(),
+                        new BureauOutcome.Clear(),
+                        new FraudOutcome.Assessed(true),
+                        new ScoreOutcome.Scored(75))
+                .validate(LEAD.id());
+
+        assertEquals(new Decision.Rejected(new RejectionCause.FraudDetected()), decision);
+        assertEquals(Set.of(Step.REGISTRY, Step.JUDICIAL), Set.copyOf(calls.subList(0, 2)));
+        assertEquals(List.of(Step.BUREAU, Step.FRAUD), calls.subList(2, calls.size()));
+    }
+
+    @Test
+    void aResumeFromTheFraudStepRunsFraudAndScore() {
+        var decision = cleanPipeline().run(LEAD, Step.FRAUD);
+
+        assertEquals(new Decision.Converted(new Prospect(LEAD, 75)), decision);
+        assertEquals(List.of(Step.FRAUD, Step.SCORE), calls);
     }
 
     @Test
@@ -175,6 +217,7 @@ class PipelineTest {
                         new RegistryOutcome.Matched(),
                         new JudicialOutcome.Clear(),
                         new BureauOutcome.Clear(),
+                        new FraudOutcome.Assessed(false),
                         new ScoreOutcome.Unavailable("scoring offline"))
                 .run(LEAD, Step.SCORE);
 

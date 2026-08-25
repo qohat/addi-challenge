@@ -12,7 +12,8 @@ class CheckpointTest {
     void approvalResumesAtTheStepAfterThePendingOne() {
         assertEquals(Step.JUDICIAL, resumeFrom(Step.REGISTRY));
         assertEquals(Step.BUREAU, resumeFrom(Step.JUDICIAL));
-        assertEquals(Step.SCORE, resumeFrom(Step.BUREAU));
+        assertEquals(Step.FRAUD, resumeFrom(Step.BUREAU));
+        assertEquals(Step.SCORE, resumeFrom(Step.FRAUD));
     }
 
     @Test

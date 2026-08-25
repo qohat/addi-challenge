@@ -7,6 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 
 import com.addi.lead.FixtureDir;
 import com.addi.lead.adapter.FixtureComplianceBureau;
+import com.addi.lead.adapter.FixtureFraudCheck;
 import com.addi.lead.adapter.FixtureJudicialRecords;
 import com.addi.lead.adapter.FixtureNationalRegistry;
 import com.addi.lead.adapter.FixtureQualificationScore;
@@ -68,6 +69,7 @@ class PipelineConcurrencyTest {
                 new FixtureNationalRegistry(dir, latency),
                 new FixtureJudicialRecords(dir, latency),
                 new FixtureComplianceBureau(dir, latency),
+                new FixtureFraudCheck(dir, latency),
                 new FixtureQualificationScore(dir, latency, RandomNumbers.from(config.seed())));
     }
 

@@ -92,7 +92,7 @@ public final class Cli {
         return "Case " + caseId.value() + " opened.";
     }
 
-    /** Gains a case in spec 05 and another in spec 06. No {@code default} to hide either. */
+    /** One arm per cause, and no {@code default} to hide the next one that lands. */
     private static String reason(RejectionCause cause) {
         return switch (cause) {
             case RejectionCause.LeadNotInDatabase ignored -> "not found in the local database.";
@@ -101,6 +101,7 @@ public final class Cli {
                     + String.join(", ", fields) + ".";
             case RejectionCause.JudicialRecords(var count) -> count + " judicial records found.";
             case RejectionCause.Sanctioned(var list) -> "sanctioned on the " + list + " list.";
+            case RejectionCause.FraudDetected ignored -> "flagged by the fraud check.";
             case RejectionCause.ScoreTooLow(var value) ->
                     "qualification score " + value + " is not above " + Decisions.MINIMUM_SCORE + ".";
             case RejectionCause.ReviewRejected(var caseId) ->

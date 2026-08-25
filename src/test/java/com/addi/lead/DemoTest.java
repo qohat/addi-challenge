@@ -29,6 +29,7 @@ class DemoTest {
             "The registry data does not match",
             "Judicial records are found",
             "The lead is on a sanctions list",
+            "The lead is flagged by the fraud check",
             "The qualification score is too low",
             "The bureau is down, an analyst approves, the lead converts",
             "The bureau is down, an analyst rejects",
@@ -57,7 +58,7 @@ class DemoTest {
     }
 
     @Test
-    void runsElevenScenariosInOrderAndExitsZero() {
+    void runsTwelveScenariosInOrderAndExitsZero() {
         assertEquals(0, code, err);
         assertTrue(err.isEmpty(), err);
         var headers = out.lines().filter(line -> line.startsWith("== ")).toList();
@@ -74,30 +75,31 @@ class DemoTest {
         assertLine(4, "Lead 1060708090 rejected: national registry data does not match on birthDate.");
         assertLine(5, "Lead 1070809000 rejected: 2 judicial records found.");
         assertLine(6, "Lead 1080900010 rejected: sanctioned on the OFAC list.");
-        assertLine(7, "Lead 1030405060 rejected: qualification score 57 is not above 60.");
-        assertTrue(block(9).contains("was rejected by an analyst."), block(9));
+        assertLine(7, "Lead 1040506070 rejected: flagged by the fraud check.");
+        assertLine(8, "Lead 1030405060 rejected: qualification score 57 is not above 60.");
+        assertTrue(block(10).contains("was rejected by an analyst."), block(10));
     }
 
     @Test
     void theTwoSeedsDecideTheScoreAndAnApprovedCaseResumesIntoIt() {
         assertLine(1, "Lead 1020304050 converted to prospect. Score 67.");
-        var lines = block(8).lines().toList();
+        var lines = block(9).lines().toList();
         var resolve = lines.stream()
                 .filter(line -> line.startsWith("$ review resolve "))
                 .findFirst()
-                .orElseThrow(() -> new AssertionError(block(8)));
+                .orElseThrow(() -> new AssertionError(block(9)));
         assertTrue(resolve.startsWith("$ review resolve 1090001020-"), resolve);
         assertEquals("Lead 1090001020 converted to prospect. Score 67.", lines.get(lines.indexOf(resolve) + 1));
     }
 
     @Test
     void showsTheTimeoutTheAnalystRejectionAndTheCacheHit() {
-        assertLine(10, "Lead 1100102030 pending manual review at step REGISTRY: timeout after 2000ms.");
-        assertTrue(block(10).contains("Case 1100102030-"), block(10));
-        assertTrue(block(10).contains("exit 2"), block(10));
-        assertTrue(block(9).contains("exit 1"), block(9));
-        var served = block(11).lines().filter(line -> line.contains("converted to prospect")).toList();
-        assertEquals(2, served.size(), block(11));
+        assertLine(11, "Lead 1100102030 pending manual review at step REGISTRY: timeout after 2000ms.");
+        assertTrue(block(11).contains("Case 1100102030-"), block(11));
+        assertTrue(block(11).contains("exit 2"), block(11));
+        assertTrue(block(10).contains("exit 1"), block(10));
+        var served = block(12).lines().filter(line -> line.contains("converted to prospect")).toList();
+        assertEquals(2, served.size(), block(12));
         assertEquals(served.getFirst(), served.getLast(), "the cache changed the decision it served");
     }
 
