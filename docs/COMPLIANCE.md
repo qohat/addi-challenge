@@ -15,7 +15,7 @@ way to use this file.
 
 | Requirement | Where | Approach |
 |---|---|---|
-| Four validations, not three — the brief says "three distinct validations" and lists four | `src/main/java/com/addi/lead/domain/Step.java`, `app/Pipeline.java` | `Step` has four constants and the pipeline runs all four. **Partial** — [G1](#g1) |
+| Four validations, not three — the brief says "three distinct validations" and lists four | `src/main/java/com/addi/lead/domain/Step.java`, `app/Pipeline.java` | `Step` has five constants: the four the brief lists, and a fraud check added after the submission. The pipeline runs them in canonical order. **Partial** — [G1](#g1) |
 | **National Registry:** the person must exist in the external registry | `adapter/FixtureNationalRegistry.java:22`, `domain/RegistryOutcome.java` | A missing `registry.csv` row is `RegistryOutcome.NotFound`, a business rejection. A missing *file* is `Unavailable` — different fact, different branch ([ADR 0005](adr/0005-failure-taxonomy.md)) |
 | **National Registry:** their data must match our local database | `domain/RegistryRecord.java`, tested in `src/test/java/com/addi/lead/domain/RegistryRecordTest.java` | The adapter supplies the record; the comparison is a pure domain function returning `Matched` or `Mismatch(fields)` with the fields named. **Partial** — [G2](#g2) |
 | **Judicial Records:** no records in the national archives | `adapter/FixtureJudicialRecords.java`, `domain/JudicialOutcome.java` | `RecordCount > 0` is `RecordsFound(count)`; the CLI prints the count. **Partial** — [G3](#g3) |

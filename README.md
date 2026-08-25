@@ -2,15 +2,15 @@
 
 ## What it is
 
-A command-line application that qualifies a sales lead into a prospect. Four
+A command-line application that qualifies a sales lead into a prospect. Five
 validations run in the order the brief fixes: the national registry and the
 judicial archives in parallel, then the compliance bureau behind a durable
-cache, then a qualification score that converts only above 60. A step whose
-dependency is down is not a rejection — it stops the pipeline at a checkpoint,
-opens a manual review case and waits for an analyst.
+cache, then a fraud check, then a qualification score that converts only above
+60. A step whose dependency is down is not a rejection — it stops the pipeline
+at a checkpoint, opens a manual review case and waits for an analyst.
 
     registry --+
-               +--> bureau --> score --> converted
+               +--> bureau --> fraud --> score --> converted
     judicial --+
 
 Java 25 with preview features, Gradle, a single module, no framework and no
@@ -168,7 +168,7 @@ Without a JDK:
 
 ## How it works
 
-Hexagonal, hand-wired. Seven ports name the effects — the four external systems,
+Hexagonal, hand-wired. Eight ports name the effects — the five external systems,
 the lead repository, randomness and the simulated latency — and the whole object
 graph is one readable method in `src/main/java/com/addi/lead/Main.java`. The
 domain is pure, so every test is deterministic by construction rather than by
@@ -218,7 +218,9 @@ The reasoning is in `docs/adr/`, one file each:
 ## Decisions and assumptions
 
 The brief says "three distinct validations" and then lists four. Four was the
-reading, and the qualification score is the fourth.
+reading, and the qualification score is the fourth. The fraud check is a fifth,
+asked for after the submission closed; it is the one validation the brief never
+mentions, and `specs/09-fraud-check.md` is where it was specified.
 
 The calls most worth challenging, all of them one-liners in
 `docs/assumptions.md`, tagged with the spec that hit them:

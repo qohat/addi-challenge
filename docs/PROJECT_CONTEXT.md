@@ -36,6 +36,8 @@ files as part of the submission.
 - ADRs, this context layer, and a `demo` command covering every outcome path.
 - The semantics of manual review, which the brief names but never defines
   (ADR 0004).
+- A fraud check between the bureau and the score, asked for after the submission
+  closed. It answers a boolean from `fraud.csv`, false when it has no row.
 
 ## Decisions about the problem
 

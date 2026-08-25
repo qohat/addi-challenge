@@ -1,8 +1,9 @@
 # Addi lead validation challenge
 
-A CLI that qualifies a sales lead into a prospect by running four validations:
+A CLI that qualifies a sales lead into a prospect by running five validations:
 national registry and judicial records in parallel, then the compliance bureau,
-then a qualification score. Java 25, Gradle, single module, no framework.
+a fraud check, then a qualification score. Java 25, Gradle, single module, no
+framework.
 
 ## Hard constraints
 
