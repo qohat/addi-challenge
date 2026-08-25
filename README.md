@@ -311,11 +311,11 @@ prices every one of them.
 
 ## What it cost
 
-$61.01 for the whole thing, and that figure covers every session that ran against
+$62.10 for the whole thing, and that figure covers every session that ran against
 this repository: $38.17 across nine specs, cheapest $2.20 and dearest $6.22, plus
-$22.84 across seven sessions that implemented no spec — the false start before the
+$23.93 across eight sessions that implemented no spec — the false start before the
 first commit, the planning sessions, the closeouts, and the final documentation.
-Quoting $38.17 would be flattering and wrong; 37% of the bill was spent outside a
+Quoting $38.17 would be flattering and wrong; 39% of the bill was spent outside a
 spec, and no projection made during the project had a line for it, which is the
 single biggest thing this measurement changed.
 

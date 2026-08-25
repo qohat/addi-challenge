@@ -188,7 +188,7 @@ The brief evaluates orchestration, so the numbers behind it, all from
   40% and this session spent it and more on re-reading — $3.70 against $2.20 and
   $2.56. The specification carried the cheaper model; there was nothing left for
   it to save.
-- **Total: $61.01** across nine implementing sessions and seven that implemented
+- **Total: $62.10** across nine implementing sessions and eight that implemented
   no spec — the false start, the planning sessions, the closeouts and the final
-  documentation. Non-spec work was 37% of the bill and no projection made during
+  documentation. Non-spec work was 39% of the bill and no projection made during
   the project had a line for it.
