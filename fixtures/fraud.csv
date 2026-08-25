@@ -1,0 +1,5 @@
+id,fraudulent,latencyMs,status
+1020304050,false,70,UP
+1030405060,false,70,UP
+1040506070,true,70,UP
+1090001020,false,70,UP

@@ -11,7 +11,7 @@ import java.time.LocalDate;
 import java.util.Map;
 
 /**
- * The five CSVs written into a temporary directory, so a test states exactly the rows it depends on
+ * The six CSVs written into a temporary directory, so a test states exactly the rows it depends on
  * instead of leaning on the fixtures the project ships. Unchecked on purpose: a test that cannot
  * write its own input has nothing to say about the code under test.
  */
@@ -31,6 +31,7 @@ public final class FixtureDir {
             "registry.csv", "id,firstName,lastName,birthDate,latencyMs,status",
             "judicial.csv", "id,recordCount,latencyMs,status",
             "bureau.csv", "id,sanctionsList,latencyMs,status",
+            "fraud.csv", "id,fraudulent,latencyMs,status",
             "score.csv", "id,latencyMs,status");
 
     /** One file, its header and the rows given. A file never written is a missing file. */
@@ -48,6 +49,7 @@ public final class FixtureDir {
         write(dir, "registry.csv", ID + ",Ana,Restrepo,1990-03-14,0,UP");
         write(dir, "judicial.csv", ID + ",0,0,UP");
         write(dir, "bureau.csv", ID + ",,0,UP");
+        write(dir, "fraud.csv", ID + ",false,0,UP");
         write(dir, "score.csv", ID + ",0,UP");
     }
 

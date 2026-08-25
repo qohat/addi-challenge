@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * A CSV reader for five files with a header row and no quoting. Splitting by hand rather than taking
+ * A CSV reader for six files with a header row and no quoting. Splitting by hand rather than taking
  * a dependency: the format exists to be read by a reviewer, not to be general.
  *
  * <p>Nothing here is caught. Every caller is an adapter, and translating a failure into that step's
@@ -39,6 +39,15 @@ final class Fixtures {
             case "UP" -> false;
             case "DOWN" -> true;
             default -> throw new IllegalArgumentException("Unknown status: " + status);
+        };
+    }
+
+    /** Anything that is neither {@code true} nor {@code false} is a malformed row, not a third answer. */
+    static boolean flag(String cell) {
+        return switch (cell.trim()) {
+            case "true" -> true;
+            case "false" -> false;
+            default -> throw new IllegalArgumentException("Unknown flag: " + cell);
         };
     }
 
