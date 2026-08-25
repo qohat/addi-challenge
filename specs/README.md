@@ -18,6 +18,7 @@ file, then its assigned spec, then `git log --oneline -15`.
 | 06 | Manual review: checkpoint, queue, resume | 05 | medium | core | merged |
 | 07 | Demo command and fixtures | 06 | medium | nice-to-have | merged |
 | 08 | Final documentation | 07 | medium | core | merged |
+| 09 | Fraud check | 08 | medium | requested | specced |
 
 ## If time runs out
 
@@ -78,6 +79,13 @@ not with AI, and the pending improvements.
 Two types gain a case late and break every exhaustive match over them: the
 rejection cause when 05 lands and again when 06 lands. That is the design
 working. Each site gets fixed deliberately.
+
+**09** arrives after the submission was closed out: a fifth validation the brief
+never asked for, requested on top of the finished system. It is in the queue on
+the same terms as everything else — the spec lands before the code — and it is
+the first evidence that the design absorbs a new step without a redesign. One
+enum constant, one outcome type, one cause, and the arms the compiler demands
+before the build goes green again.
 
 ## Provisional past 03
 
